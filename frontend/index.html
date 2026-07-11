@@ -47,17 +47,22 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    .header-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, #0068b5, #004a8a);
-      border-radius: 14px;
+    .header-logo {
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
+      background: linear-gradient(135deg, #0068b5, #004a8a);
+      border-radius: 14px;
       box-shadow: 0 4px 20px rgba(0, 104, 181, 0.3);
-      font-size: 24px;
+      padding: 6px;
+    }
+
+    .header-logo svg {
+      width: 100%;
+      height: 100%;
     }
 
     .header h1 {
@@ -67,19 +72,20 @@
     }
 
     .header h1 .unifi-text {
-      color: #0068b5;
+      color: #ffffff;
     }
 
     .header .subtitle {
       font-size: 14px;
-      color: #8888aa;
+      color: #ffffff;
       margin-top: 2px;
+      opacity: 0.8;
     }
 
     .badge {
       display: inline-block;
-      background: rgba(0, 104, 181, 0.15);
-      color: #0068b5;
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
       font-size: 11px;
       font-weight: 600;
       padding: 2px 10px;
@@ -111,7 +117,7 @@
 
     .stat-item .hint {
       font-size: 9px;
-      color: #444;
+      color: #666;
       margin-top: 4px;
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -129,14 +135,15 @@
 
     .stat-number.green { color: #4CAF50; }
     .stat-number.red { color: #ef5350; }
-    .stat-number.unifi-blue { color: #0068b5; }
+    .stat-number.unifi-blue { color: #ffffff; }
 
     .stat-label {
       font-size: 11px;
-      color: #666;
+      color: #ffffff;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-top: 2px;
+      opacity: 0.8;
     }
 
     .textarea-wrapper {
@@ -148,8 +155,9 @@
       display: block;
       font-size: 13px;
       font-weight: 600;
-      color: #aaa;
+      color: #ffffff;
       margin-bottom: 8px;
+      opacity: 0.9;
     }
 
     .textarea-wrapper textarea {
@@ -177,7 +185,7 @@
       bottom: 12px;
       right: 14px;
       font-size: 11px;
-      color: #444;
+      color: #666;
       background: rgba(0, 0, 0, 0.6);
       padding: 2px 10px;
       border-radius: 10px;
@@ -458,7 +466,7 @@
       body { padding: 12px; }
       .card { padding: 20px; }
       .header h1 { font-size: 18px; }
-      .header-icon { width: 40px; height: 40px; font-size: 18px; }
+      .header-logo { width: 40px; height: 40px; }
       .stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
       .stat-item { padding: 8px 10px; }
       .stat-number { font-size: 18px; }
@@ -491,9 +499,15 @@
   <div class="container">
     <div class="card">
 
-      <!-- HEADER -->
+      <!-- HEADER with Logo -->
       <div class="header">
-        <div class="header-icon">📡</div>
+        <div class="header-logo">
+          <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <rect width="400" height="400" rx="40" fill="#0068b5"/>
+            <text x="50" y="200" font-family="Arial, sans-serif" font-size="72" font-weight="700" fill="white" letter-spacing="8">FOOTPRINTS</text>
+            <text x="60" y="290" font-family="Arial, sans-serif" font-size="42" font-weight="300" fill="white" letter-spacing="12">INTERNATIONAL SCHOOL</text>
+          </svg>
+        </div>
         <div>
           <h1><span class="unifi-text">UniFi</span> Bulk AP Adopter <span class="badge">v2.0</span></h1>
           <div class="subtitle">Adopt multiple UniFi Access Points at once via SSH</div>
