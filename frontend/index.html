@@ -6,29 +6,22 @@
   <title>UniFi Bulk AP Adopter</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    /* ===== RESET & BASE ===== */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    html, body {
-      min-height: 100vh;
-      min-height: -webkit-fill-available;
-    }
-
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: #0a0a0f;
       color: #e0e0e0;
       min-height: 100vh;
-      min-height: -webkit-fill-available;
       padding: 16px;
-      padding-bottom: 20px;
       display: flex;
       justify-content: center;
       align-items: flex-start;
+      padding-bottom: 80px;
     }
 
     .container {
@@ -37,19 +30,14 @@
       margin: 0 auto;
     }
 
-    /* ===== CARD ===== */
     .card {
       background: linear-gradient(145deg, #14141e, #1a1a2e);
       border-radius: 24px;
       padding: 28px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.04);
-      margin-bottom: 10px;
-      position: relative;
-      z-index: 10;
     }
 
-    /* ===== HEADER ===== */
     .header {
       display: flex;
       align-items: center;
@@ -75,7 +63,6 @@
       font-size: 22px;
       font-weight: 700;
       color: #ffffff;
-      letter-spacing: -0.5px;
     }
 
     .header .subtitle {
@@ -93,11 +80,8 @@
       padding: 2px 10px;
       border-radius: 20px;
       margin-left: 8px;
-      letter-spacing: 0.3px;
-      text-transform: uppercase;
     }
 
-    /* ===== STATS BAR ===== */
     .stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -121,7 +105,6 @@
 
     .stat-number.green { color: #4CAF50; }
     .stat-number.red { color: #ef5350; }
-    .stat-number.gray { color: #666; }
 
     .stat-label {
       font-size: 11px;
@@ -131,7 +114,6 @@
       margin-top: 2px;
     }
 
-    /* ===== TEXTAREA ===== */
     .textarea-wrapper {
       position: relative;
       margin-bottom: 16px;
@@ -143,7 +125,6 @@
       font-weight: 600;
       color: #aaa;
       margin-bottom: 8px;
-      letter-spacing: 0.3px;
     }
 
     .textarea-wrapper textarea {
@@ -152,24 +133,17 @@
       background: #0d0d18;
       color: #b0ffb0;
       padding: 16px;
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-family: 'Courier New', monospace;
       font-size: 14px;
       line-height: 1.7;
       border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 14px;
       resize: vertical;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
       outline: none;
-      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
     }
 
     .textarea-wrapper textarea:focus {
       border-color: #4CAF50;
-      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 0 3px rgba(76, 175, 80, 0.1);
-    }
-
-    .textarea-wrapper textarea::placeholder {
-      color: #444;
     }
 
     .char-count {
@@ -184,7 +158,6 @@
       pointer-events: none;
     }
 
-    /* ===== BUTTONS ===== */
     .btn-group {
       display: flex;
       gap: 10px;
@@ -234,7 +207,6 @@
       background: rgba(255, 255, 255, 0.04);
       color: #aaa;
       border: 1px solid rgba(255, 255, 255, 0.06);
-      flex: 1;
     }
 
     .btn-secondary:hover {
@@ -257,7 +229,6 @@
       to { transform: rotate(360deg); }
     }
 
-    /* ===== PROGRESS ===== */
     #progress {
       padding: 14px 18px;
       border-radius: 12px;
@@ -274,7 +245,6 @@
       display: block;
     }
 
-    /* ===== RESULTS ===== */
     #result {
       margin-top: 16px;
     }
@@ -322,15 +292,10 @@
       border-radius: 10px;
       font-size: 13px;
       border: 1px solid rgba(255, 255, 255, 0.03);
-      transition: background 0.2s ease;
-    }
-
-    .result-item:hover {
-      background: rgba(255, 255, 255, 0.04);
     }
 
     .result-item .ip {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Courier New', monospace;
       font-weight: 500;
       color: #ddd;
       min-width: 110px;
@@ -365,7 +330,6 @@
       max-width: 120px;
     }
 
-    /* ===== FOOTER ===== */
     .footer {
       margin-top: 20px;
       padding-top: 16px;
@@ -380,7 +344,6 @@
     .footer .brand {
       color: #4CAF50;
       font-weight: 500;
-      letter-spacing: 0.3px;
     }
 
     .footer .brand span {
@@ -388,48 +351,10 @@
       font-weight: 400;
     }
 
-    .footer .time {
-      color: #444;
-      font-size: 11px;
-    }
-
-    /* ===== TELEGRAM DESKTOP FIX ===== */
-    /* Hide Telegram's auto-generated footer */
-    .tgme_footer,
-    .tgme_footer_text,
-    .tgme_nav_footer,
-    [class*="footer_"],
-    [class*="username_"],
-    .footer-wrap,
-    .footer-container {
-      display: none !important;
-      height: 0 !important;
-      opacity: 0 !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
-    }
-
-    /* Hide any element containing @unifi_adoption_bot */
-    *:not(.footer):not(.brand):not(.card):not(.container):not(body):not(html) {
-      /* This will hide any extra @ mentions */
-    }
-
-    /* Extra padding for Telegram Desktop */
-    @media (min-width: 768px) {
-      body {
-        padding-bottom: 100px;
-      }
-    }
-
-    /* ===== RESPONSIVE ===== */
     @media (max-width: 500px) {
-      body { 
-        padding: 12px; 
-        padding-bottom: 20px;
-      }
+      body { padding: 12px; }
       .card { padding: 20px; }
       .header h1 { font-size: 18px; }
-      .header-icon { width: 40px; height: 40px; font-size: 20px; }
       .stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
       .stat-item { padding: 8px 10px; }
       .stat-number { font-size: 18px; }
@@ -438,34 +363,20 @@
       .btn-primary { flex: 1; }
       .result-summary { flex-direction: column; gap: 8px; align-items: flex-start; }
       .footer { flex-direction: column; gap: 6px; text-align: center; }
-      .result-item .error-msg { max-width: 80px; }
       .textarea-wrapper textarea { min-height: 150px; }
-    }
-
-    @media (min-width: 501px) and (max-width: 1024px) {
-      body {
-        padding: 20px;
-        padding-bottom: 100px;
-      }
     }
 
     /* Scrollbar styling */
     .result-list::-webkit-scrollbar {
       width: 4px;
     }
-
     .result-list::-webkit-scrollbar-track {
       background: rgba(255, 255, 255, 0.02);
       border-radius: 10px;
     }
-
     .result-list::-webkit-scrollbar-thumb {
       background: rgba(76, 175, 80, 0.3);
       border-radius: 10px;
-    }
-
-    .result-list::-webkit-scrollbar-thumb:hover {
-      background: rgba(76, 175, 80, 0.5);
     }
   </style>
 </head>
@@ -477,10 +388,7 @@
       <div class="header">
         <div class="header-icon">📡</div>
         <div>
-          <h1>
-            UniFi Bulk AP Adopter
-            <span class="badge">v2.0</span>
-          </h1>
+          <h1>UniFi Bulk AP Adopter <span class="badge">v2.0</span></h1>
           <div class="subtitle">Adopt multiple UniFi Access Points at once via SSH</div>
         </div>
       </div>
@@ -510,21 +418,13 @@
 
       <!-- BUTTONS -->
       <div class="btn-group">
-        <button class="btn btn-primary" id="adoptBtn" onclick="startAdoption()">
-          🚀 Adopt All APs
-        </button>
-        <button class="btn btn-secondary" onclick="clearAll()">
-          ✕ Clear
-        </button>
-        <button class="btn btn-secondary" onclick="loadSample()">
-          📝 Sample
-        </button>
+        <button class="btn btn-primary" id="adoptBtn" onclick="startAdoption()">🚀 Adopt All APs</button>
+        <button class="btn btn-secondary" onclick="clearAll()">✕ Clear</button>
+        <button class="btn btn-secondary" onclick="loadSample()">📝 Sample</button>
       </div>
 
       <!-- PROGRESS -->
-      <div id="progress">
-        <span id="progressText">⏳ Processing 0 APs...</span>
-      </div>
+      <div id="progress"><span id="progressText">⏳ Processing 0 APs...</span></div>
 
       <!-- RESULTS -->
       <div id="result"></div>
@@ -532,84 +432,23 @@
       <!-- FOOTER -->
       <div class="footer">
         <span class="brand">🏫 FOOTPRINTS <span>INTERNATIONAL SCHOOL</span></span>
-        <span class="time">⚡ <span id="timestamp"></span></span>
+        <span>⚡ <span id="timestamp"></span></span>
       </div>
 
     </div>
   </div>
 
   <script>
-    // ============================================
-    // TELEGRAM WEB APP INIT
-    // ============================================
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
-
-    // ============================================
-    // HIDE TELEGRAM FOOTER (Desktop Fix)
-    // ============================================
-    function hideTelegramFooter() {
-      // Method 1: Hide by class names
-      const selectors = [
-        '.tgme_footer',
-        '.tgme_footer_text',
-        '.tgme_nav_footer',
-        '[class*="footer_"]',
-        '[class*="username_"]',
-        '.footer-wrap',
-        '.footer-container'
-      ];
-      
-      selectors.forEach(selector => {
-        document.querySelectorAll(selector).forEach(el => {
-          el.style.display = 'none';
-          el.style.height = '0';
-          el.style.opacity = '0';
-          el.style.visibility = 'hidden';
-          el.style.pointerEvents = 'none';
-        });
-      });
-
-      // Method 2: Find any element that shows @unifi_adoption_bot
-      document.querySelectorAll('*').forEach(el => {
-        if (el.textContent && el.textContent.includes('@unifi_adoption_bot')) {
-          // Don't hide our own footer
-          if (!el.closest('.footer') && !el.closest('.brand')) {
-            el.style.display = 'none';
-            el.style.height = '0';
-            el.style.opacity = '0';
-            el.style.visibility = 'hidden';
-          }
-        }
-      });
-
-      // Method 3: Hide the entire footer area
-      const body = document.body;
-      const allChildren = body.children;
-      for (let i = allChildren.length - 1; i >= 0; i--) {
-        const child = allChildren[i];
-        if (child.tagName && child.tagName.toLowerCase() === 'footer') {
-          child.style.display = 'none';
-        }
-        if (child.textContent && child.textContent.includes('@')) {
-          child.style.display = 'none';
-        }
-      }
+    // Simple Telegram WebApp
+    try {
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+      tg.expand();
+    } catch(e) {
+      console.log('Telegram WebApp not available');
     }
 
-    // Run the fix immediately and after DOM loads
-    hideTelegramFooter();
-    document.addEventListener('DOMContentLoaded', hideTelegramFooter);
-    window.addEventListener('load', hideTelegramFooter);
-
-    // Also run after any changes
-    const observer = new MutationObserver(hideTelegramFooter);
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    // ============================================
-    // DOM REFS
-    // ============================================
+    // DOM elements
     const ipsTextarea = document.getElementById('ips');
     const adoptBtn = document.getElementById('adoptBtn');
     const progress = document.getElementById('progress');
@@ -621,9 +460,7 @@
     const ipCount = document.getElementById('ipCount');
     const timestamp = document.getElementById('timestamp');
 
-    // ============================================
-    // LIVE IP COUNT
-    // ============================================
+    // Live IP count
     ipsTextarea.addEventListener('input', function() {
       const ips = getIPs();
       ipCount.textContent = ips.length + ' IPs';
@@ -632,22 +469,12 @@
       failCount.textContent = '—';
     });
 
-    // ============================================
-    // HELPERS
-    // ============================================
     function getIPs() {
-      return ipsTextarea.value
-        .split('\n')
-        .map(i => i.trim())
-        .filter(Boolean);
+      return ipsTextarea.value.split('\n').map(i => i.trim()).filter(Boolean);
     }
 
     function getIPsWithComments() {
-      return ipsTextarea.value
-        .split('\n')
-        .map(i => i.trim())
-        .filter(Boolean)
-        .filter(i => !i.startsWith('#'));
+      return ipsTextarea.value.split('\n').map(i => i.trim()).filter(Boolean).filter(i => !i.startsWith('#'));
     }
 
     function setStats(total, success, fail) {
@@ -656,7 +483,7 @@
       failCount.textContent = fail;
     }
 
-    function showProgress(text, show = true) {
+    function showProgress(text, show) {
       progress.className = show ? 'active' : '';
       progressText.textContent = text;
     }
@@ -667,9 +494,6 @@
     setTimestamp();
     setInterval(setTimestamp, 30000);
 
-    // ============================================
-    // CLEAR
-    // ============================================
     function clearAll() {
       ipsTextarea.value = '';
       resultDiv.innerHTML = '';
@@ -682,21 +506,11 @@
       adoptBtn.innerHTML = '🚀 Adopt All APs';
     }
 
-    // ============================================
-    // SAMPLE
-    // ============================================
     function loadSample() {
-      ipsTextarea.value = `192.168.1.10
-      192.168.1.11
-      192.168.1.12
-      192.168.1.13
-      192.168.1.14`;
+      ipsTextarea.value = '192.168.1.10\n192.168.1.11\n192.168.1.12\n192.168.1.13\n192.168.1.14';
       ipsTextarea.dispatchEvent(new Event('input'));
     }
 
-    // ============================================
-    // MAIN ADOPT FUNCTION
-    // ============================================
     async function startAdoption() {
       const ips = getIPsWithComments();
 
@@ -705,67 +519,46 @@
         return;
       }
 
-      if (!confirm(`Adopt ${ips.length} AP(s)?`)) return;
+      if (!confirm('Adopt ' + ips.length + ' AP(s)?')) return;
 
       adoptBtn.disabled = true;
       adoptBtn.innerHTML = '<span class="spinner"></span> Adopting...';
       resultDiv.innerHTML = '';
-      showProgress(`⏳ Processing ${ips.length} APs...`, true);
+      showProgress('⏳ Processing ' + ips.length + ' APs...', true);
       setStats(ips.length, '…', '…');
 
       try {
         const response = await fetch('https://unifi-bulk-adopter-production.up.railway.app/adopt-bulk', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ips })
+          body: JSON.stringify({ ips: ips })
         });
 
         const data = await response.json();
 
         let success = 0;
         let fail = 0;
-        let html = `
-          <div class="result-summary">
-            <span class="total">✅ Completed! ${data.successful}/${data.total} successful</span>
-            <div class="stats-mini">
-              <span class="ok">✅ ${data.successful}</span>
-              <span class="fail">❌ ${data.total - data.successful}</span>
-            </div>
-          </div>
-          <div class="result-list">
-        `;
+        let html = '<div class="result-summary"><span class="total">✅ Completed! ' + data.successful + '/' + data.total + ' successful</span><div class="stats-mini"><span class="ok">✅ ' + data.successful + '</span><span class="fail">❌ ' + (data.total - data.successful) + '</span></div></div><div class="result-list">';
 
-        data.results.forEach(r => {
+        data.results.forEach(function(r) {
           if (r.success) success++;
           else fail++;
-          html += `
-            <div class="result-item">
-              <span class="ip">${r.ip}</span>
-              <span class="status ${r.success ? 'success' : 'fail'}">${r.success ? '✅ Adopted' : '❌ Failed'}</span>
-              ${r.error ? `<span class="error-msg">${r.error}</span>` : ''}
-            </div>
-          `;
+          html += '<div class="result-item"><span class="ip">' + r.ip + '</span><span class="status ' + (r.success ? 'success' : 'fail') + '">' + (r.success ? '✅ Adopted' : '❌ Failed') + '</span>' + (r.error ? '<span class="error-msg">' + r.error + '</span>' : '') + '</div>';
         });
 
         html += '</div>';
         resultDiv.innerHTML = html;
 
         setStats(data.total, data.successful, data.total - data.successful);
-        showProgress(`✅ Complete! ${data.successful}/${data.total} successful`, false);
+        showProgress('✅ Complete! ' + data.successful + '/' + data.total + ' successful', false);
 
-        tg.sendData(JSON.stringify({
-          total: data.total,
-          successful: data.successful,
-          failed: data.total - data.successful
-        }));
+        try {
+          tg.sendData(JSON.stringify({ total: data.total, successful: data.successful, failed: data.total - data.successful }));
+        } catch(e) {}
 
-      } catch (err) {
-        resultDiv.innerHTML = `
-          <div class="result-item" style="border-color: rgba(239,83,80,0.2);">
-            <span style="color:#ef5350;">❌ Error: ${err.message}</span>
-          </div>
-        `;
-        showProgress(`❌ Error: ${err.message}`, false);
+      } catch(err) {
+        resultDiv.innerHTML = '<div class="result-item" style="border-color: rgba(239,83,80,0.2);"><span style="color:#ef5350;">❌ Error: ' + err.message + '</span></div>';
+        showProgress('❌ Error: ' + err.message, false);
         setStats(ips.length, 0, ips.length);
       }
 
@@ -773,20 +566,18 @@
       adoptBtn.innerHTML = '🚀 Adopt All APs';
     }
 
-    // ============================================
-    // INIT
-    // ============================================
+    // Init
     ipsTextarea.dispatchEvent(new Event('input'));
 
-    // ============================================
-    // KEYBOARD SHORTCUT: Ctrl+Enter
-    // ============================================
+    // Keyboard shortcut
     ipsTextarea.addEventListener('keydown', function(e) {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         startAdoption();
       }
     });
+
+    console.log('✅ UniFi Bulk AP Adopter loaded successfully!');
   </script>
 </body>
 </html>
