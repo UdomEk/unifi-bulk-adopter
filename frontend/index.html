@@ -152,12 +152,41 @@
     .login-role .label {
       font-size: 12px;
       color: #666;
+      margin-bottom: 8px;
     }
 
-    .login-role .role-name {
-      font-size: 16px;
-      font-weight: 600;
+    .login-role .user-list-display {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: left;
+    }
+
+    .login-role .user-item-display {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.02);
+      font-size: 13px;
+      color: #aaa;
+    }
+
+    .login-role .user-item-display .role-badge {
+      font-size: 11px;
+      padding: 1px 8px;
+      border-radius: 10px;
+    }
+
+    .login-role .user-item-display .role-badge.super-admin {
+      color: #ff6b00;
+      border: 1px solid rgba(255, 107, 0, 0.15);
+    }
+
+    .login-role .user-item-display .role-badge.admin {
       color: #0068b5;
+      border: 1px solid rgba(0, 104, 181, 0.15);
     }
 
     /* ===== MAIN APP ===== */
@@ -567,7 +596,7 @@
       flex-direction: column;
       gap: 8px;
       margin-bottom: 16px;
-      max-height: 250px;
+      max-height: 300px;
       overflow-y: auto;
     }
 
@@ -580,6 +609,8 @@
       border-radius: 10px;
       border: 1px solid rgba(255, 255, 255, 0.03);
       transition: all 0.2s ease;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .user-item:hover {
@@ -644,6 +675,7 @@
     .user-item .user-actions {
       display: flex;
       gap: 6px;
+      flex-wrap: wrap;
     }
 
     .user-item .remove-btn {
@@ -662,20 +694,20 @@
       background: rgba(239, 83, 80, 0.2);
     }
 
-    .user-item .edit-pin-btn {
+    .user-item .reset-pin-btn {
       padding: 4px 12px;
       font-size: 11px;
       font-weight: 600;
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      background: rgba(0, 104, 181, 0.1);
-      color: #0068b5;
+      background: rgba(255, 107, 0, 0.1);
+      color: #ff6b00;
       transition: all 0.2s ease;
     }
 
-    .user-item .edit-pin-btn:hover {
-      background: rgba(0, 104, 181, 0.2);
+    .user-item .reset-pin-btn:hover {
+      background: rgba(255, 107, 0, 0.2);
     }
 
     .user-item.super-admin-item {
@@ -949,6 +981,7 @@
       .add-user-form input,
       .add-user-form select { min-width: unset; width: 100%; }
       .admin-section .section-title { font-size: 14px; }
+      .login-role .user-item-display { font-size: 12px; }
     }
 
     @media (max-width: 380px) {
@@ -963,6 +996,7 @@
       .pin-pad { gap: 6px; max-width: 200px; }
       .pin-btn { padding: 12px; font-size: 18px; }
       .user-item .user-details .name { font-size: 12px; }
+      .login-role .user-item-display { font-size: 11px; }
     }
 
     .result-list::-webkit-scrollbar {
@@ -1010,6 +1044,8 @@
       z-index: 1000;
       animation: slideUp 0.3s ease;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      max-width: 90%;
+      text-align: center;
     }
 
     .toast.success {
@@ -1065,7 +1101,9 @@
 
         <div class="login-role">
           <div class="label">👥 Registered Users</div>
-          <div class="role-name" id="loginRoleDisplay">—</div>
+          <div class="user-list-display" id="loginUserList">
+            <!-- Users will be rendered here -->
+          </div>
         </div>
       </div>
 
@@ -1195,9 +1233,9 @@
     const SUPER_ADMIN = {
       id: 'super-admin-1',
       name: 'Super Admin',
-      telegram: '@UdomEk',  // ← CHANGE THIS TO YOUR TELEGRAM USERNAME
+      telegram: '@udomek',  // ← CHANGE THIS TO YOUR TELEGRAM USERNAME
       role: 'super-admin',
-      pin: '1166'           // ← CHANGE THIS TO YOUR PIN
+      pin: '1234'           // ← CHANGE THIS TO YOUR PIN
     };
     // ============================================
 
@@ -1216,12 +1254,13 @@
     function init() {
       loadUsers();
       renderUserList();
+      renderLoginUserList();
       setTimestamp();
       setInterval(setTimestamp, 30000);
-      updateLoginRoleDisplay();
       setupIPCount();
       console.log('✅ UniFi Bulk AP Adopter loaded!');
       console.log('👑 Super Admin: ' + SUPER_ADMIN.telegram);
+      console.log('👥 Total Users: ' + users.length);
     }
 
     // ============================================
@@ -1232,7 +1271,6 @@
         const saved = localStorage.getItem('unifi_users');
         if (saved) {
           users = JSON.parse(saved);
-          // Make sure Super Admin is always in the list
           if (!users.find(u => u.id === SUPER_ADMIN.id)) {
             users.push(SUPER_ADMIN);
             saveUsers();
@@ -1249,6 +1287,29 @@
 
     function saveUsers() {
       localStorage.setItem('unifi_users', JSON.stringify(users));
+    }
+
+    function renderLoginUserList() {
+      const container = document.getElementById('loginUserList');
+      if (!container) return;
+
+      if (users.length === 0) {
+        container.innerHTML = '<div style="color:#666;font-size:13px;">No users registered</div>';
+        return;
+      }
+
+      let html = '';
+      users.forEach(function(user) {
+        const isSuperAdmin = user.role === 'super-admin';
+        const telegramDisplay = user.telegram ? user.telegram : '';
+        html += `
+          <div class="user-item-display">
+            <span>${user.name} ${telegramDisplay ? '(' + telegramDisplay + ')' : ''}</span>
+            <span class="role-badge ${user.role}">${isSuperAdmin ? '👑 Super Admin' : '👤 Admin'}</span>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
     }
 
     function renderUserList() {
@@ -1278,9 +1339,11 @@
             </div>
             <div class="user-actions">
               ${!isDefaultSuperAdmin ? `
-                <button class="edit-pin-btn" onclick="editPin('${user.id}')">🔑 PIN</button>
+                <button class="reset-pin-btn" onclick="resetUserPin('${user.id}')">🔄 Reset PIN</button>
                 <button class="remove-btn" onclick="removeUser('${user.id}')">✕</button>
-              ` : ''}
+              ` : `
+                <button class="reset-pin-btn" onclick="resetUserPin('${user.id}')">🔄 Reset PIN</button>
+              `}
             </div>
           </div>
         `;
@@ -1316,6 +1379,7 @@
       users.push(newUser);
       saveUsers();
       renderUserList();
+      renderLoginUserList();
       nameInput.value = '';
       telegramInput.value = '';
       showToast('✅ User "' + name + '" added! Default PIN: 0000', 'success');
@@ -1328,30 +1392,27 @@
       }
 
       const user = users.find(u => u.id === userId);
+      if (!user) return;
       if (!confirm('Remove user "' + user.name + '"?')) return;
 
       users = users.filter(u => u.id !== userId);
       saveUsers();
       renderUserList();
+      renderLoginUserList();
       showToast('✅ User removed.', 'success');
     }
 
-    function editPin(userId) {
+    function resetUserPin(userId) {
       const user = users.find(u => u.id === userId);
       if (!user) return;
 
-      const newPin = prompt('Enter new 4-digit PIN for ' + user.name + ':', user.pin);
-      if (newPin === null) return;
+      if (!confirm('Reset PIN for "' + user.name + '" to 0000?')) return;
 
-      if (!/^\d{4}$/.test(newPin)) {
-        showToast('PIN must be exactly 4 digits.', 'error');
-        return;
-      }
-
-      user.pin = newPin;
+      user.pin = '0000';
       saveUsers();
       renderUserList();
-      showToast('✅ PIN updated for ' + user.name, 'success');
+      renderLoginUserList();
+      showToast('✅ PIN reset to 0000 for ' + user.name, 'success');
     }
 
     function resetAllUsers() {
@@ -1359,6 +1420,7 @@
       users = [SUPER_ADMIN];
       saveUsers();
       renderUserList();
+      renderLoginUserList();
       showToast('✅ All users reset.', 'success');
     }
 
@@ -1368,6 +1430,7 @@
       users = [SUPER_ADMIN];
       saveUsers();
       renderUserList();
+      renderLoginUserList();
       document.getElementById('result').innerHTML = '';
       showToast('✅ All data cleared.', 'success');
     }
@@ -1396,21 +1459,6 @@
     // ============================================
     // PIN LOGIN
     // ============================================
-    function updateLoginRoleDisplay() {
-      const display = document.getElementById('loginRoleDisplay');
-      if (!display) return;
-
-      let html = '';
-      users.forEach(function(user) {
-        const isSuperAdmin = user.role === 'super-admin';
-        html += '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03);">';
-        html += '<span>' + user.name + (user.telegram ? ' (' + user.telegram + ')' : '') + '</span>';
-        html += '<span style="color:' + (isSuperAdmin ? '#ff6b00' : '#0068b5') + ';font-size:12px;">' + (isSuperAdmin ? '👑' : '👤') + '</span>';
-        html += '</div>';
-      });
-      display.innerHTML = html;
-    }
-
     function pinInput(num) {
       const error = document.getElementById('pinError');
       const success = document.getElementById('pinSuccess');
@@ -1480,6 +1528,7 @@
       avatar.textContent = currentUser.name.charAt(0).toUpperCase();
       name.textContent = currentUser.name;
 
+      // Only show Super Admin interface if user is Super Admin
       if (currentUser.role === 'super-admin') {
         roleBadge.textContent = '👑 Super Admin';
         roleBadge.className = 'user-role super-admin';
