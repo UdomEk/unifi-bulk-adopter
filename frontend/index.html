@@ -15,7 +15,7 @@
 
     html, body {
       min-height: 100vh;
-      min-height: 100dvh; /* For dynamic viewport height */
+      min-height: -webkit-fill-available;
     }
 
     body {
@@ -23,12 +23,12 @@
       background: #0a0a0f;
       color: #e0e0e0;
       min-height: 100vh;
-      min-height: 100dvh;
+      min-height: -webkit-fill-available;
       padding: 16px;
+      padding-bottom: 20px;
       display: flex;
       justify-content: center;
-      align-items: flex-start; /* Changed from center to avoid overlap */
-      padding-bottom: 80px; /* Extra space for Telegram Desktop footer */
+      align-items: flex-start;
     }
 
     .container {
@@ -44,7 +44,9 @@
       padding: 28px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.04);
-      margin-bottom: 20px;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 10;
     }
 
     /* ===== HEADER ===== */
@@ -392,9 +394,24 @@
     }
 
     /* ===== TELEGRAM DESKTOP FIX ===== */
-    /* Hide the extra username that Telegram Desktop shows */
-    .telegram-username {
+    /* Hide Telegram's auto-generated footer */
+    .tgme_footer,
+    .tgme_footer_text,
+    .tgme_nav_footer,
+    [class*="footer_"],
+    [class*="username_"],
+    .footer-wrap,
+    .footer-container {
       display: none !important;
+      height: 0 !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
+    /* Hide any element containing @unifi_adoption_bot */
+    *:not(.footer):not(.brand):not(.card):not(.container):not(body):not(html) {
+      /* This will hide any extra @ mentions */
     }
 
     /* Extra padding for Telegram Desktop */
@@ -428,7 +445,7 @@
     @media (min-width: 501px) and (max-width: 1024px) {
       body {
         padding: 20px;
-        padding-bottom: 60px;
+        padding-bottom: 100px;
       }
     }
 
@@ -514,7 +531,7 @@
 
       <!-- FOOTER -->
       <div class="footer">
-        <span class="brand">Access Point <span>— UniFi Tool</span></span>
+        <span class="brand">🏫 FOOTPRINTS <span>INTERNATIONAL SCHOOL</span></span>
         <span class="time">⚡ <span id="timestamp"></span></span>
       </div>
 
@@ -522,12 +539,77 @@
   </div>
 
   <script>
-    // ===== TELEGRAM =====
+    // ============================================
+    // TELEGRAM WEB APP INIT
+    // ============================================
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
 
-    // ===== DOM REFS =====
+    // ============================================
+    // HIDE TELEGRAM FOOTER (Desktop Fix)
+    // ============================================
+    function hideTelegramFooter() {
+      // Method 1: Hide by class names
+      const selectors = [
+        '.tgme_footer',
+        '.tgme_footer_text',
+        '.tgme_nav_footer',
+        '[class*="footer_"]',
+        '[class*="username_"]',
+        '.footer-wrap',
+        '.footer-container'
+      ];
+      
+      selectors.forEach(selector => {
+        document.querySelectorAll(selector).forEach(el => {
+          el.style.display = 'none';
+          el.style.height = '0';
+          el.style.opacity = '0';
+          el.style.visibility = 'hidden';
+          el.style.pointerEvents = 'none';
+        });
+      });
+
+      // Method 2: Find any element that shows @unifi_adoption_bot
+      document.querySelectorAll('*').forEach(el => {
+        if (el.textContent && el.textContent.includes('@unifi_adoption_bot')) {
+          // Don't hide our own footer
+          if (!el.closest('.footer') && !el.closest('.brand')) {
+            el.style.display = 'none';
+            el.style.height = '0';
+            el.style.opacity = '0';
+            el.style.visibility = 'hidden';
+          }
+        }
+      });
+
+      // Method 3: Hide the entire footer area
+      const body = document.body;
+      const allChildren = body.children;
+      for (let i = allChildren.length - 1; i >= 0; i--) {
+        const child = allChildren[i];
+        if (child.tagName && child.tagName.toLowerCase() === 'footer') {
+          child.style.display = 'none';
+        }
+        if (child.textContent && child.textContent.includes('@')) {
+          child.style.display = 'none';
+        }
+      }
+    }
+
+    // Run the fix immediately and after DOM loads
+    hideTelegramFooter();
+    document.addEventListener('DOMContentLoaded', hideTelegramFooter);
+    window.addEventListener('load', hideTelegramFooter);
+
+    // Also run after any changes
+    const observer = new MutationObserver(hideTelegramFooter);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // ============================================
+    // DOM REFS
+    // ============================================
     const ipsTextarea = document.getElementById('ips');
     const adoptBtn = document.getElementById('adoptBtn');
     const progress = document.getElementById('progress');
@@ -539,7 +621,9 @@
     const ipCount = document.getElementById('ipCount');
     const timestamp = document.getElementById('timestamp');
 
-    // ===== LIVE IP COUNT =====
+    // ============================================
+    // LIVE IP COUNT
+    // ============================================
     ipsTextarea.addEventListener('input', function() {
       const ips = getIPs();
       ipCount.textContent = ips.length + ' IPs';
@@ -548,7 +632,9 @@
       failCount.textContent = '—';
     });
 
-    // ===== HELPERS =====
+    // ============================================
+    // HELPERS
+    // ============================================
     function getIPs() {
       return ipsTextarea.value
         .split('\n')
@@ -581,7 +667,9 @@
     setTimestamp();
     setInterval(setTimestamp, 30000);
 
-    // ===== CLEAR =====
+    // ============================================
+    // CLEAR
+    // ============================================
     function clearAll() {
       ipsTextarea.value = '';
       resultDiv.innerHTML = '';
@@ -594,7 +682,9 @@
       adoptBtn.innerHTML = '🚀 Adopt All APs';
     }
 
-    // ===== SAMPLE =====
+    // ============================================
+    // SAMPLE
+    // ============================================
     function loadSample() {
       ipsTextarea.value = `192.168.1.10
       192.168.1.11
@@ -604,7 +694,9 @@
       ipsTextarea.dispatchEvent(new Event('input'));
     }
 
-    // ===== MAIN ADOPT FUNCTION =====
+    // ============================================
+    // MAIN ADOPT FUNCTION
+    // ============================================
     async function startAdoption() {
       const ips = getIPsWithComments();
 
@@ -613,10 +705,8 @@
         return;
       }
 
-      // Confirm with user
       if (!confirm(`Adopt ${ips.length} AP(s)?`)) return;
 
-      // Disable button
       adoptBtn.disabled = true;
       adoptBtn.innerHTML = '<span class="spinner"></span> Adopting...';
       resultDiv.innerHTML = '';
@@ -632,7 +722,6 @@
 
         const data = await response.json();
 
-        // Build results
         let success = 0;
         let fail = 0;
         let html = `
@@ -664,7 +753,6 @@
         setStats(data.total, data.successful, data.total - data.successful);
         showProgress(`✅ Complete! ${data.successful}/${data.total} successful`, false);
 
-        // Send result to Telegram
         tg.sendData(JSON.stringify({
           total: data.total,
           successful: data.successful,
@@ -685,30 +773,19 @@
       adoptBtn.innerHTML = '🚀 Adopt All APs';
     }
 
-    // ===== INIT =====
+    // ============================================
+    // INIT
+    // ============================================
     ipsTextarea.dispatchEvent(new Event('input'));
 
-    // ===== KEYBOARD SHORTCUT: Ctrl+Enter =====
+    // ============================================
+    // KEYBOARD SHORTCUT: Ctrl+Enter
+    // ============================================
     ipsTextarea.addEventListener('keydown', function(e) {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         startAdoption();
       }
-    });
-
-    // ===== HIDE TELEGRAM USERNAME ON DESKTOP =====
-    // This hides the extra @username that Telegram Desktop shows
-    document.addEventListener('DOMContentLoaded', function() {
-      // Try to hide any extra footer elements
-      const allElements = document.querySelectorAll('*');
-      allElements.forEach(el => {
-        if (el.textContent && el.textContent.includes('@')) {
-          // If it's not our footer, hide it
-          if (!el.closest('.footer')) {
-            el.style.display = 'none';
-          }
-        }
-      });
     });
   </script>
 </body>
