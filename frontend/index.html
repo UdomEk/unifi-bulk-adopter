@@ -495,6 +495,8 @@
       border: none;
       box-shadow: 0 4px 20px rgba(0, 104, 181, 0.3);
       flex: 2;
+      position: relative;
+      overflow: hidden;
     }
 
     .btn-primary:hover {
@@ -503,9 +505,90 @@
     }
 
     .btn-primary:disabled {
-      opacity: 0.5;
+      opacity: 1;
       cursor: not-allowed;
       transform: none !important;
+    }
+
+    /* ===== PROGRESS BUTTON ANIMATION ===== */
+    .btn-primary .btn-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .btn-primary .btn-progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #004a8a, #0068b5, #0088dd);
+      border-radius: 14px;
+      transition: width 0.5s ease;
+      z-index: 1;
+      width: 0%;
+    }
+
+    .btn-primary .btn-progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.15),
+        transparent
+      );
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .btn-primary .btn-percentage {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.9);
+      z-index: 3;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .btn-primary .btn-icon {
+      z-index: 2;
+      font-size: 18px;
+    }
+
+    .btn-primary .btn-label {
+      z-index: 2;
+    }
+
+    .btn-primary .btn-progress-text {
+      z-index: 2;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    /* Progress pulse animation when active */
+    .btn-primary.progress-active .btn-progress-fill {
+      animation: pulse-progress 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-progress {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.85; }
     }
 
     .btn-secondary {
@@ -547,21 +630,6 @@
       border-radius: 10px;
       cursor: pointer;
       transition: all 0.2s ease;
-    }
-
-    .spinner {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      border: 2.5px solid rgba(255, 255, 255, 0.2);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 0.7s linear infinite;
-      flex-shrink: 0;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
     }
 
     /* ===== USER MANAGEMENT ===== */
@@ -982,6 +1050,8 @@
       .add-user-form select { min-width: unset; width: 100%; }
       .admin-section .section-title { font-size: 14px; }
       .login-role .user-item-display { font-size: 12px; }
+      .btn-primary .btn-percentage { font-size: 11px; right: 10px; }
+      .btn-primary .btn-progress-text { font-size: 11px; }
     }
 
     @media (max-width: 380px) {
@@ -1167,7 +1237,15 @@
 
         <!-- BUTTONS -->
         <div class="btn-group">
-          <button class="btn btn-primary" id="adoptBtn" onclick="startAdoption()">🚀 Adopt All APs</button>
+          <button class="btn btn-primary" id="adoptBtn" onclick="startAdoption()">
+            <span class="btn-content">
+              <span class="btn-icon">🚀</span>
+              <span class="btn-label">Adopt All APs</span>
+              <span class="btn-progress-text"></span>
+            </span>
+            <span class="btn-progress-fill" id="progressFill"></span>
+            <span class="btn-percentage" id="progressPercent"></span>
+          </button>
           <button class="btn btn-secondary" onclick="clearAll()">✕ Clear</button>
           <button class="btn btn-secondary" onclick="loadSample()">📝 Sample</button>
         </div>
@@ -1229,16 +1307,14 @@
     // ============================================
     // ⚙️ CONFIGURATION - EDIT THIS!
     // ============================================
-    // Set your Telegram username as Super Admin
     const SUPER_ADMIN = {
       id: 'super-admin-1',
-      name: 'Udom Ek',
-      telegram: '@UdomEk',
+      name: 'Super Admin',
+      telegram: '@udomek',
       role: 'super-admin',
       pin: '1234'
     };
 
-    // Pre-configured Admin user
     const DEFAULT_ADMIN = {
       id: 'admin-1',
       name: 'SreyOun_HST',
@@ -1269,7 +1345,6 @@
       console.log('✅ UniFi Bulk AP Adopter loaded!');
       console.log('👑 Super Admin: ' + SUPER_ADMIN.telegram);
       console.log('👥 Total Users: ' + users.length);
-      console.log('📋 Users:', users.map(u => u.name + ' (' + u.role + ')').join(', '));
     }
 
     // ============================================
@@ -1280,11 +1355,9 @@
         const saved = localStorage.getItem('unifi_users');
         if (saved) {
           users = JSON.parse(saved);
-          // Make sure Super Admin is always in the list
           if (!users.find(u => u.id === SUPER_ADMIN.id)) {
             users.push(SUPER_ADMIN);
           }
-          // Make sure Default Admin is always in the list
           if (!users.find(u => u.id === DEFAULT_ADMIN.id)) {
             users.push(DEFAULT_ADMIN);
           }
@@ -1428,7 +1501,6 @@
       renderUserList();
       renderLoginUserList();
       showToast('✅ PIN reset to 0000 for ' + user.name, 'success');
-      console.log('🔄 PIN reset for:', user.name, 'New PIN:', user.pin);
     }
 
     function resetAllUsers() {
@@ -1512,21 +1584,16 @@
       const error = document.getElementById('pinError');
       const success = document.getElementById('pinSuccess');
 
-      console.log('🔍 Verifying PIN:', pinBuffer);
-      console.log('👥 Available users:', users.map(u => u.name + ' (PIN: ' + u.pin + ')'));
-
       const user = users.find(u => u.pin === pinBuffer);
 
       if (user) {
         success.textContent = '✅ Welcome ' + user.name + '!';
         currentUser = user;
-        console.log('✅ Login successful:', user.name, 'Role:', user.role);
         setTimeout(function() {
           loginSuccess();
         }, 300);
       } else {
         error.textContent = '❌ Invalid PIN. Please try again.';
-        console.log('❌ Invalid PIN for:', pinBuffer);
         pinBuffer = '';
         updatePinDots();
         const display = document.getElementById('pinDisplay');
@@ -1549,7 +1616,6 @@
       avatar.textContent = currentUser.name.charAt(0).toUpperCase();
       name.textContent = currentUser.name;
 
-      // Only show Super Admin interface if user is Super Admin
       if (currentUser.role === 'super-admin') {
         roleBadge.textContent = '👑 Super Admin';
         roleBadge.className = 'user-role super-admin';
@@ -1617,6 +1683,8 @@
     const failCount = document.getElementById('failCount');
     const ipCount = document.getElementById('ipCount');
     const timestamp = document.getElementById('timestamp');
+    const progressFill = document.getElementById('progressFill');
+    const progressPercent = document.getElementById('progressPercent');
 
     // ============================================
     // SETUP
@@ -1663,12 +1731,58 @@
       successCount.textContent = '—';
       failCount.textContent = '—';
       adoptBtn.disabled = false;
-      adoptBtn.innerHTML = '🚀 Adopt All APs';
+      adoptBtn.classList.remove('progress-active');
+      progressFill.style.width = '0%';
+      progressPercent.textContent = '';
+      updateButtonContent('🚀', 'Adopt All APs', '');
     }
 
     function loadSample() {
       ipsTextarea.value = '192.168.1.10\n192.168.1.11\n192.168.1.12\n192.168.1.13\n192.168.1.14';
       ipsTextarea.dispatchEvent(new Event('input'));
+    }
+
+    // ============================================
+    // PROGRESS BUTTON FUNCTIONS
+    // ============================================
+    function updateButtonContent(icon, label, progressText) {
+      const btnContent = adoptBtn.querySelector('.btn-content');
+      if (btnContent) {
+        btnContent.innerHTML = `
+          <span class="btn-icon">${icon}</span>
+          <span class="btn-label">${label}</span>
+          ${progressText ? `<span class="btn-progress-text">${progressText}</span>` : ''}
+        `;
+      }
+    }
+
+    function updateProgress(percentage, label) {
+      // Update the progress fill
+      progressFill.style.width = percentage + '%';
+      
+      // Update the percentage display
+      if (percentage > 0 && percentage < 100) {
+        progressPercent.textContent = Math.round(percentage) + '%';
+      } else if (percentage >= 100) {
+        progressPercent.textContent = '✓';
+        progressPercent.style.color = '#4CAF50';
+      } else {
+        progressPercent.textContent = '';
+      }
+      
+      // Update the button label
+      if (label) {
+        updateButtonContent('⚡', 'Adopting...', label);
+      }
+    }
+
+    function resetButton() {
+      adoptBtn.disabled = false;
+      adoptBtn.classList.remove('progress-active');
+      progressFill.style.width = '0%';
+      progressPercent.textContent = '';
+      progressPercent.style.color = 'rgba(255,255,255,0.9)';
+      updateButtonContent('🚀', 'Adopt All APs', '');
     }
 
     // ============================================
@@ -1769,7 +1883,7 @@
     }
 
     // ============================================
-    // MAIN ADOPT FUNCTION
+    // MAIN ADOPT FUNCTION with Progress
     // ============================================
     async function startAdoption() {
       const ips = getIPsWithComments();
@@ -1781,13 +1895,35 @@
 
       if (!confirm('Adopt ' + ips.length + ' AP(s)?')) return;
 
+      // Disable button and start progress
       adoptBtn.disabled = true;
-      adoptBtn.innerHTML = '<span class="spinner"></span> Adopting...';
-      resultDiv.innerHTML = '';
+      adoptBtn.classList.add('progress-active');
+      
+      // Initialize progress
+      updateProgress(0, 'Starting...');
+      
+      // Show progress bar
       showProgress('⏳ Processing ' + ips.length + ' APs...', true);
       setStats(ips.length, '…', '…');
 
       try {
+        // Simulate progress steps (like a real adoption process)
+        const steps = [
+          { progress: 10, label: 'Connecting...' },
+          { progress: 25, label: 'Authenticating...' },
+          { progress: 40, label: 'Sending commands...' },
+          { progress: 55, label: 'Processing...' },
+          { progress: 70, label: 'Almost done...' },
+          { progress: 85, label: 'Finalizing...' }
+        ];
+
+        // Show progress steps with animation
+        for (const step of steps) {
+          await new Promise(resolve => setTimeout(resolve, 300 + Math.random() * 400));
+          updateProgress(step.progress, step.label);
+        }
+
+        // Actual API call
         const response = await fetch('https://unifi-bulk-adopter-production.up.railway.app/adopt-bulk', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1795,6 +1931,10 @@
         });
 
         const data = await response.json();
+
+        // Complete progress
+        updateProgress(100, 'Complete!');
+        await new Promise(resolve => setTimeout(resolve, 500));
 
         let success = 0;
         let fail = 0;
@@ -1844,6 +1984,9 @@
         setStats(data.total, data.successful, data.total - data.successful);
         showProgress('✅ Complete! ' + data.successful + '/' + data.total + ' successful', false);
 
+        // Reset button after a moment
+        setTimeout(resetButton, 1000);
+
         try {
           const tg = window.Telegram.WebApp;
           tg.sendData(JSON.stringify({ total: data.total, successful: data.successful, failed: data.total - data.successful }));
@@ -1853,10 +1996,9 @@
         resultDiv.innerHTML = '<div class="result-item" style="border-color: rgba(239,83,80,0.2);"><span style="color:#ef5350;">❌ Error: ' + err.message + '</span></div>';
         showProgress('❌ Error: ' + err.message, false);
         setStats(ips.length, 0, ips.length);
+        updateProgress(100, 'Failed');
+        setTimeout(resetButton, 1500);
       }
-
-      adoptBtn.disabled = false;
-      adoptBtn.innerHTML = '🚀 Adopt All APs';
     }
 
     // ============================================
