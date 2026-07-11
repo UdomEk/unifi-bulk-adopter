@@ -48,23 +48,17 @@
     }
 
     .header-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, #0068b5, #00509e);
-      border-radius: 14px;
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
-      flex-shrink: 0;
-      position: relative;
-      box-shadow: 0 4px 20px rgba(0, 104, 181, 0.3);
     }
 
-    /* UniFi-style waves in the icon */
     .header-icon svg {
-      width: 28px;
-      height: 28px;
+      width: 48px;
+      height: 48px;
     }
 
     .header h1 {
@@ -74,7 +68,7 @@
     }
 
     .header h1 .unifi-text {
-      color: #0068b5;
+      color: #0058CC;
     }
 
     .header .subtitle {
@@ -85,8 +79,8 @@
 
     .badge {
       display: inline-block;
-      background: rgba(0, 104, 181, 0.15);
-      color: #0068b5;
+      background: rgba(0, 88, 204, 0.15);
+      color: #0058CC;
       font-size: 11px;
       font-weight: 600;
       padding: 2px 10px;
@@ -136,7 +130,7 @@
 
     .stat-number.green { color: #4CAF50; }
     .stat-number.red { color: #ef5350; }
-    .stat-number.unifi-blue { color: #0068b5; }
+    .stat-number.unifi-blue { color: #0058CC; }
 
     .stat-label {
       font-size: 11px;
@@ -175,8 +169,8 @@
     }
 
     .textarea-wrapper textarea:focus {
-      border-color: #0068b5;
-      box-shadow: 0 0 0 3px rgba(0, 104, 181, 0.1);
+      border-color: #0058CC;
+      box-shadow: 0 0 0 3px rgba(0, 88, 204, 0.1);
     }
 
     .char-count {
@@ -218,16 +212,16 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #0068b5, #00509e);
+      background: linear-gradient(135deg, #0058CC, #003d99);
       color: #fff;
       border: none;
-      box-shadow: 0 4px 20px rgba(0, 104, 181, 0.3);
+      box-shadow: 0 4px 20px rgba(0, 88, 204, 0.3);
       flex: 2;
     }
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(0, 104, 181, 0.4);
+      box-shadow: 0 8px 30px rgba(0, 88, 204, 0.4);
     }
 
     .btn-primary:disabled {
@@ -419,14 +413,14 @@
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      background: rgba(0, 104, 181, 0.15);
-      color: #0068b5;
+      background: rgba(0, 88, 204, 0.15);
+      color: #0058CC;
       transition: all 0.25s ease;
       flex-shrink: 0;
     }
 
     .result-item .retry-btn:hover {
-      background: rgba(0, 104, 181, 0.3);
+      background: rgba(0, 88, 204, 0.3);
     }
 
     .result-item.hidden {
@@ -452,7 +446,7 @@
     }
 
     .footer .brand {
-      color: #0068b5;
+      color: #0058CC;
       font-weight: 500;
     }
 
@@ -464,13 +458,21 @@
     .footer .brand .unifi-icon {
       display: inline-block;
       margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .footer .brand .unifi-icon svg {
+      width: 14px;
+      height: 14px;
+      vertical-align: middle;
     }
 
     @media (max-width: 500px) {
       body { padding: 12px; }
       .card { padding: 20px; }
       .header h1 { font-size: 18px; }
-      .header-icon { width: 40px; height: 40px; font-size: 20px; }
+      .header-icon { width: 40px; height: 40px; }
+      .header-icon svg { width: 36px; height: 36px; }
       .stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
       .stat-item { padding: 8px 10px; }
       .stat-number { font-size: 18px; }
@@ -484,6 +486,7 @@
       .filter-buttons { gap: 6px; }
       .filter-btn { font-size: 11px; padding: 4px 12px; }
       .result-item .error-msg { max-width: 60px; }
+      .footer .brand .unifi-icon svg { width: 12px; height: 12px; }
     }
 
     .result-list::-webkit-scrollbar {
@@ -494,7 +497,7 @@
       border-radius: 10px;
     }
     .result-list::-webkit-scrollbar-thumb {
-      background: rgba(0, 104, 181, 0.3);
+      background: rgba(0, 88, 204, 0.3);
       border-radius: 10px;
     }
   </style>
@@ -503,14 +506,15 @@
   <div class="container">
     <div class="card">
 
-      <!-- HEADER with UniFi Icon -->
+      <!-- HEADER with Official UniFi Logo -->
       <div class="header">
         <div class="header-icon">
-          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M50 10 C28 10 10 28 10 50 C10 72 28 90 50 90 C72 90 90 72 90 50 C90 28 72 10 50 10Z" fill="white" opacity="0.95"/>
-            <path d="M50 25 C36.2 25 25 36.2 25 50 C25 63.8 36.2 75 50 75 C63.8 75 75 63.8 75 50 C75 36.2 63.8 25 50 25Z" fill="#0068b5"/>
-            <circle cx="50" cy="50" r="12" fill="white"/>
-            <circle cx="50" cy="50" r="6" fill="#0068b5"/>
+          <svg viewBox="0 0 512 516" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M256 0C114.6 0 0 114.6 0 256C0 397.4 114.6 512 256 512C397.4 512 512 397.4 512 256C512 114.6 397.4 0 256 0Z" fill="#0058CC"/>
+            <path d="M256 102.4C171.3 102.4 102.4 171.3 102.4 256C102.4 340.7 171.3 409.6 256 409.6C340.7 409.6 409.6 340.7 409.6 256C409.6 171.3 340.7 102.4 256 102.4Z" fill="white"/>
+            <path d="M256 163.84C205.1 163.84 163.84 205.1 163.84 256C163.84 306.9 205.1 348.16 256 348.16C306.9 348.16 348.16 306.9 348.16 256C348.16 205.1 306.9 163.84 256 163.84Z" fill="#0058CC"/>
+            <circle cx="256" cy="256" r="51.2" fill="white"/>
+            <circle cx="256" cy="256" r="25.6" fill="#0058CC"/>
           </svg>
         </div>
         <div>
@@ -561,7 +565,16 @@
       <!-- FOOTER -->
       <div class="footer">
         <span class="brand">
-          <span class="unifi-icon">◆</span> Access Point <span>— UniFi Tool</span>
+          <span class="unifi-icon">
+            <svg viewBox="0 0 512 516" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M256 0C114.6 0 0 114.6 0 256C0 397.4 114.6 512 256 512C397.4 512 512 397.4 512 256C512 114.6 397.4 0 256 0Z" fill="#0058CC"/>
+              <path d="M256 102.4C171.3 102.4 102.4 171.3 102.4 256C102.4 340.7 171.3 409.6 256 409.6C340.7 409.6 409.6 340.7 409.6 256C409.6 171.3 340.7 102.4 256 102.4Z" fill="white"/>
+              <path d="M256 163.84C205.1 163.84 163.84 205.1 163.84 256C163.84 306.9 205.1 348.16 256 348.16C306.9 348.16 348.16 306.9 348.16 256C348.16 205.1 306.9 163.84 256 163.84Z" fill="#0058CC"/>
+              <circle cx="256" cy="256" r="51.2" fill="white"/>
+              <circle cx="256" cy="256" r="25.6" fill="#0058CC"/>
+            </svg>
+          </span>
+          Access Point <span>— UniFi Tool</span>
         </span>
         <span>⚡ <span id="timestamp"></span></span>
       </div>
