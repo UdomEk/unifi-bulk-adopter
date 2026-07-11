@@ -268,6 +268,8 @@
       border-radius: 12px;
       margin-bottom: 20px;
       border: 1px solid rgba(255, 255, 255, 0.04);
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .user-bar .user-info {
@@ -297,7 +299,6 @@
 
     .user-bar .user-role {
       font-size: 11px;
-      color: #888;
       padding: 2px 10px;
       border-radius: 12px;
       background: rgba(255, 255, 255, 0.06);
@@ -509,6 +510,16 @@
       background: rgba(76, 175, 80, 0.2);
     }
 
+    .btn-small {
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
     .spinner {
       display: inline-block;
       width: 18px;
@@ -524,36 +535,40 @@
       to { transform: rotate(360deg); }
     }
 
-    /* ===== USER MANAGEMENT (Super Admin Only) ===== */
+    /* ===== USER MANAGEMENT ===== */
     .admin-section {
       margin-top: 20px;
       padding-top: 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-top: 2px solid rgba(255, 107, 0, 0.15);
     }
 
     .admin-section .section-title {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 16px;
+      font-weight: 700;
       color: #ff6b00;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .admin-section .section-title .badge-admin {
-      font-size: 9px;
+      font-size: 10px;
       background: rgba(255, 107, 0, 0.15);
       color: #ff6b00;
-      padding: 2px 8px;
-      border-radius: 10px;
+      padding: 3px 12px;
+      border-radius: 12px;
+      font-weight: 600;
     }
 
     .user-list {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
+      max-height: 250px;
+      overflow-y: auto;
     }
 
     .user-item {
@@ -564,48 +579,71 @@
       background: rgba(255, 255, 255, 0.02);
       border-radius: 10px;
       border: 1px solid rgba(255, 255, 255, 0.03);
+      transition: all 0.2s ease;
+    }
+
+    .user-item:hover {
+      background: rgba(255, 255, 255, 0.04);
     }
 
     .user-item .user-details {
       display: flex;
       align-items: center;
       gap: 10px;
+      flex: 1;
+      flex-wrap: wrap;
     }
 
     .user-item .user-details .avatar {
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: linear-gradient(135deg, #0068b5, #004a8a);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
       color: #fff;
+      flex-shrink: 0;
     }
 
     .user-item .user-details .name {
-      font-size: 13px;
+      font-size: 14px;
       color: #fff;
+      font-weight: 500;
+    }
+
+    .user-item .user-details .telegram-id {
+      font-size: 12px;
+      color: #666;
+      font-family: monospace;
     }
 
     .user-item .user-details .role-tag {
       font-size: 10px;
-      padding: 2px 8px;
-      border-radius: 10px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-weight: 600;
       background: rgba(255, 255, 255, 0.06);
       color: #888;
     }
 
     .user-item .user-details .role-tag.super-admin {
       color: #ff6b00;
+      background: rgba(255, 107, 0, 0.12);
       border: 1px solid rgba(255, 107, 0, 0.15);
     }
 
     .user-item .user-details .role-tag.admin {
       color: #0068b5;
+      background: rgba(0, 104, 181, 0.12);
       border: 1px solid rgba(0, 104, 181, 0.15);
+    }
+
+    .user-item .user-actions {
+      display: flex;
+      gap: 6px;
     }
 
     .user-item .remove-btn {
@@ -624,6 +662,27 @@
       background: rgba(239, 83, 80, 0.2);
     }
 
+    .user-item .edit-pin-btn {
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: rgba(0, 104, 181, 0.1);
+      color: #0068b5;
+      transition: all 0.2s ease;
+    }
+
+    .user-item .edit-pin-btn:hover {
+      background: rgba(0, 104, 181, 0.2);
+    }
+
+    .user-item.super-admin-item {
+      border-color: rgba(255, 107, 0, 0.1);
+      background: rgba(255, 107, 0, 0.03);
+    }
+
     .add-user-form {
       display: flex;
       gap: 10px;
@@ -631,8 +690,8 @@
       flex-wrap: wrap;
     }
 
-    .add-user-form input {
-      flex: 1;
+    .add-user-form input,
+    .add-user-form select {
       padding: 10px 14px;
       background: #0d0d18;
       border: 1px solid rgba(255, 255, 255, 0.06);
@@ -640,10 +699,10 @@
       color: #fff;
       font-size: 14px;
       outline: none;
-      min-width: 120px;
     }
 
-    .add-user-form input:focus {
+    .add-user-form input:focus,
+    .add-user-form select:focus {
       border-color: #0068b5;
     }
 
@@ -651,20 +710,9 @@
       color: #444;
     }
 
-    .add-user-form .btn-small {
-      padding: 10px 16px;
-      font-size: 13px;
-      font-weight: 600;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      background: linear-gradient(135deg, #0068b5, #004a8a);
+    .add-user-form select option {
+      background: #1a1a2e;
       color: #fff;
-    }
-
-    .add-user-form .btn-small:hover {
-      transform: translateY(-2px);
     }
 
     /* ===== PROGRESS ===== */
@@ -894,10 +942,13 @@
       .badge { font-size: 9px; padding: 1px 8px; }
       .pin-pad { gap: 8px; max-width: 250px; }
       .pin-btn { padding: 14px; font-size: 20px; }
-      .user-bar { flex-wrap: wrap; gap: 8px; }
-      .user-bar .user-info { flex: 1; }
+      .user-bar { flex-wrap: wrap; }
+      .user-item { flex-wrap: wrap; gap: 8px; }
+      .user-item .user-actions { margin-left: auto; }
       .add-user-form { flex-direction: column; }
-      .add-user-form input { min-width: unset; }
+      .add-user-form input,
+      .add-user-form select { min-width: unset; width: 100%; }
+      .admin-section .section-title { font-size: 14px; }
     }
 
     @media (max-width: 380px) {
@@ -911,6 +962,7 @@
       .stat-item { padding: 6px 8px; }
       .pin-pad { gap: 6px; max-width: 200px; }
       .pin-btn { padding: 12px; font-size: 18px; }
+      .user-item .user-details .name { font-size: 12px; }
     }
 
     .result-list::-webkit-scrollbar {
@@ -925,9 +977,52 @@
       border-radius: 10px;
     }
 
+    .user-list::-webkit-scrollbar {
+      width: 4px;
+    }
+    .user-list::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 10px;
+    }
+    .user-list::-webkit-scrollbar-thumb {
+      background: rgba(255, 107, 0, 0.3);
+      border-radius: 10px;
+    }
+
     /* ===== HIDDEN ===== */
     .hidden {
       display: none !important;
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      border-radius: 12px;
+      background: #1a1a2e;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 1000;
+      animation: slideUp 0.3s ease;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .toast.success {
+      border-color: rgba(76, 175, 80, 0.3);
+    }
+
+    .toast.error {
+      border-color: rgba(239, 83, 80, 0.3);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
   </style>
 </head>
@@ -969,7 +1064,7 @@
         </div>
 
         <div class="login-role">
-          <div class="label">🔑 Current Access</div>
+          <div class="label">👥 Registered Users</div>
           <div class="role-name" id="loginRoleDisplay">—</div>
         </div>
       </div>
@@ -1046,25 +1141,28 @@
         <div id="result"></div>
 
         <!-- ============================================ -->
-        <!-- SUPER ADMIN SECTION (Hidden for regular admins) -->
+        <!-- SUPER ADMIN SECTION -->
         <!-- ============================================ -->
         <div id="adminSection" class="admin-section hidden">
           <div class="section-title">
             👑 User Management
-            <span class="badge-admin">Super Admin</span>
+            <span class="badge-admin">Super Admin Only</span>
           </div>
 
+          <!-- User List -->
           <div class="user-list" id="userList">
             <!-- Users will be rendered here -->
           </div>
 
+          <!-- Add User Form -->
           <div class="add-user-form">
             <input type="text" id="newUserName" placeholder="Enter username...">
-            <select id="newUserRole" style="padding:10px 14px;background:#0d0d18;border:1px solid rgba(255,255,255,0.06);border-radius:10px;color:#fff;font-size:14px;outline:none;min-width:100px;">
+            <input type="text" id="newUserTelegram" placeholder="@telegram_id (optional)">
+            <select id="newUserRole">
               <option value="admin">👤 Admin</option>
               <option value="super-admin">👑 Super Admin</option>
             </select>
-            <button class="btn-small" onclick="addUser()">➕ Add User</button>
+            <button class="btn btn-success btn-small" onclick="addUser()">➕ Add User</button>
           </div>
 
           <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
@@ -1091,15 +1189,17 @@
 
   <script>
     // ============================================
-    // CONFIGURATION
+    // ⚙️ CONFIGURATION - EDIT THIS!
     // ============================================
-    // Default Super Admin (you can change this)
-    const DEFAULT_SUPER_ADMIN = {
+    // Set your Telegram username as Super Admin
+    const SUPER_ADMIN = {
       id: 'super-admin-1',
       name: 'Super Admin',
+      telegram: '@udomek',  // ← CHANGE THIS TO YOUR TELEGRAM USERNAME
       role: 'super-admin',
-      pin: '1234'
+      pin: '1234'           // ← CHANGE THIS TO YOUR PIN
     };
+    // ============================================
 
     // ============================================
     // STATE
@@ -1121,6 +1221,7 @@
       updateLoginRoleDisplay();
       setupIPCount();
       console.log('✅ UniFi Bulk AP Adopter loaded!');
+      console.log('👑 Super Admin: ' + SUPER_ADMIN.telegram);
     }
 
     // ============================================
@@ -1131,13 +1232,17 @@
         const saved = localStorage.getItem('unifi_users');
         if (saved) {
           users = JSON.parse(saved);
+          // Make sure Super Admin is always in the list
+          if (!users.find(u => u.id === SUPER_ADMIN.id)) {
+            users.push(SUPER_ADMIN);
+            saveUsers();
+          }
         } else {
-          // Create default Super Admin
-          users = [DEFAULT_SUPER_ADMIN];
+          users = [SUPER_ADMIN];
           saveUsers();
         }
       } catch(e) {
-        users = [DEFAULT_SUPER_ADMIN];
+        users = [SUPER_ADMIN];
         saveUsers();
       }
     }
@@ -1156,18 +1261,27 @@
       }
 
       let html = '';
-      users.forEach(function(user, index) {
+      users.forEach(function(user) {
         const isSuperAdmin = user.role === 'super-admin';
         const initials = user.name.charAt(0).toUpperCase();
+        const isDefaultSuperAdmin = user.id === SUPER_ADMIN.id;
+        const telegramDisplay = user.telegram ? user.telegram : '';
+
         html += `
-          <div class="user-item">
+          <div class="user-item ${isSuperAdmin ? 'super-admin-item' : ''}">
             <div class="user-details">
               <div class="avatar">${initials}</div>
               <span class="name">${user.name}</span>
+              ${telegramDisplay ? `<span class="telegram-id">${telegramDisplay}</span>` : ''}
               <span class="role-tag ${user.role}">${isSuperAdmin ? '👑 Super Admin' : '👤 Admin'}</span>
-              ${user.id === DEFAULT_SUPER_ADMIN.id ? '<span style="font-size:10px;color:#666;">(Default)</span>' : ''}
+              ${isDefaultSuperAdmin ? '<span style="font-size:10px;color:#ff6b00;font-weight:600;">★ Owner</span>' : ''}
             </div>
-            ${user.id !== DEFAULT_SUPER_ADMIN.id ? `<button class="remove-btn" onclick="removeUser('${user.id}')">✕ Remove</button>` : ''}
+            <div class="user-actions">
+              ${!isDefaultSuperAdmin ? `
+                <button class="edit-pin-btn" onclick="editPin('${user.id}')">🔑 PIN</button>
+                <button class="remove-btn" onclick="removeUser('${user.id}')">✕</button>
+              ` : ''}
+            </div>
           </div>
         `;
       });
@@ -1176,62 +1290,107 @@
 
     function addUser() {
       const nameInput = document.getElementById('newUserName');
+      const telegramInput = document.getElementById('newUserTelegram');
       const roleSelect = document.getElementById('newUserRole');
       const name = nameInput.value.trim();
+      const telegram = telegramInput.value.trim();
 
       if (!name) {
-        alert('Please enter a username.');
+        showToast('Please enter a username.', 'error');
         return;
       }
 
-      // Check if user already exists
       if (users.some(u => u.name.toLowerCase() === name.toLowerCase())) {
-        alert('User already exists!');
+        showToast('User already exists!', 'error');
         return;
       }
 
       const newUser = {
         id: 'user-' + Date.now(),
         name: name,
+        telegram: telegram || '',
         role: roleSelect.value,
-        pin: '0000' // Default PIN, user can change later
+        pin: '0000'
       };
 
       users.push(newUser);
       saveUsers();
       renderUserList();
       nameInput.value = '';
-      alert('✅ User added successfully! Default PIN: 0000');
+      telegramInput.value = '';
+      showToast('✅ User "' + name + '" added! Default PIN: 0000', 'success');
     }
 
     function removeUser(userId) {
-      if (userId === DEFAULT_SUPER_ADMIN.id) {
-        alert('Cannot remove the default Super Admin.');
+      if (userId === SUPER_ADMIN.id) {
+        showToast('Cannot remove the Super Admin.', 'error');
         return;
       }
 
-      if (!confirm('Remove this user?')) return;
+      const user = users.find(u => u.id === userId);
+      if (!confirm('Remove user "' + user.name + '"?')) return;
+
       users = users.filter(u => u.id !== userId);
       saveUsers();
       renderUserList();
+      showToast('✅ User removed.', 'success');
+    }
+
+    function editPin(userId) {
+      const user = users.find(u => u.id === userId);
+      if (!user) return;
+
+      const newPin = prompt('Enter new 4-digit PIN for ' + user.name + ':', user.pin);
+      if (newPin === null) return;
+
+      if (!/^\d{4}$/.test(newPin)) {
+        showToast('PIN must be exactly 4 digits.', 'error');
+        return;
+      }
+
+      user.pin = newPin;
+      saveUsers();
+      renderUserList();
+      showToast('✅ PIN updated for ' + user.name, 'success');
     }
 
     function resetAllUsers() {
-      if (!confirm('Reset all users to default? (Only Super Admin will remain)')) return;
-      users = [DEFAULT_SUPER_ADMIN];
+      if (!confirm('Reset all users? Only Super Admin will remain.')) return;
+      users = [SUPER_ADMIN];
       saveUsers();
       renderUserList();
-      alert('✅ All users reset. Only Super Admin remains.');
+      showToast('✅ All users reset.', 'success');
     }
 
     function clearAllData() {
-      if (!confirm('⚠️ This will clear ALL data including adoption history. Are you sure?')) return;
+      if (!confirm('⚠️ Clear ALL data including adoption history?')) return;
       localStorage.clear();
-      users = [DEFAULT_SUPER_ADMIN];
+      users = [SUPER_ADMIN];
       saveUsers();
       renderUserList();
       document.getElementById('result').innerHTML = '';
-      alert('✅ All data cleared.');
+      showToast('✅ All data cleared.', 'success');
+    }
+
+    // ============================================
+    // TOAST NOTIFICATIONS
+    // ============================================
+    function showToast(message, type) {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'toast ' + type;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(function() {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(function() {
+          toast.remove();
+        }, 300);
+      }, 3000);
     }
 
     // ============================================
@@ -1241,11 +1400,15 @@
       const display = document.getElementById('loginRoleDisplay');
       if (!display) return;
 
-      // Show which users are available
-      const names = users.map(u => u.name + ' (' + u.role + ')').join(', ');
-      display.textContent = users.length + ' user(s) registered';
-      display.style.fontSize = '14px';
-      display.style.color = '#888';
+      let html = '';
+      users.forEach(function(user) {
+        const isSuperAdmin = user.role === 'super-admin';
+        html += '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03);">';
+        html += '<span>' + user.name + (user.telegram ? ' (' + user.telegram + ')' : '') + '</span>';
+        html += '<span style="color:' + (isSuperAdmin ? '#ff6b00' : '#0068b5') + ';font-size:12px;">' + (isSuperAdmin ? '👑' : '👤') + '</span>';
+        html += '</div>';
+      });
+      display.innerHTML = html;
     }
 
     function pinInput(num) {
@@ -1285,11 +1448,10 @@
       const error = document.getElementById('pinError');
       const success = document.getElementById('pinSuccess');
 
-      // Find user with matching PIN
       const user = users.find(u => u.pin === pinBuffer);
 
       if (user) {
-        success.textContent = '✅ Access granted!';
+        success.textContent = '✅ Welcome ' + user.name + '!';
         currentUser = user;
         setTimeout(function() {
           loginSuccess();
@@ -1298,7 +1460,6 @@
         error.textContent = '❌ Invalid PIN. Please try again.';
         pinBuffer = '';
         updatePinDots();
-        // Shake animation
         const display = document.getElementById('pinDisplay');
         display.style.animation = 'shake 0.5s ease';
         setTimeout(function() {
@@ -1312,7 +1473,6 @@
       const appScreen = document.getElementById('appScreen');
       appScreen.className = 'app-screen active';
 
-      // Update UI with user info
       const avatar = document.getElementById('userAvatar');
       const name = document.getElementById('userName');
       const roleBadge = document.getElementById('userRoleBadge');
@@ -1330,11 +1490,9 @@
         document.getElementById('adminSection').classList.add('hidden');
       }
 
-      // Reset PIN buffer
       pinBuffer = '';
       updatePinDots();
 
-      // Trigger Telegram expand
       try {
         const tg = window.Telegram.WebApp;
         tg.expand();
