@@ -1233,9 +1233,18 @@
     const SUPER_ADMIN = {
       id: 'super-admin-1',
       name: 'Super Admin',
-      telegram: '@udomek',  // ← CHANGE THIS TO YOUR TELEGRAM USERNAME
+      telegram: '@udomek',
       role: 'super-admin',
-      pin: '1234'           // ← CHANGE THIS TO YOUR PIN
+      pin: '1234'
+    };
+
+    // Pre-configured Admin user
+    const DEFAULT_ADMIN = {
+      id: 'admin-1',
+      name: 'SreyOun_HST',
+      telegram: '@SreyOun_HST',
+      role: 'admin',
+      pin: '0000'
     };
     // ============================================
 
@@ -1245,7 +1254,6 @@
     let currentUser = null;
     let pinBuffer = '';
     let users = [];
-    let allResults = [];
     let currentFilter = 'all';
 
     // ============================================
@@ -1261,6 +1269,7 @@
       console.log('✅ UniFi Bulk AP Adopter loaded!');
       console.log('👑 Super Admin: ' + SUPER_ADMIN.telegram);
       console.log('👥 Total Users: ' + users.length);
+      console.log('📋 Users:', users.map(u => u.name + ' (' + u.role + ')').join(', '));
     }
 
     // ============================================
@@ -1271,16 +1280,21 @@
         const saved = localStorage.getItem('unifi_users');
         if (saved) {
           users = JSON.parse(saved);
+          // Make sure Super Admin is always in the list
           if (!users.find(u => u.id === SUPER_ADMIN.id)) {
             users.push(SUPER_ADMIN);
-            saveUsers();
           }
+          // Make sure Default Admin is always in the list
+          if (!users.find(u => u.id === DEFAULT_ADMIN.id)) {
+            users.push(DEFAULT_ADMIN);
+          }
+          saveUsers();
         } else {
-          users = [SUPER_ADMIN];
+          users = [SUPER_ADMIN, DEFAULT_ADMIN];
           saveUsers();
         }
       } catch(e) {
-        users = [SUPER_ADMIN];
+        users = [SUPER_ADMIN, DEFAULT_ADMIN];
         saveUsers();
       }
     }
@@ -1326,6 +1340,7 @@
         const isSuperAdmin = user.role === 'super-admin';
         const initials = user.name.charAt(0).toUpperCase();
         const isDefaultSuperAdmin = user.id === SUPER_ADMIN.id;
+        const isDefaultAdmin = user.id === DEFAULT_ADMIN.id;
         const telegramDisplay = user.telegram ? user.telegram : '';
 
         html += `
@@ -1336,14 +1351,11 @@
               ${telegramDisplay ? `<span class="telegram-id">${telegramDisplay}</span>` : ''}
               <span class="role-tag ${user.role}">${isSuperAdmin ? '👑 Super Admin' : '👤 Admin'}</span>
               ${isDefaultSuperAdmin ? '<span style="font-size:10px;color:#ff6b00;font-weight:600;">★ Owner</span>' : ''}
+              ${isDefaultAdmin ? '<span style="font-size:10px;color:#0068b5;font-weight:600;">Default PIN: 0000</span>' : ''}
             </div>
             <div class="user-actions">
-              ${!isDefaultSuperAdmin ? `
-                <button class="reset-pin-btn" onclick="resetUserPin('${user.id}')">🔄 Reset PIN</button>
-                <button class="remove-btn" onclick="removeUser('${user.id}')">✕</button>
-              ` : `
-                <button class="reset-pin-btn" onclick="resetUserPin('${user.id}')">🔄 Reset PIN</button>
-              `}
+              <button class="reset-pin-btn" onclick="resetUserPin('${user.id}')">🔄 Reset PIN</button>
+              ${!isDefaultSuperAdmin ? `<button class="remove-btn" onclick="removeUser('${user.id}')">✕</button>` : ''}
             </div>
           </div>
         `;
@@ -1404,7 +1416,10 @@
 
     function resetUserPin(userId) {
       const user = users.find(u => u.id === userId);
-      if (!user) return;
+      if (!user) {
+        showToast('User not found!', 'error');
+        return;
+      }
 
       if (!confirm('Reset PIN for "' + user.name + '" to 0000?')) return;
 
@@ -1413,11 +1428,12 @@
       renderUserList();
       renderLoginUserList();
       showToast('✅ PIN reset to 0000 for ' + user.name, 'success');
+      console.log('🔄 PIN reset for:', user.name, 'New PIN:', user.pin);
     }
 
     function resetAllUsers() {
-      if (!confirm('Reset all users? Only Super Admin will remain.')) return;
-      users = [SUPER_ADMIN];
+      if (!confirm('Reset all users? Only Super Admin and default Admin will remain.')) return;
+      users = [SUPER_ADMIN, DEFAULT_ADMIN];
       saveUsers();
       renderUserList();
       renderLoginUserList();
@@ -1427,7 +1443,7 @@
     function clearAllData() {
       if (!confirm('⚠️ Clear ALL data including adoption history?')) return;
       localStorage.clear();
-      users = [SUPER_ADMIN];
+      users = [SUPER_ADMIN, DEFAULT_ADMIN];
       saveUsers();
       renderUserList();
       renderLoginUserList();
@@ -1496,16 +1512,21 @@
       const error = document.getElementById('pinError');
       const success = document.getElementById('pinSuccess');
 
+      console.log('🔍 Verifying PIN:', pinBuffer);
+      console.log('👥 Available users:', users.map(u => u.name + ' (PIN: ' + u.pin + ')'));
+
       const user = users.find(u => u.pin === pinBuffer);
 
       if (user) {
         success.textContent = '✅ Welcome ' + user.name + '!';
         currentUser = user;
+        console.log('✅ Login successful:', user.name, 'Role:', user.role);
         setTimeout(function() {
           loginSuccess();
         }, 300);
       } else {
         error.textContent = '❌ Invalid PIN. Please try again.';
+        console.log('❌ Invalid PIN for:', pinBuffer);
         pinBuffer = '';
         updatePinDots();
         const display = document.getElementById('pinDisplay');
