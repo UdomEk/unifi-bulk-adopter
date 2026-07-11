@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniFi Bulk AP Adopter</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #0f0f0f; color: #fff; margin: 0; }
+    h1 { color: #4CAF50; }
+    textarea { width: 100%; height: 400px; background: #1e1e1e; color: #0f0; padding: 15px; font-family: monospace; font-size: 16px; box-sizing: border-box; }
+    button { padding: 15px 30px; font-size: 18px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 10px 0; }
+    button:hover { background: #45a049; }
+    .success { color: #4CAF50; }
+    .error { color: #f44336; }
+  </style>
+</head>
+<body>
+  <h1>🛠 UniFi Bulk AP Adopter</h1>
+  <p>Paste the IP addresses of the APs (one per line):</p>
+  <textarea id="ips" placeholder="192.168.1.10&#10;192.168.1.11"></textarea><br><br>
+  <button onclick="startAdoption()">🚀 Adopt All Access Points</button>
+
+  <div id="progress" style="font-weight:bold; margin:15px 0; min-height:24px;"></div>
+  <div id="result"></div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+
+    async function startAdoption() {
+      const text = document.getElementById('ips').value.trim();
+      if (!text) return alert("Please paste at least one IP");
+
+      const ips = text.split('\n').map(i => i.trim()).filter(Boolean);
+      const progress = document.getElementById('progress');
+      const resultDiv = document.getElementById('result');
+
+      progress.textContent = `Processing ${ips.length} APs...`;
+
+      try {
+        const res = await fetch('https://YOUR-BACKEND-URL.up.railway.app/adopt-bulk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ips })
+        });
+
+        const data = await res.json();
+
+        let html = `<h3>✅ Completed! ${data.successful}/${data.total} successful</h3><ul style="list-style:none; padding:0;">`;
+        data.results.forEach(r => {
+          html += r.success 
+            ? `<li class="success">✅ ${r.ip} → Success</li>`
+            : `<li class="error">❌ ${r.ip} → ${r.error}</li>`;
+        });
+        html += '</ul>';
+        resultDiv.innerHTML = html;
+      } catch (err) {
+        resultDiv.innerHTML = `<p class="error">Error: ${err.message}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
