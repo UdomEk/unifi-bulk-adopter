@@ -189,6 +189,63 @@
       border: 1px solid rgba(0, 104, 181, 0.15);
     }
 
+    /* ===== CHANGE PIN SCREEN ===== */
+    .change-pin-screen {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .change-pin-screen.active {
+      display: block;
+    }
+
+    .change-pin-screen .lock-icon {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .change-pin-screen h2 {
+      font-size: 22px;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .change-pin-screen p {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .change-pin-screen .pin-display {
+      margin-bottom: 16px;
+    }
+
+    .change-pin-screen .pin-hint {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .change-pin-screen .skip-btn {
+      padding: 10px 30px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.03);
+      color: #888;
+      transition: all 0.2s ease;
+      margin-top: 12px;
+    }
+
+    .change-pin-screen .skip-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
     /* ===== MAIN APP ===== */
     .app-screen {
       display: none;
@@ -510,7 +567,6 @@
       transform: none !important;
     }
 
-    /* ===== PROGRESS BUTTON ANIMATION ===== */
     .btn-primary .btn-content {
       display: flex;
       align-items: center;
@@ -1051,6 +1107,8 @@
       .login-role .user-item-display { font-size: 12px; }
       .btn-primary .btn-percentage { font-size: 11px; right: 10px; }
       .btn-primary .btn-progress-text { font-size: 11px; }
+      .change-pin-screen h2 { font-size: 18px; }
+      .change-pin-screen .pin-btn { padding: 14px; font-size: 20px; }
     }
 
     @media (max-width: 380px) {
@@ -1177,6 +1235,48 @@
       </div>
 
       <!-- ============================================ -->
+      <!-- CHANGE PIN SCREEN (First Login) -->
+      <!-- ============================================ -->
+      <div id="changePinScreen" class="change-pin-screen">
+        <span class="lock-icon">🔑</span>
+        <h2>Change Your PIN</h2>
+        <p>Please set a new 4-digit PIN for security</p>
+
+        <div class="pin-hint">Enter new PIN</div>
+        <div class="pin-display" id="changePinDisplay">
+          <span class="pin-dot" id="cDot1"></span>
+          <span class="pin-dot" id="cDot2"></span>
+          <span class="pin-dot" id="cDot3"></span>
+          <span class="pin-dot" id="cDot4"></span>
+        </div>
+
+        <div id="changePinError" class="pin-error"></div>
+        <div id="changePinSuccess" class="pin-success"></div>
+
+        <div class="pin-pad">
+          <button class="pin-btn" onclick="changePinInput('1')">1</button>
+          <button class="pin-btn" onclick="changePinInput('2')">2</button>
+          <button class="pin-btn" onclick="changePinInput('3')">3</button>
+          <button class="pin-btn" onclick="changePinInput('4')">4</button>
+          <button class="pin-btn" onclick="changePinInput('5')">5</button>
+          <button class="pin-btn" onclick="changePinInput('6')">6</button>
+          <button class="pin-btn" onclick="changePinInput('7')">7</button>
+          <button class="pin-btn" onclick="changePinInput('8')">8</button>
+          <button class="pin-btn" onclick="changePinInput('9')">9</button>
+          <button class="pin-btn empty"></button>
+          <button class="pin-btn" onclick="changePinInput('0')">0</button>
+          <button class="pin-btn delete" onclick="changePinDelete()">⌫</button>
+        </div>
+
+        <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="confirmChangePin()" style="flex:0 0 auto;padding:12px 30px;min-width:120px;">
+            ✅ Set PIN
+          </button>
+          <button class="skip-btn" onclick="skipChangePin()">⏭️ Skip for now</button>
+        </div>
+      </div>
+
+      <!-- ============================================ -->
       <!-- MAIN APP SCREEN -->
       <!-- ============================================ -->
       <div id="appScreen" class="app-screen">
@@ -1264,12 +1364,8 @@
             <span class="badge-admin">Super Admin Only</span>
           </div>
 
-          <!-- User List -->
-          <div class="user-list" id="userList">
-            <!-- Users will be rendered here -->
-          </div>
+          <div class="user-list" id="userList"></div>
 
-          <!-- Add User Form -->
           <div class="add-user-form">
             <input type="text" id="newUserName" placeholder="Enter username...">
             <input type="text" id="newUserTelegram" placeholder="@telegram_id (optional)">
@@ -1306,22 +1402,20 @@
     // ============================================
     // ⚙️ CONFIGURATION - EDIT YOUR PINS HERE!
     // ============================================
-    // Super Admin configuration
     const SUPER_ADMIN = {
       id: 'super-admin-1',
       name: 'Super Admin',
       telegram: '@udomek',
       role: 'super-admin',
-      pin: '1234'  // ← CHANGE YOUR SUPER ADMIN PIN HERE
+      pin: '1234'
     };
 
-    // Default Admin user
     const DEFAULT_ADMIN = {
       id: 'admin-1',
       name: 'SreyOun_HST',
       telegram: '@SreyOun_HST',
       role: 'admin',
-      pin: '1166'  // ← CHANGE YOUR ADMIN PIN HERE
+      pin: '0000'
     };
     // ============================================
 
@@ -1330,14 +1424,15 @@
     // ============================================
     let currentUser = null;
     let pinBuffer = '';
+    let changePinBuffer = '';
     let users = [];
     let currentFilter = 'all';
+    let pendingUser = null; // User who needs to change PIN
 
     // ============================================
-    // INIT - Force sync PINs from config
+    // INIT
     // ============================================
     function init() {
-      // Force sync - always use PINs from config above
       syncPinsFromConfig();
       loadUsers();
       renderUserList();
@@ -1346,9 +1441,8 @@
       setInterval(setTimestamp, 30000);
       setupIPCount();
       console.log('✅ UniFi Bulk AP Adopter loaded!');
-      console.log('👑 Super Admin: ' + SUPER_ADMIN.telegram + ' (PIN: ' + SUPER_ADMIN.pin + ')');
-      console.log('👤 Admin: ' + DEFAULT_ADMIN.telegram + ' (PIN: ' + DEFAULT_ADMIN.pin + ')');
-      console.log('👥 Total Users: ' + users.length);
+      console.log('👑 Super Admin: ' + SUPER_ADMIN.telegram);
+      console.log('👤 Admin: ' + DEFAULT_ADMIN.telegram);
     }
 
     // ============================================
@@ -1359,26 +1453,13 @@
         const saved = localStorage.getItem('unifi_users');
         if (saved) {
           let storedUsers = JSON.parse(saved);
-          
-          // Update Super Admin PIN from config
           const superAdminStored = storedUsers.find(u => u.id === SUPER_ADMIN.id);
-          if (superAdminStored) {
-            superAdminStored.pin = SUPER_ADMIN.pin;
-          }
-          
-          // Update Default Admin PIN from config
+          if (superAdminStored) superAdminStored.pin = SUPER_ADMIN.pin;
           const adminStored = storedUsers.find(u => u.id === DEFAULT_ADMIN.id);
-          if (adminStored) {
-            adminStored.pin = DEFAULT_ADMIN.pin;
-          }
-          
-          // Save back to localStorage
+          if (adminStored) adminStored.pin = DEFAULT_ADMIN.pin;
           localStorage.setItem('unifi_users', JSON.stringify(storedUsers));
-          console.log('🔄 PINs synced from config');
         }
-      } catch(e) {
-        console.log('Sync error, will rebuild users');
-      }
+      } catch(e) {}
     }
 
     // ============================================
@@ -1389,24 +1470,13 @@
         const saved = localStorage.getItem('unifi_users');
         if (saved) {
           users = JSON.parse(saved);
-          
-          // Always ensure Super Admin exists with correct PIN
           const superAdminExists = users.find(u => u.id === SUPER_ADMIN.id);
-          if (!superAdminExists) {
-            users.push(SUPER_ADMIN);
-          } else {
-            // Update PIN to match config
-            superAdminExists.pin = SUPER_ADMIN.pin;
-          }
+          if (!superAdminExists) users.push(SUPER_ADMIN);
+          else superAdminExists.pin = SUPER_ADMIN.pin;
           
-          // Always ensure Default Admin exists with correct PIN
           const adminExists = users.find(u => u.id === DEFAULT_ADMIN.id);
-          if (!adminExists) {
-            users.push(DEFAULT_ADMIN);
-          } else {
-            // Update PIN to match config
-            adminExists.pin = DEFAULT_ADMIN.pin;
-          }
+          if (!adminExists) users.push(DEFAULT_ADMIN);
+          else adminExists.pin = DEFAULT_ADMIN.pin;
           
           saveUsers();
         } else {
@@ -1426,12 +1496,10 @@
     function renderLoginUserList() {
       const container = document.getElementById('loginUserList');
       if (!container) return;
-
       if (users.length === 0) {
         container.innerHTML = '<div style="color:#666;font-size:13px;">No users registered</div>';
         return;
       }
-
       let html = '';
       users.forEach(function(user) {
         const isSuperAdmin = user.role === 'super-admin';
@@ -1449,12 +1517,10 @@
     function renderUserList() {
       const list = document.getElementById('userList');
       if (!list) return;
-
       if (users.length === 0) {
         list.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">No users found</div>';
         return;
       }
-
       let html = '';
       users.forEach(function(user) {
         const isSuperAdmin = user.role === 'super-admin';
@@ -1463,6 +1529,7 @@
         const isDefaultAdmin = user.id === DEFAULT_ADMIN.id;
         const telegramDisplay = user.telegram ? user.telegram : '';
         const pinDisplay = user.pin ? 'PIN: ' + user.pin : '';
+        const isDefaultPin = user.pin === '0000' || user.pin === '1166';
 
         html += `
           <div class="user-item ${isSuperAdmin ? 'super-admin-item' : ''}">
@@ -1472,6 +1539,7 @@
               ${telegramDisplay ? `<span class="telegram-id">${telegramDisplay}</span>` : ''}
               <span class="role-tag ${user.role}">${isSuperAdmin ? '👑 Super Admin' : '👤 Admin'}</span>
               ${isDefaultSuperAdmin ? '<span style="font-size:10px;color:#ff6b00;font-weight:600;">★ Owner</span>' : ''}
+              ${isDefaultPin ? '<span style="font-size:10px;color:#ff6b00;font-weight:600;">⚠️ Default PIN</span>' : ''}
               <span style="font-size:10px;color:#666;font-family:monospace;">${pinDisplay}</span>
             </div>
             <div class="user-actions">
@@ -1495,7 +1563,6 @@
         showToast('Please enter a username.', 'error');
         return;
       }
-
       if (users.some(u => u.name.toLowerCase() === name.toLowerCase())) {
         showToast('User already exists!', 'error');
         return;
@@ -1506,7 +1573,8 @@
         name: name,
         telegram: telegram || '',
         role: roleSelect.value,
-        pin: '0000'
+        pin: '0000',
+        needsPinChange: true
       };
 
       users.push(newUser);
@@ -1515,7 +1583,7 @@
       renderLoginUserList();
       nameInput.value = '';
       telegramInput.value = '';
-      showToast('✅ User "' + name + '" added! Default PIN: 0000', 'success');
+      showToast('✅ User "' + name + '" added! Must change PIN on first login.', 'success');
     }
 
     function removeUser(userId) {
@@ -1523,11 +1591,9 @@
         showToast('Cannot remove the Super Admin.', 'error');
         return;
       }
-
       const user = users.find(u => u.id === userId);
       if (!user) return;
       if (!confirm('Remove user "' + user.name + '"?')) return;
-
       users = users.filter(u => u.id !== userId);
       saveUsers();
       renderUserList();
@@ -1541,19 +1607,19 @@
         showToast('User not found!', 'error');
         return;
       }
-
       if (!confirm('Reset PIN for "' + user.name + '" to 0000?')) return;
-
       user.pin = '0000';
+      user.needsPinChange = true;
       saveUsers();
       renderUserList();
       renderLoginUserList();
-      showToast('✅ PIN reset to 0000 for ' + user.name, 'success');
+      showToast('✅ PIN reset to 0000 for ' + user.name + '. They must change it on next login.', 'success');
     }
 
     function resetAllUsers() {
       if (!confirm('Reset all users? Only Super Admin and default Admin will remain.')) return;
       users = [SUPER_ADMIN, DEFAULT_ADMIN];
+      users.forEach(u => u.needsPinChange = false);
       saveUsers();
       renderUserList();
       renderLoginUserList();
@@ -1564,6 +1630,7 @@
       if (!confirm('⚠️ Clear ALL data including adoption history?')) return;
       localStorage.clear();
       users = [SUPER_ADMIN, DEFAULT_ADMIN];
+      users.forEach(u => u.needsPinChange = false);
       saveUsers();
       renderUserList();
       renderLoginUserList();
@@ -1577,18 +1644,14 @@
     function showToast(message, type) {
       const existing = document.querySelector('.toast');
       if (existing) existing.remove();
-
       const toast = document.createElement('div');
       toast.className = 'toast ' + type;
       toast.textContent = message;
       document.body.appendChild(toast);
-
       setTimeout(function() {
         toast.style.opacity = '0';
         toast.style.transition = 'opacity 0.3s ease';
-        setTimeout(function() {
-          toast.remove();
-        }, 300);
+        setTimeout(function() { toast.remove(); }, 300);
       }, 3000);
     }
 
@@ -1600,12 +1663,9 @@
       const success = document.getElementById('pinSuccess');
       error.textContent = '';
       success.textContent = '';
-
       if (pinBuffer.length >= 4) return;
-
       pinBuffer += num;
       updatePinDots();
-
       if (pinBuffer.length === 4) {
         verifyPin();
       }
@@ -1632,19 +1692,27 @@
       const error = document.getElementById('pinError');
       const success = document.getElementById('pinSuccess');
 
-      // Debug: Log all users and their PINs
       console.log('🔍 Verifying PIN:', pinBuffer);
-      console.log('👥 Available users:', users.map(u => u.name + ' (PIN: ' + u.pin + ')'));
-
       const user = users.find(u => u.pin === pinBuffer);
 
       if (user) {
         success.textContent = '✅ Welcome ' + user.name + '!';
         currentUser = user;
         console.log('✅ Login successful:', user.name, 'Role:', user.role);
-        setTimeout(function() {
-          loginSuccess();
-        }, 300);
+        
+        // Check if user needs to change PIN (default PIN or first login)
+        const defaultPins = ['0000', '1166'];
+        if (defaultPins.includes(user.pin) || user.needsPinChange === true) {
+          console.log('🔑 User needs to change PIN');
+          pendingUser = user;
+          setTimeout(function() {
+            showChangePinScreen();
+          }, 500);
+        } else {
+          setTimeout(function() {
+            loginSuccess();
+          }, 300);
+        }
       } else {
         error.textContent = '❌ Invalid PIN. Please try again.';
         console.log('❌ Invalid PIN for:', pinBuffer);
@@ -1652,14 +1720,109 @@
         updatePinDots();
         const display = document.getElementById('pinDisplay');
         display.style.animation = 'shake 0.5s ease';
-        setTimeout(function() {
-          display.style.animation = '';
-        }, 500);
+        setTimeout(function() { display.style.animation = ''; }, 500);
       }
     }
 
+    // ============================================
+    // CHANGE PIN SCREEN
+    // ============================================
+    function showChangePinScreen() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('changePinScreen').classList.add('active');
+      changePinBuffer = '';
+      updateChangePinDots();
+      document.getElementById('changePinError').textContent = '';
+      document.getElementById('changePinSuccess').textContent = '';
+      console.log('🔑 Showing change PIN screen for:', pendingUser.name);
+    }
+
+    function changePinInput(num) {
+      const error = document.getElementById('changePinError');
+      const success = document.getElementById('changePinSuccess');
+      error.textContent = '';
+      success.textContent = '';
+      if (changePinBuffer.length >= 4) return;
+      changePinBuffer += num;
+      updateChangePinDots();
+      if (changePinBuffer.length === 4) {
+        // Auto-confirm when 4 digits entered
+        confirmChangePin();
+      }
+    }
+
+    function changePinDelete() {
+      if (changePinBuffer.length > 0) {
+        changePinBuffer = changePinBuffer.slice(0, -1);
+        updateChangePinDots();
+        document.getElementById('changePinError').textContent = '';
+      }
+    }
+
+    function updateChangePinDots() {
+      for (let i = 1; i <= 4; i++) {
+        const dot = document.getElementById('cDot' + i);
+        if (dot) {
+          dot.className = 'pin-dot' + (i <= changePinBuffer.length ? ' filled' : '');
+        }
+      }
+    }
+
+    function confirmChangePin() {
+      const error = document.getElementById('changePinError');
+      const success = document.getElementById('changePinSuccess');
+
+      if (changePinBuffer.length !== 4) {
+        error.textContent = 'Please enter exactly 4 digits.';
+        return;
+      }
+
+      // Check if PIN is the same as default
+      if (changePinBuffer === '0000' || changePinBuffer === '1166') {
+        error.textContent = '❌ Please choose a different PIN from default.';
+        changePinBuffer = '';
+        updateChangePinDots();
+        return;
+      }
+
+      // Update user's PIN
+      if (pendingUser) {
+        const user = users.find(u => u.id === pendingUser.id);
+        if (user) {
+          user.pin = changePinBuffer;
+          user.needsPinChange = false;
+          saveUsers();
+          console.log('✅ PIN updated for:', user.name, 'New PIN:', user.pin);
+          success.textContent = '✅ PIN updated successfully!';
+          
+          // Update current user
+          currentUser = user;
+          
+          setTimeout(function() {
+            // Hide change PIN screen and show app
+            document.getElementById('changePinScreen').classList.remove('active');
+            loginSuccess();
+          }, 500);
+        }
+      }
+    }
+
+    function skipChangePin() {
+      if (!confirm('⚠️ Your PIN is still the default. This is not secure. Continue anyway?')) return;
+      
+      document.getElementById('changePinScreen').classList.remove('active');
+      if (pendingUser) {
+        currentUser = pendingUser;
+        loginSuccess();
+      }
+    }
+
+    // ============================================
+    // LOGIN SUCCESS
+    // ============================================
     function loginSuccess() {
       document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('changePinScreen').classList.remove('active');
       const appScreen = document.getElementById('appScreen');
       appScreen.className = 'app-screen active';
 
@@ -1682,6 +1845,7 @@
 
       pinBuffer = '';
       updatePinDots();
+      pendingUser = null;
 
       try {
         const tg = window.Telegram.WebApp;
@@ -1693,11 +1857,17 @@
       if (!confirm('Logout?')) return;
       currentUser = null;
       pinBuffer = '';
+      pendingUser = null;
       updatePinDots();
       document.getElementById('appScreen').className = 'app-screen';
       document.getElementById('loginScreen').style.display = 'block';
+      document.getElementById('changePinScreen').classList.remove('active');
       document.getElementById('pinError').textContent = '';
       document.getElementById('pinSuccess').textContent = '';
+      document.getElementById('changePinError').textContent = '';
+      document.getElementById('changePinSuccess').textContent = '';
+      changePinBuffer = '';
+      updateChangePinDots();
     }
 
     // ============================================
@@ -1796,9 +1966,6 @@
       ipsTextarea.dispatchEvent(new Event('input'));
     }
 
-    // ============================================
-    // PROGRESS BUTTON FUNCTIONS
-    // ============================================
     function updateButtonContent(icon, label, progressText) {
       const btnContent = adoptBtn.querySelector('.btn-content');
       if (btnContent) {
@@ -1812,7 +1979,6 @@
 
     function updateProgress(percentage, label) {
       progressFill.style.width = percentage + '%';
-      
       if (percentage > 0 && percentage < 100) {
         progressPercent.textContent = Math.round(percentage) + '%';
       } else if (percentage >= 100) {
@@ -1821,7 +1987,6 @@
       } else {
         progressPercent.textContent = '';
       }
-      
       if (label) {
         updateButtonContent('⚡', 'Adopting...', label);
       }
@@ -1836,23 +2001,17 @@
       updateButtonContent('🚀', 'Adopt All APs', '');
     }
 
-    // ============================================
-    // FILTER FUNCTION
-    // ============================================
     function filterResults(filter) {
       currentFilter = filter;
       var items = document.querySelectorAll('.result-item');
       var visibleCount = 0;
-
       for (var i = 0; i < items.length; i++) {
         var item = items[i];
         var isSuccess = item.getAttribute('data-success') === 'true';
         var show = false;
-
         if (filter === 'all') show = true;
         else if (filter === 'success') show = isSuccess;
         else if (filter === 'failed') show = !isSuccess;
-
         if (show) {
           item.classList.remove('hidden');
           visibleCount++;
@@ -1860,7 +2019,6 @@
           item.classList.add('hidden');
         }
       }
-
       var btns = document.querySelectorAll('.filter-btn');
       for (var j = 0; j < btns.length; j++) {
         var btn = btns[j];
@@ -1869,7 +2027,6 @@
           btn.classList.add('active-' + filter);
         }
       }
-
       var noResults = document.querySelector('.no-results');
       if (noResults) {
         if (visibleCount === 0 && items.length > 0) {
@@ -1880,18 +2037,13 @@
       }
     }
 
-    // ============================================
-    // RETRY FUNCTION
-    // ============================================
     function retryAp(ip) {
       if (!confirm('Retry adopting ' + ip + '?')) return;
-
       var btn = document.querySelector('.result-item[data-ip="' + ip + '"] .retry-btn');
       if (btn) {
         btn.textContent = '⏳';
         btn.disabled = true;
       }
-
       fetch('https://unifi-bulk-adopter-production.up.railway.app/adopt-bulk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1921,11 +2073,9 @@
             errMsg.textContent = result.error || 'Retry failed';
           }
         }
-
         var success = document.querySelectorAll('.result-item[data-success="true"]').length;
         var failed = document.querySelectorAll('.result-item[data-success="false"]').length;
         setStats(success + failed, success, failed);
-
         filterResults('all');
       })
       .catch(function(err) {
@@ -1933,22 +2083,16 @@
       });
     }
 
-    // ============================================
-    // MAIN ADOPT FUNCTION with Progress
-    // ============================================
     async function startAdoption() {
       const ips = getIPsWithComments();
-
       if (ips.length === 0) {
         alert('Please paste at least one IP address.');
         return;
       }
-
       if (!confirm('Adopt ' + ips.length + ' AP(s)?')) return;
 
       adoptBtn.disabled = true;
       adoptBtn.classList.add('progress-active');
-      
       updateProgress(0, 'Starting...');
       showProgress('⏳ Processing ' + ips.length + ' APs...', true);
       setStats(ips.length, '…', '…');
@@ -1962,7 +2106,6 @@
           { progress: 70, label: 'Almost done...' },
           { progress: 85, label: 'Finalizing...' }
         ];
-
         for (const step of steps) {
           await new Promise(resolve => setTimeout(resolve, 300 + Math.random() * 400));
           updateProgress(step.progress, step.label);
@@ -1973,31 +2116,25 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ips: ips })
         });
-
         const data = await response.json();
-
         updateProgress(100, 'Complete!');
         await new Promise(resolve => setTimeout(resolve, 500));
 
         let success = 0;
         let fail = 0;
-
         let html = '';
         html += '<div class="filter-buttons">';
         html += '<button class="filter-btn active-all" data-filter="all" onclick="filterResults(\'all\')">📊 All (' + data.total + ')</button>';
         html += '<button class="filter-btn" data-filter="success" onclick="filterResults(\'success\')">✅ Success (0)</button>';
         html += '<button class="filter-btn" data-filter="failed" onclick="filterResults(\'failed\')">❌ Failed (0)</button>';
         html += '</div>';
-
         html += '<div class="result-summary">';
         html += '<span class="total">✅ Completed! ' + data.successful + '/' + data.total + ' successful</span>';
         html += '<div class="stats-mini">';
         html += '<span class="ok">✅ ' + data.successful + '</span>';
         html += '<span class="fail">❌ ' + (data.total - data.successful) + '</span>';
         html += '</div></div>';
-
         html += '<div class="result-list">';
-
         for (var i = 0; i < data.results.length; i++) {
           var r = data.results[i];
           if (r.success) success++;
@@ -2009,7 +2146,6 @@
           if (!r.success) html += '<button class="retry-btn" onclick="retryAp(\'' + r.ip + '\')">🔄 Retry</button>';
           html += '</div>';
         }
-
         html += '</div>';
         resultDiv.innerHTML = html;
 
@@ -2023,17 +2159,13 @@
             btn.textContent = '❌ Failed (' + fail + ')';
           }
         }
-
         setStats(data.total, data.successful, data.total - data.successful);
         showProgress('✅ Complete! ' + data.successful + '/' + data.total + ' successful', false);
-
         setTimeout(resetButton, 1000);
-
         try {
           const tg = window.Telegram.WebApp;
           tg.sendData(JSON.stringify({ total: data.total, successful: data.successful, failed: data.total - data.successful }));
         } catch(e) {}
-
       } catch(err) {
         resultDiv.innerHTML = '<div class="result-item" style="border-color: rgba(239,83,80,0.2);"><span style="color:#ef5350;">❌ Error: ' + err.message + '</span></div>';
         showProgress('❌ Error: ' + err.message, false);
@@ -2043,9 +2175,6 @@
       }
     }
 
-    // ============================================
-    // KEYBOARD SHORTCUT
-    // ============================================
     ipsTextarea.addEventListener('keydown', function(e) {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
@@ -2053,9 +2182,6 @@
       }
     });
 
-    // ============================================
-    // INIT
-    // ============================================
     init();
   </script>
 </body>
