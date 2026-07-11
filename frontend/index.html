@@ -1534,7 +1534,7 @@
 
   <script>
     // ============================================
-    // ⚙️ CONFIGURATION
+    // ⚙️ CONFIGURATION - ONLY SUPER ADMIN
     // ============================================
     const SUPER_ADMIN = {
       id: 'super-admin-1',
@@ -1542,14 +1542,6 @@
       telegram: '@udomek',
       role: 'super-admin',
       pin: '1234'
-    };
-
-    const DEFAULT_ADMIN = {
-      id: 'admin-1',
-      name: 'SreyOun_HST',
-      telegram: '@SreyOun_HST',
-      role: 'admin',
-      pin: '1166'
     };
     // ============================================
 
@@ -1578,7 +1570,7 @@
       setupIPCount();
       console.log('✅ UniFi Bulk AP Adopter loaded!');
       console.log('👑 Super Admin: Udom Ek (@udomek)');
-      console.log('👤 Total Users: ' + users.length);
+      console.log('👥 Total Users: ' + users.length);
     }
 
     // ============================================
@@ -1591,8 +1583,6 @@
           let storedUsers = JSON.parse(saved);
           const superAdminStored = storedUsers.find(u => u.id === SUPER_ADMIN.id);
           if (superAdminStored) superAdminStored.pin = SUPER_ADMIN.pin;
-          const adminStored = storedUsers.find(u => u.id === DEFAULT_ADMIN.id);
-          if (adminStored) adminStored.pin = DEFAULT_ADMIN.pin;
           localStorage.setItem('unifi_users', JSON.stringify(storedUsers));
         }
       } catch(e) {}
@@ -1609,18 +1599,13 @@
           const superAdminExists = users.find(u => u.id === SUPER_ADMIN.id);
           if (!superAdminExists) users.push(SUPER_ADMIN);
           else superAdminExists.pin = SUPER_ADMIN.pin;
-          
-          const adminExists = users.find(u => u.id === DEFAULT_ADMIN.id);
-          if (!adminExists) users.push(DEFAULT_ADMIN);
-          else adminExists.pin = DEFAULT_ADMIN.pin;
-          
           saveUsers();
         } else {
-          users = [SUPER_ADMIN, DEFAULT_ADMIN];
+          users = [SUPER_ADMIN];
           saveUsers();
         }
       } catch(e) {
-        users = [SUPER_ADMIN, DEFAULT_ADMIN];
+        users = [SUPER_ADMIN];
         saveUsers();
       }
     }
@@ -1731,7 +1716,6 @@
         const isSuperAdmin = user.role === 'super-admin';
         const initials = user.name.charAt(0).toUpperCase();
         const isDefaultSuperAdmin = user.id === SUPER_ADMIN.id;
-        const isDefaultAdmin = user.id === DEFAULT_ADMIN.id;
         const telegramDisplay = user.telegram ? user.telegram : '';
         const pinDisplay = user.pin ? 'PIN: ' + user.pin : '';
         const isDefaultPin = user.pin === '0000' || user.pin === '1166';
@@ -1851,8 +1835,8 @@
     }
 
     function resetAllUsers() {
-      if (!confirm('Reset all users? Only Super Admin and default Admin will remain.')) return;
-      users = [SUPER_ADMIN, DEFAULT_ADMIN];
+      if (!confirm('Reset all users? Only Super Admin will remain.')) return;
+      users = [SUPER_ADMIN];
       users.forEach(u => u.needsPinChange = false);
       saveUsers();
       renderUserSelector();
@@ -1866,7 +1850,7 @@
     function clearAllData() {
       if (!confirm('⚠️ Clear ALL data including adoption history?')) return;
       localStorage.clear();
-      users = [SUPER_ADMIN, DEFAULT_ADMIN];
+      users = [SUPER_ADMIN];
       users.forEach(u => u.needsPinChange = false);
       saveUsers();
       renderUserSelector();
