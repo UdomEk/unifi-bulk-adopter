@@ -40,7 +40,7 @@
       progress.textContent = `Processing ${ips.length} APs...`;
 
       try {
-        const res = await fetch('https://YOUR-BACKEND-URL.up.railway.app/adopt-bulk', {
+        const res = await fetch('https://unifi-bulk-adopter-production.up.railway.app/adopt-bulk', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ips })
