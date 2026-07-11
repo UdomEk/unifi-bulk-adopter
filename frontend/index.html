@@ -18,20 +18,10 @@
       color: #e0e0e0;
       min-height: 100vh;
       padding: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
       padding-bottom: 80px;
-    }
-
-    /* Hide Telegram's auto-generated footer */
-    .tgme_footer,
-    .tgme_footer_text,
-    .tgme_nav_footer,
-    [class*="footer_"],
-    [class*="username_"] {
-      display: none !important;
-      height: 0 !important;
-      opacity: 0 !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
     }
 
     .container {
@@ -105,12 +95,6 @@
       padding: 12px 16px;
       text-align: center;
       border: 1px solid rgba(255, 255, 255, 0.04);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .stat-item:hover {
-      background: rgba(255, 255, 255, 0.06);
     }
 
     .stat-number {
@@ -128,12 +112,6 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-top: 2px;
-    }
-
-    .stat-item .hint {
-      font-size: 9px;
-      color: #444;
-      margin-top: 4px;
     }
 
     .textarea-wrapper {
@@ -280,8 +258,6 @@
       border-radius: 12px;
       margin-bottom: 14px;
       border: 1px solid rgba(255, 255, 255, 0.04);
-      flex-wrap: wrap;
-      gap: 10px;
     }
 
     .result-summary .total {
@@ -298,48 +274,6 @@
 
     .result-summary .stats-mini .ok { color: #4CAF50; }
     .result-summary .stats-mini .fail { color: #ef5350; }
-
-    .filter-buttons {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      padding: 6px 16px;
-      font-size: 12px;
-      font-weight: 600;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 20px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.03);
-      color: #888;
-      transition: all 0.2s;
-    }
-
-    .filter-btn:hover {
-      background: rgba(255, 255, 255, 0.06);
-      color: #fff;
-    }
-
-    .filter-btn.active {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.15);
-    }
-
-    .filter-btn.active-success {
-      background: rgba(76, 175, 80, 0.15);
-      color: #4CAF50;
-      border-color: rgba(76, 175, 80, 0.2);
-    }
-
-    .filter-btn.active-failed {
-      background: rgba(239, 83, 80, 0.15);
-      color: #ef5350;
-      border-color: rgba(239, 83, 80, 0.2);
-    }
 
     .result-list {
       display: flex;
@@ -396,34 +330,6 @@
       max-width: 120px;
     }
 
-    .result-item .retry-btn {
-      padding: 3px 12px;
-      font-size: 11px;
-      font-weight: 600;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      background: rgba(76, 175, 80, 0.15);
-      color: #4CAF50;
-      transition: all 0.25s ease;
-      flex-shrink: 0;
-    }
-
-    .result-item .retry-btn:hover {
-      background: rgba(76, 175, 80, 0.25);
-    }
-
-    .result-item.hidden {
-      display: none;
-    }
-
-    .no-results {
-      text-align: center;
-      color: #666;
-      padding: 30px 0;
-      font-size: 14px;
-    }
-
     .footer {
       margin-top: 20px;
       padding-top: 16px;
@@ -445,30 +351,22 @@
       font-weight: 400;
     }
 
-    .footer .time {
-      color: #444;
-      font-size: 11px;
-    }
-
     @media (max-width: 500px) {
       body { padding: 12px; }
       .card { padding: 20px; }
       .header h1 { font-size: 18px; }
-      .header-icon { width: 40px; height: 40px; font-size: 20px; }
       .stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
       .stat-item { padding: 8px 10px; }
       .stat-number { font-size: 18px; }
-      .stat-item .hint { display: none; }
       .btn-group { flex-direction: column; }
       .btn { min-width: unset; }
       .btn-primary { flex: 1; }
       .result-summary { flex-direction: column; gap: 8px; align-items: flex-start; }
       .footer { flex-direction: column; gap: 6px; text-align: center; }
       .textarea-wrapper textarea { min-height: 150px; }
-      .filter-buttons { gap: 6px; }
-      .filter-btn { font-size: 11px; padding: 4px 12px; }
     }
 
+    /* Scrollbar styling */
     .result-list::-webkit-scrollbar {
       width: 4px;
     }
@@ -496,21 +394,18 @@
       </div>
 
       <!-- STATS -->
-      <div class="stats">
-        <div class="stat-item" id="statAll">
+      <div class="stats" id="stats">
+        <div class="stat-item">
           <div class="stat-number" id="totalCount">0</div>
           <div class="stat-label">Total APs</div>
-          <div class="hint">▼ show all</div>
         </div>
-        <div class="stat-item" id="statSuccess">
+        <div class="stat-item">
           <div class="stat-number green" id="successCount">0</div>
           <div class="stat-label">Successful</div>
-          <div class="hint">▼ show success</div>
         </div>
-        <div class="stat-item" id="statFailed">
+        <div class="stat-item">
           <div class="stat-number red" id="failCount">0</div>
           <div class="stat-label">Failed</div>
-          <div class="hint">▼ show failed</div>
         </div>
       </div>
 
@@ -523,9 +418,9 @@
 
       <!-- BUTTONS -->
       <div class="btn-group">
-        <button class="btn btn-primary" id="adoptBtn">🚀 Adopt All APs</button>
-        <button class="btn btn-secondary" id="clearBtn">✕ Clear</button>
-        <button class="btn btn-secondary" id="sampleBtn">📝 Sample</button>
+        <button class="btn btn-primary" id="adoptBtn" onclick="startAdoption()">🚀 Adopt All APs</button>
+        <button class="btn btn-secondary" onclick="clearAll()">✕ Clear</button>
+        <button class="btn btn-secondary" onclick="loadSample()">📝 Sample</button>
       </div>
 
       <!-- PROGRESS -->
@@ -536,353 +431,153 @@
 
       <!-- FOOTER -->
       <div class="footer">
-        <span class="brand">Access Point <span>— UniFi Tool</span></span>
-        <span class="time">⚡ <span id="timestamp"></span></span>
+        <span class="brand">🏫 Access Point <span>Unifi Tool</span></span>
+        <span>⚡ <span id="timestamp"></span></span>
       </div>
 
     </div>
   </div>
 
   <script>
-    (function() {
-      "use strict";
+    // Simple Telegram WebApp
+    try {
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+      tg.expand();
+    } catch(e) {
+      console.log('Telegram WebApp not available');
+    }
 
-      // ============================================
-      // TELEGRAM WEB APP
-      // ============================================
-      var tg;
+    // DOM elements
+    const ipsTextarea = document.getElementById('ips');
+    const adoptBtn = document.getElementById('adoptBtn');
+    const progress = document.getElementById('progress');
+    const progressText = document.getElementById('progressText');
+    const resultDiv = document.getElementById('result');
+    const totalCount = document.getElementById('totalCount');
+    const successCount = document.getElementById('successCount');
+    const failCount = document.getElementById('failCount');
+    const ipCount = document.getElementById('ipCount');
+    const timestamp = document.getElementById('timestamp');
+
+    // Live IP count
+    ipsTextarea.addEventListener('input', function() {
+      const ips = getIPs();
+      ipCount.textContent = ips.length + ' IPs';
+      totalCount.textContent = ips.length;
+      successCount.textContent = '—';
+      failCount.textContent = '—';
+    });
+
+    function getIPs() {
+      return ipsTextarea.value.split('\n').map(i => i.trim()).filter(Boolean);
+    }
+
+    function getIPsWithComments() {
+      return ipsTextarea.value.split('\n').map(i => i.trim()).filter(Boolean).filter(i => !i.startsWith('#'));
+    }
+
+    function setStats(total, success, fail) {
+      totalCount.textContent = total;
+      successCount.textContent = success;
+      failCount.textContent = fail;
+    }
+
+    function showProgress(text, show) {
+      progress.className = show ? 'active' : '';
+      progressText.textContent = text;
+    }
+
+    function setTimestamp() {
+      timestamp.textContent = new Date().toLocaleTimeString();
+    }
+    setTimestamp();
+    setInterval(setTimestamp, 30000);
+
+    function clearAll() {
+      ipsTextarea.value = '';
+      resultDiv.innerHTML = '';
+      showProgress('', false);
+      ipCount.textContent = '0 IPs';
+      totalCount.textContent = '0';
+      successCount.textContent = '—';
+      failCount.textContent = '—';
+      adoptBtn.disabled = false;
+      adoptBtn.innerHTML = '🚀 Adopt All APs';
+    }
+
+    function loadSample() {
+      ipsTextarea.value = '192.168.1.10\n192.168.1.11\n192.168.1.12\n192.168.1.13\n192.168.1.14';
+      ipsTextarea.dispatchEvent(new Event('input'));
+    }
+
+    async function startAdoption() {
+      const ips = getIPsWithComments();
+
+      if (ips.length === 0) {
+        alert('Please paste at least one IP address.');
+        return;
+      }
+
+      if (!confirm('Adopt ' + ips.length + ' AP(s)?')) return;
+
+      adoptBtn.disabled = true;
+      adoptBtn.innerHTML = '<span class="spinner"></span> Adopting...';
+      resultDiv.innerHTML = '';
+      showProgress('⏳ Processing ' + ips.length + ' APs...', true);
+      setStats(ips.length, '…', '…');
+
       try {
-        tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
-      } catch(e) {
-        console.log('Telegram WebApp not available');
-      }
-
-      // ============================================
-      // HIDE TELEGRAM FOOTER
-      // ============================================
-      function hideFooter() {
-        try {
-          var elements = document.querySelectorAll('*');
-          for (var i = 0; i < elements.length; i++) {
-            var el = elements[i];
-            if (el.textContent && el.textContent.indexOf('@unifi_adoption_bot') !== -1) {
-              el.style.display = 'none';
-            }
-          }
-        } catch(e) {}
-      }
-      setTimeout(hideFooter, 500);
-      setTimeout(hideFooter, 1000);
-      setTimeout(hideFooter, 2000);
-
-      // ============================================
-      // DOM ELEMENTS
-      // ============================================
-      var ipsTextarea = document.getElementById('ips');
-      var adoptBtn = document.getElementById('adoptBtn');
-      var clearBtn = document.getElementById('clearBtn');
-      var sampleBtn = document.getElementById('sampleBtn');
-      var progress = document.getElementById('progress');
-      var progressText = document.getElementById('progressText');
-      var resultDiv = document.getElementById('result');
-      var totalCount = document.getElementById('totalCount');
-      var successCount = document.getElementById('successCount');
-      var failCount = document.getElementById('failCount');
-      var ipCount = document.getElementById('ipCount');
-      var timestamp = document.getElementById('timestamp');
-      var statAll = document.getElementById('statAll');
-      var statSuccess = document.getElementById('statSuccess');
-      var statFailed = document.getElementById('statFailed');
-
-      var currentFilter = 'all';
-
-      // ============================================
-      // HELPERS
-      // ============================================
-      function getIPs() {
-        var lines = ipsTextarea.value.split('\n');
-        var result = [];
-        for (var i = 0; i < lines.length; i++) {
-          var ip = lines[i].trim();
-          if (ip) result.push(ip);
-        }
-        return result;
-      }
-
-      function getIPsWithComments() {
-        var lines = ipsTextarea.value.split('\n');
-        var result = [];
-        for (var i = 0; i < lines.length; i++) {
-          var ip = lines[i].trim();
-          if (ip && ip.indexOf('#') !== 0) result.push(ip);
-        }
-        return result;
-      }
-
-      function setStats(total, success, fail) {
-        totalCount.textContent = total;
-        successCount.textContent = success;
-        failCount.textContent = fail;
-      }
-
-      function showProgress(text, show) {
-        progress.className = show ? 'active' : '';
-        progressText.textContent = text;
-      }
-
-      function setTimestamp() {
-        var now = new Date();
-        timestamp.textContent = now.toLocaleTimeString();
-      }
-      setTimestamp();
-      setInterval(setTimestamp, 30000);
-
-      // ============================================
-      // FILTER
-      // ============================================
-      function filterList(filter) {
-        currentFilter = filter;
-        var items = document.querySelectorAll('.result-item');
-        var visible = 0;
-
-        for (var i = 0; i < items.length; i++) {
-          var item = items[i];
-          var isSuccess = item.getAttribute('data-success') === 'true';
-          var show = false;
-          if (filter === 'all') show = true;
-          else if (filter === 'success') show = isSuccess;
-          else if (filter === 'failed') show = !isSuccess;
-
-          if (show) {
-            item.classList.remove('hidden');
-            visible++;
-          } else {
-            item.classList.add('hidden');
-          }
-        }
-
-        // Update button states
-        var btns = document.querySelectorAll('.filter-btn');
-        for (var j = 0; j < btns.length; j++) {
-          var btn = btns[j];
-          btn.className = 'filter-btn';
-          if (btn.getAttribute('data-filter') === filter) {
-            btn.classList.add('active');
-          }
-        }
-      }
-
-      // ============================================
-      // RETRY
-      // ============================================
-      function retryAp(ip) {
-        if (!confirm('Retry ' + ip + '?')) return;
-
-        var btn = document.querySelector('.result-item[data-ip="' + ip + '"] .retry-btn');
-        if (btn) {
-          btn.textContent = '⏳';
-          btn.disabled = true;
-        }
-
-        fetch('https://unifi-bulk-adopter-production.up.railway.app/adopt-bulk', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ips: [ip] })
-        })
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-          var result = data.results[0];
-          var item = document.querySelector('.result-item[data-ip="' + ip + '"]');
-          if (item) {
-            if (result.success) {
-              item.setAttribute('data-success', 'true');
-              var statusEl = item.querySelector('.status');
-              statusEl.className = 'status success';
-              statusEl.textContent = '✅ Adopted';
-              var err = item.querySelector('.error-msg');
-              if (err) err.remove();
-              var retry = item.querySelector('.retry-btn');
-              if (retry) retry.remove();
-            } else {
-              var errMsg = item.querySelector('.error-msg');
-              if (!errMsg) {
-                errMsg = document.createElement('span');
-                errMsg.className = 'error-msg';
-                item.appendChild(errMsg);
-              }
-              errMsg.textContent = result.error || 'Retry failed';
-            }
-          }
-
-          var success = document.querySelectorAll('.result-item[data-success="true"]').length;
-          var failed = document.querySelectorAll('.result-item[data-success="false"]').length;
-          setStats(success + failed, success, failed);
-
-          filterList(currentFilter);
-        })
-        .catch(function(err) {
-          alert('Error: ' + err.message);
-        });
-      }
-
-      // ============================================
-      // CLEAR
-      // ============================================
-      function clearAll() {
-        ipsTextarea.value = '';
-        resultDiv.innerHTML = '';
-        showProgress('', false);
-        ipCount.textContent = '0 IPs';
-        setStats(0, 0, 0);
-        adoptBtn.disabled = false;
-        adoptBtn.innerHTML = '🚀 Adopt All APs';
-      }
-
-      // ============================================
-      // SAMPLE
-      // ============================================
-      function loadSample() {
-        ipsTextarea.value = '192.168.1.10\n192.168.1.11\n192.168.1.12\n192.168.1.13\n192.168.1.14';
-        var event = new Event('input');
-        ipsTextarea.dispatchEvent(event);
-      }
-
-      // ============================================
-      // ADOPT
-      // ============================================
-      function startAdoption() {
-        var ips = getIPsWithComments();
-
-        if (ips.length === 0) {
-          alert('Please paste at least one IP address.');
-          return;
-        }
-
-        if (!confirm('Adopt ' + ips.length + ' AP(s)?')) return;
-
-        adoptBtn.disabled = true;
-        adoptBtn.innerHTML = '<span class="spinner"></span> Adopting...';
-        resultDiv.innerHTML = '';
-        showProgress('⏳ Processing ' + ips.length + ' APs...', true);
-        setStats(ips.length, '…', '…');
-
-        fetch('https://unifi-bulk-adopter-production.up.railway.app/adopt-bulk', {
+        const response = await fetch('https://unifi-bulk-adopter-production.up.railway.app/adopt-bulk', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ips: ips })
-        })
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-          var success = 0;
-          var fail = 0;
-
-          var html = '';
-          html += '<div class="filter-buttons">';
-          html += '<button class="filter-btn active" data-filter="all" onclick="window.filterList(\'all\')">📊 All (' + data.total + ')</button>';
-          html += '<button class="filter-btn" data-filter="success" onclick="window.filterList(\'success\')">✅ Success (0)</button>';
-          html += '<button class="filter-btn" data-filter="failed" onclick="window.filterList(\'failed\')">❌ Failed (0)</button>';
-          html += '</div>';
-
-          html += '<div class="result-summary">';
-          html += '<span class="total">✅ Completed! ' + data.successful + '/' + data.total + ' successful</span>';
-          html += '<div class="stats-mini">';
-          html += '<span class="ok">✅ ' + data.successful + '</span>';
-          html += '<span class="fail">❌ ' + (data.total - data.successful) + '</span>';
-          html += '</div></div>';
-
-          html += '<div class="result-list">';
-
-          for (var i = 0; i < data.results.length; i++) {
-            var r = data.results[i];
-            if (r.success) success++;
-            else fail++;
-            html += '<div class="result-item" data-ip="' + r.ip + '" data-success="' + r.success + '">';
-            html += '<span class="ip">' + r.ip + '</span>';
-            html += '<span class="status ' + (r.success ? 'success' : 'fail') + '">' + (r.success ? '✅ Adopted' : '❌ Failed') + '</span>';
-            if (r.error) html += '<span class="error-msg">' + r.error + '</span>';
-            if (!r.success) html += '<button class="retry-btn" onclick="window.retryAp(\'' + r.ip + '\')">🔄 Retry</button>';
-            html += '</div>';
-          }
-
-          html += '</div>';
-          resultDiv.innerHTML = html;
-
-          // Update filter counts
-          var btns = document.querySelectorAll('.filter-btn');
-          for (var j = 0; j < btns.length; j++) {
-            var btn = btns[j];
-            if (btn.getAttribute('data-filter') === 'success') {
-              btn.textContent = '✅ Success (' + success + ')';
-            }
-            if (btn.getAttribute('data-filter') === 'failed') {
-              btn.textContent = '❌ Failed (' + fail + ')';
-            }
-          }
-
-          setStats(data.total, data.successful, data.total - data.successful);
-          showProgress('✅ Complete! ' + data.successful + '/' + data.total + ' successful', false);
-
-          try {
-            tg.sendData(JSON.stringify({ total: data.total, successful: data.successful, failed: data.total - data.successful }));
-          } catch(e) {}
-        })
-        .catch(function(err) {
-          resultDiv.innerHTML = '<div style="padding:20px;color:#ef5350;">❌ Error: ' + err.message + '</div>';
-          showProgress('❌ Error: ' + err.message, false);
-          setStats(ips.length, 0, ips.length);
-        })
-        .finally(function() {
-          adoptBtn.disabled = false;
-          adoptBtn.innerHTML = '🚀 Adopt All APs';
         });
+
+        const data = await response.json();
+
+        let success = 0;
+        let fail = 0;
+        let html = '<div class="result-summary"><span class="total">✅ Completed! ' + data.successful + '/' + data.total + ' successful</span><div class="stats-mini"><span class="ok">✅ ' + data.successful + '</span><span class="fail">❌ ' + (data.total - data.successful) + '</span></div></div><div class="result-list">';
+
+        data.results.forEach(function(r) {
+          if (r.success) success++;
+          else fail++;
+          html += '<div class="result-item"><span class="ip">' + r.ip + '</span><span class="status ' + (r.success ? 'success' : 'fail') + '">' + (r.success ? '✅ Adopted' : '❌ Failed') + '</span>' + (r.error ? '<span class="error-msg">' + r.error + '</span>' : '') + '</div>';
+        });
+
+        html += '</div>';
+        resultDiv.innerHTML = html;
+
+        setStats(data.total, data.successful, data.total - data.successful);
+        showProgress('✅ Complete! ' + data.successful + '/' + data.total + ' successful', false);
+
+        try {
+          tg.sendData(JSON.stringify({ total: data.total, successful: data.successful, failed: data.total - data.successful }));
+        } catch(e) {}
+
+      } catch(err) {
+        resultDiv.innerHTML = '<div class="result-item" style="border-color: rgba(239,83,80,0.2);"><span style="color:#ef5350;">❌ Error: ' + err.message + '</span></div>';
+        showProgress('❌ Error: ' + err.message, false);
+        setStats(ips.length, 0, ips.length);
       }
 
-      // ============================================
-      // EXPOSE FUNCTIONS TO GLOBAL SCOPE
-      // ============================================
-      window.filterList = filterList;
-      window.retryAp = retryAp;
-      window.startAdoption = startAdoption;
-      window.clearAll = clearAll;
-      window.loadSample = loadSample;
+      adoptBtn.disabled = false;
+      adoptBtn.innerHTML = '🚀 Adopt All APs';
+    }
 
-      // ============================================
-      // EVENTS
-      // ============================================
-      adoptBtn.addEventListener('click', startAdoption);
-      clearBtn.addEventListener('click', clearAll);
-      sampleBtn.addEventListener('click', loadSample);
+    // Init
+    ipsTextarea.dispatchEvent(new Event('input'));
 
-      statAll.addEventListener('click', function() { filterList('all'); });
-      statSuccess.addEventListener('click', function() { filterList('success'); });
-      statFailed.addEventListener('click', function() { filterList('failed'); });
+    // Keyboard shortcut
+    ipsTextarea.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        startAdoption();
+      }
+    });
 
-      ipsTextarea.addEventListener('input', function() {
-        var ips = getIPs();
-        ipCount.textContent = ips.length + ' IPs';
-        totalCount.textContent = ips.length;
-        successCount.textContent = '—';
-        failCount.textContent = '—';
-      });
-
-      ipsTextarea.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-          e.preventDefault();
-          startAdoption();
-        }
-      });
-
-      // ============================================
-      // INIT
-      // ============================================
-      var initEvent = new Event('input');
-      ipsTextarea.dispatchEvent(initEvent);
-
-      console.log('✅ UniFi Bulk AP Adopter loaded!');
-
-    })();
+    console.log('✅ UniFi Bulk AP Adopter loaded successfully!');
   </script>
 </body>
 </html>
