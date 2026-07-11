@@ -48,8 +48,8 @@
     }
 
     .header-icon {
-      width: 52px;
-      height: 52px;
+      width: 48px;
+      height: 48px;
       background: linear-gradient(135deg, #0068b5, #004a8a);
       border-radius: 14px;
       display: flex;
@@ -57,12 +57,7 @@
       justify-content: center;
       flex-shrink: 0;
       box-shadow: 0 4px 20px rgba(0, 104, 181, 0.3);
-    }
-
-    .header-icon svg {
-      width: 32px;
-      height: 32px;
-      fill: white;
+      font-size: 24px;
     }
 
     .header h1 {
@@ -459,25 +454,11 @@
       font-weight: 400;
     }
 
-    .footer .brand .unifi-icon {
-      display: inline-block;
-      margin-right: 6px;
-      vertical-align: middle;
-    }
-
-    .footer .brand .unifi-icon svg {
-      width: 14px;
-      height: 14px;
-      vertical-align: middle;
-      fill: #0068b5;
-    }
-
     @media (max-width: 500px) {
       body { padding: 12px; }
       .card { padding: 20px; }
       .header h1 { font-size: 18px; }
-      .header-icon { width: 40px; height: 40px; }
-      .header-icon svg { width: 24px; height: 24px; }
+      .header-icon { width: 40px; height: 40px; font-size: 18px; }
       .stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
       .stat-item { padding: 8px 10px; }
       .stat-number { font-size: 18px; }
@@ -491,7 +472,6 @@
       .filter-buttons { gap: 6px; }
       .filter-btn { font-size: 11px; padding: 4px 12px; }
       .result-item .error-msg { max-width: 60px; }
-      .footer .brand .unifi-icon svg { width: 12px; height: 12px; }
     }
 
     .result-list::-webkit-scrollbar {
@@ -511,18 +491,9 @@
   <div class="container">
     <div class="card">
 
-      <!-- HEADER with WiFi/Network Icon -->
+      <!-- HEADER -->
       <div class="header">
-        <div class="header-icon">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 18C10.8954 18 10 18.8954 10 20C10 21.1046 10.8954 22 12 22C13.1046 22 14 21.1046 14 20C14 18.8954 13.1046 18 12 18Z"/>
-            <path d="M16.9497 14.0503C15.6834 12.784 13.9334 12 12 12C10.0666 12 8.3166 12.784 7.05025 14.0503L8.46447 15.4645C9.40215 14.5268 10.6734 14 12 14C13.3266 14 14.5979 14.5268 15.5355 15.4645L16.9497 14.0503Z"/>
-            <path d="M20.4853 9.51472C18.3756 7.40503 15.3484 6 12 6C8.6516 6 5.62437 7.40503 3.51472 9.51472L4.92893 10.9289C6.71083 9.14703 9.25975 8 12 8C14.7403 8 17.2892 9.14703 19.0711 10.9289L20.4853 9.51472Z"/>
-            <path d="M23.0711 5.01472C18.8921 0.8357 12.8961 -0.694261 7.07107 1.41421L8.48528 2.82843C13.5108 1.03163 18.6831 2.51124 22.6569 6.48528L23.0711 5.01472Z"/>
-            <path d="M0 12C2.5 9.5 5.5 8 9 7.5L8 8.5C5 9 2.5 10.5 0.5 12.5L0 12Z"/>
-            <circle cx="12" cy="20" r="1.5" fill="white"/>
-          </svg>
-        </div>
+        <div class="header-icon">📡</div>
         <div>
           <h1><span class="unifi-text">UniFi</span> Bulk AP Adopter <span class="badge">v2.0</span></h1>
           <div class="subtitle">Adopt multiple UniFi Access Points at once via SSH</div>
@@ -570,18 +541,7 @@
 
       <!-- FOOTER -->
       <div class="footer">
-        <span class="brand">
-          <span class="unifi-icon">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 18C10.8954 18 10 18.8954 10 20C10 21.1046 10.8954 22 12 22C13.1046 22 14 21.1046 14 20C14 18.8954 13.1046 18 12 18Z"/>
-              <path d="M16.9497 14.0503C15.6834 12.784 13.9334 12 12 12C10.0666 12 8.3166 12.784 7.05025 14.0503L8.46447 15.4645C9.40215 14.5268 10.6734 14 12 14C13.3266 14 14.5979 14.5268 15.5355 15.4645L16.9497 14.0503Z"/>
-              <path d="M20.4853 9.51472C18.3756 7.40503 15.3484 6 12 6C8.6516 6 5.62437 7.40503 3.51472 9.51472L4.92893 10.9289C6.71083 9.14703 9.25975 8 12 8C14.7403 8 17.2892 9.14703 19.0711 10.9289L20.4853 9.51472Z"/>
-              <path d="M23.0711 5.01472C18.8921 0.8357 12.8961 -0.694261 7.07107 1.41421L8.48528 2.82843C13.5108 1.03163 18.6831 2.51124 22.6569 6.48528L23.0711 5.01472Z"/>
-              <path d="M0 12C2.5 9.5 5.5 8 9 7.5L8 8.5C5 9 2.5 10.5 0.5 12.5L0 12Z"/>
-            </svg>
-          </span>
-          Access Point <span>— UniFi Tool</span>
-        </span>
+        <span class="brand">Access Point <span>— UniFi Tool</span></span>
         <span>⚡ <span id="timestamp"></span></span>
       </div>
 
