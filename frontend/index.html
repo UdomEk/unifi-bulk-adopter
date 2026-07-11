@@ -56,12 +56,105 @@
       margin-bottom: 8px;
     }
 
-    .login-screen p {
+    .login-screen .subtitle {
       color: #888;
       font-size: 14px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
+    /* ===== USER SELECTOR ===== */
+    .user-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 24px;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .user-selector .user-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .user-selector .user-option:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .user-selector .user-option.active {
+      border-color: #0068b5;
+      background: rgba(0, 104, 181, 0.08);
+      box-shadow: 0 0 20px rgba(0, 104, 181, 0.1);
+    }
+
+    .user-selector .user-option .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0068b5, #004a8a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .user-selector .user-option .info {
+      flex: 1;
+      text-align: left;
+    }
+
+    .user-selector .user-option .info .name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .user-selector .user-option .info .telegram {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .user-selector .user-option .info .role-tag {
+      font-size: 10px;
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+
+    .user-selector .user-option .info .role-tag.super-admin {
+      color: #ff6b00;
+      background: rgba(255, 107, 0, 0.12);
+    }
+
+    .user-selector .user-option .info .role-tag.admin {
+      color: #0068b5;
+      background: rgba(0, 104, 181, 0.12);
+    }
+
+    .user-selector .user-option .check {
+      font-size: 18px;
+      color: #0068b5;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .user-selector .user-option.active .check {
+      opacity: 1;
+    }
+
+    /* ===== PIN DISPLAY ===== */
     .pin-display {
       display: flex;
       justify-content: center;
@@ -870,6 +963,22 @@
       color: #fff;
     }
 
+    .add-user-form .pin-input {
+      width: 130px;
+      text-align: center;
+      letter-spacing: 4px;
+      font-size: 16px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .add-user-form .pin-hint {
+      font-size: 10px;
+      color: #666;
+      margin-top: 4px;
+      width: 100%;
+      text-align: center;
+    }
+
     /* ===== PROGRESS ===== */
     #progress {
       padding: 14px 18px;
@@ -1103,12 +1212,15 @@
       .add-user-form { flex-direction: column; }
       .add-user-form input,
       .add-user-form select { min-width: unset; width: 100%; }
+      .add-user-form .pin-input { width: 100%; }
       .admin-section .section-title { font-size: 14px; }
       .login-role .user-item-display { font-size: 12px; }
       .btn-primary .btn-percentage { font-size: 11px; right: 10px; }
       .btn-primary .btn-progress-text { font-size: 11px; }
       .change-pin-screen h2 { font-size: 18px; }
       .change-pin-screen .pin-btn { padding: 14px; font-size: 20px; }
+      .user-selector .user-option { padding: 10px 14px; }
+      .user-selector .user-option .info .name { font-size: 13px; }
     }
 
     @media (max-width: 380px) {
@@ -1124,6 +1236,8 @@
       .pin-btn { padding: 12px; font-size: 18px; }
       .user-item .user-details .name { font-size: 12px; }
       .login-role .user-item-display { font-size: 11px; }
+      .user-selector .user-option { padding: 8px 12px; }
+      .user-selector .user-option .info .name { font-size: 12px; }
     }
 
     .result-list::-webkit-scrollbar {
@@ -1147,6 +1261,18 @@
     }
     .user-list::-webkit-scrollbar-thumb {
       background: rgba(255, 107, 0, 0.3);
+      border-radius: 10px;
+    }
+
+    .user-selector::-webkit-scrollbar {
+      width: 4px;
+    }
+    .user-selector::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 10px;
+    }
+    .user-selector::-webkit-scrollbar-thumb {
+      background: rgba(0, 104, 181, 0.3);
       border-radius: 10px;
     }
 
@@ -1199,7 +1325,13 @@
       <div id="loginScreen" class="login-screen">
         <span class="lock-icon">🔐</span>
         <h2>Secure Access</h2>
-        <p>Enter your 4-digit PIN to continue</p>
+        <p class="subtitle">Select your user and enter your PIN</p>
+
+        <div class="user-selector" id="userSelector">
+          <!-- Users will be rendered here -->
+        </div>
+
+        <div id="selectedUserDisplay" style="color:#888;font-size:13px;margin-bottom:16px;min-height:20px;"></div>
 
         <div class="pin-display" id="pinDisplay">
           <span class="pin-dot" id="dot1"></span>
@@ -1373,8 +1505,10 @@
               <option value="admin">👤 Admin</option>
               <option value="super-admin">👑 Super Admin</option>
             </select>
+            <input type="password" id="newUserPin" class="pin-input" placeholder="Set PIN" maxlength="4">
             <button class="btn btn-success btn-small" onclick="addUser()">➕ Add User</button>
           </div>
+          <div class="pin-hint">💡 Leave PIN blank = default 0000 (must change on first login)</div>
 
           <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
             <button class="btn btn-secondary btn-small" onclick="resetAllUsers()" style="padding:8px 16px;font-size:12px;">
@@ -1400,11 +1534,11 @@
 
   <script>
     // ============================================
-    // ⚙️ CONFIGURATION - EDIT YOUR PINS HERE!
+    // ⚙️ CONFIGURATION
     // ============================================
     const SUPER_ADMIN = {
       id: 'super-admin-1',
-      name: 'Super Admin',
+      name: 'Udom Ek',
       telegram: '@udomek',
       role: 'super-admin',
       pin: '1234'
@@ -1415,7 +1549,7 @@
       name: 'SreyOun_HST',
       telegram: '@SreyOun_HST',
       role: 'admin',
-      pin: '0000'
+      pin: '1166'
     };
     // ============================================
 
@@ -1423,11 +1557,12 @@
     // STATE
     // ============================================
     let currentUser = null;
+    let selectedUserId = null;
     let pinBuffer = '';
     let changePinBuffer = '';
     let users = [];
     let currentFilter = 'all';
-    let pendingUser = null; // User who needs to change PIN
+    let pendingUser = null;
 
     // ============================================
     // INIT
@@ -1435,18 +1570,19 @@
     function init() {
       syncPinsFromConfig();
       loadUsers();
+      renderUserSelector();
       renderUserList();
       renderLoginUserList();
       setTimestamp();
       setInterval(setTimestamp, 30000);
       setupIPCount();
       console.log('✅ UniFi Bulk AP Adopter loaded!');
-      console.log('👑 Super Admin: ' + SUPER_ADMIN.telegram);
-      console.log('👤 Admin: ' + DEFAULT_ADMIN.telegram);
+      console.log('👑 Super Admin: Udom Ek (@udomek)');
+      console.log('👤 Total Users: ' + users.length);
     }
 
     // ============================================
-    // FORCE SYNC - Always use config PINs
+    // FORCE SYNC
     // ============================================
     function syncPinsFromConfig() {
       try {
@@ -1491,6 +1627,75 @@
 
     function saveUsers() {
       localStorage.setItem('unifi_users', JSON.stringify(users));
+    }
+
+    // ============================================
+    // RENDER USER SELECTOR
+    // ============================================
+    function renderUserSelector() {
+      const container = document.getElementById('userSelector');
+      if (!container) return;
+
+      const visibleUsers = users;
+
+      if (visibleUsers.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">No users found</div>';
+        return;
+      }
+
+      let html = '';
+      visibleUsers.forEach(function(user) {
+        const isSuperAdmin = user.role === 'super-admin';
+        const initials = user.name.charAt(0).toUpperCase();
+        const telegramDisplay = user.telegram ? user.telegram : '';
+        const isActive = selectedUserId === user.id;
+
+        html += `
+          <div class="user-option ${isActive ? 'active' : ''}" onclick="selectUser('${user.id}')">
+            <div class="avatar">${initials}</div>
+            <div class="info">
+              <div>
+                <span class="name">${user.name}</span>
+                <span class="role-tag ${user.role}">${isSuperAdmin ? '👑 Super Admin' : '👤 Admin'}</span>
+              </div>
+              ${telegramDisplay ? `<div class="telegram">${telegramDisplay}</div>` : ''}
+            </div>
+            <div class="check">✓</div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+
+      if (visibleUsers.length === 1) {
+        selectUser(visibleUsers[0].id);
+      }
+
+      updateSelectedUserDisplay();
+    }
+
+    function selectUser(userId) {
+      selectedUserId = userId;
+      renderUserSelector();
+      pinBuffer = '';
+      updatePinDots();
+      document.getElementById('pinError').textContent = '';
+      document.getElementById('pinSuccess').textContent = '';
+      updateSelectedUserDisplay();
+    }
+
+    function updateSelectedUserDisplay() {
+      const display = document.getElementById('selectedUserDisplay');
+      if (!display) return;
+      if (selectedUserId) {
+        const user = users.find(u => u.id === selectedUserId);
+        if (user) {
+          display.textContent = '👤 Selected: ' + user.name + (user.telegram ? ' (' + user.telegram + ')' : '');
+          display.style.color = '#0068b5';
+        }
+      } else {
+        display.textContent = '👆 Please select a user';
+        display.style.color = '#888';
+      }
     }
 
     function renderLoginUserList() {
@@ -1552,38 +1757,61 @@
       list.innerHTML = html;
     }
 
+    // ============================================
+    // ADD USER WITH CUSTOM PIN
+    // ============================================
     function addUser() {
       const nameInput = document.getElementById('newUserName');
       const telegramInput = document.getElementById('newUserTelegram');
       const roleSelect = document.getElementById('newUserRole');
+      const pinInput = document.getElementById('newUserPin');
+      
       const name = nameInput.value.trim();
       const telegram = telegramInput.value.trim();
-
+      const customPin = pinInput.value.trim();
+      
       if (!name) {
         showToast('Please enter a username.', 'error');
         return;
       }
+      
       if (users.some(u => u.name.toLowerCase() === name.toLowerCase())) {
         showToast('User already exists!', 'error');
         return;
       }
-
+      
+      let pin = '0000';
+      let needsPinChange = true;
+      
+      if (customPin) {
+        if (!/^\d{4}$/.test(customPin)) {
+          showToast('PIN must be exactly 4 digits.', 'error');
+          return;
+        }
+        pin = customPin;
+        needsPinChange = false;
+      }
+      
       const newUser = {
         id: 'user-' + Date.now(),
         name: name,
         telegram: telegram || '',
         role: roleSelect.value,
-        pin: '0000',
-        needsPinChange: true
+        pin: pin,
+        needsPinChange: needsPinChange
       };
 
       users.push(newUser);
       saveUsers();
+      renderUserSelector();
       renderUserList();
       renderLoginUserList();
+      
       nameInput.value = '';
       telegramInput.value = '';
-      showToast('✅ User "' + name + '" added! Must change PIN on first login.', 'success');
+      pinInput.value = '';
+      
+      showToast('✅ User "' + name + '" added with PIN: ' + pin + (needsPinChange ? ' (must change on first login)' : ''), 'success');
     }
 
     function removeUser(userId) {
@@ -1596,8 +1824,13 @@
       if (!confirm('Remove user "' + user.name + '"?')) return;
       users = users.filter(u => u.id !== userId);
       saveUsers();
+      renderUserSelector();
       renderUserList();
       renderLoginUserList();
+      if (selectedUserId === userId) {
+        selectedUserId = null;
+        updateSelectedUserDisplay();
+      }
       showToast('✅ User removed.', 'success');
     }
 
@@ -1611,6 +1844,7 @@
       user.pin = '0000';
       user.needsPinChange = true;
       saveUsers();
+      renderUserSelector();
       renderUserList();
       renderLoginUserList();
       showToast('✅ PIN reset to 0000 for ' + user.name + '. They must change it on next login.', 'success');
@@ -1621,8 +1855,11 @@
       users = [SUPER_ADMIN, DEFAULT_ADMIN];
       users.forEach(u => u.needsPinChange = false);
       saveUsers();
+      renderUserSelector();
       renderUserList();
       renderLoginUserList();
+      selectedUserId = null;
+      updateSelectedUserDisplay();
       showToast('✅ All users reset.', 'success');
     }
 
@@ -1632,8 +1869,11 @@
       users = [SUPER_ADMIN, DEFAULT_ADMIN];
       users.forEach(u => u.needsPinChange = false);
       saveUsers();
+      renderUserSelector();
       renderUserList();
       renderLoginUserList();
+      selectedUserId = null;
+      updateSelectedUserDisplay();
       document.getElementById('result').innerHTML = '';
       showToast('✅ All data cleared.', 'success');
     }
@@ -1663,6 +1903,12 @@
       const success = document.getElementById('pinSuccess');
       error.textContent = '';
       success.textContent = '';
+      
+      if (!selectedUserId) {
+        error.textContent = '⚠️ Please select a user first.';
+        return;
+      }
+      
       if (pinBuffer.length >= 4) return;
       pinBuffer += num;
       updatePinDots();
@@ -1692,19 +1938,22 @@
       const error = document.getElementById('pinError');
       const success = document.getElementById('pinSuccess');
 
-      console.log('🔍 Verifying PIN:', pinBuffer);
-      const user = users.find(u => u.pin === pinBuffer);
+      const selectedUser = users.find(u => u.id === selectedUserId);
+      
+      if (!selectedUser) {
+        error.textContent = '⚠️ User not found. Please select a user.';
+        pinBuffer = '';
+        updatePinDots();
+        return;
+      }
 
-      if (user) {
-        success.textContent = '✅ Welcome ' + user.name + '!';
-        currentUser = user;
-        console.log('✅ Login successful:', user.name, 'Role:', user.role);
+      if (pinBuffer === selectedUser.pin) {
+        success.textContent = '✅ Welcome ' + selectedUser.name + '!';
+        currentUser = selectedUser;
         
-        // Check if user needs to change PIN (default PIN or first login)
         const defaultPins = ['0000', '1166'];
-        if (defaultPins.includes(user.pin) || user.needsPinChange === true) {
-          console.log('🔑 User needs to change PIN');
-          pendingUser = user;
+        if (defaultPins.includes(selectedUser.pin) || selectedUser.needsPinChange === true) {
+          pendingUser = selectedUser;
           setTimeout(function() {
             showChangePinScreen();
           }, 500);
@@ -1714,8 +1963,7 @@
           }, 300);
         }
       } else {
-        error.textContent = '❌ Invalid PIN. Please try again.';
-        console.log('❌ Invalid PIN for:', pinBuffer);
+        error.textContent = '❌ Invalid PIN for ' + selectedUser.name + '. Please try again.';
         pinBuffer = '';
         updatePinDots();
         const display = document.getElementById('pinDisplay');
@@ -1734,7 +1982,6 @@
       updateChangePinDots();
       document.getElementById('changePinError').textContent = '';
       document.getElementById('changePinSuccess').textContent = '';
-      console.log('🔑 Showing change PIN screen for:', pendingUser.name);
     }
 
     function changePinInput(num) {
@@ -1746,7 +1993,6 @@
       changePinBuffer += num;
       updateChangePinDots();
       if (changePinBuffer.length === 4) {
-        // Auto-confirm when 4 digits entered
         confirmChangePin();
       }
     }
@@ -1777,7 +2023,6 @@
         return;
       }
 
-      // Check if PIN is the same as default
       if (changePinBuffer === '0000' || changePinBuffer === '1166') {
         error.textContent = '❌ Please choose a different PIN from default.';
         changePinBuffer = '';
@@ -1785,21 +2030,16 @@
         return;
       }
 
-      // Update user's PIN
       if (pendingUser) {
         const user = users.find(u => u.id === pendingUser.id);
         if (user) {
           user.pin = changePinBuffer;
           user.needsPinChange = false;
           saveUsers();
-          console.log('✅ PIN updated for:', user.name, 'New PIN:', user.pin);
           success.textContent = '✅ PIN updated successfully!';
-          
-          // Update current user
           currentUser = user;
           
           setTimeout(function() {
-            // Hide change PIN screen and show app
             document.getElementById('changePinScreen').classList.remove('active');
             loginSuccess();
           }, 500);
@@ -1809,7 +2049,6 @@
 
     function skipChangePin() {
       if (!confirm('⚠️ Your PIN is still the default. This is not secure. Continue anyway?')) return;
-      
       document.getElementById('changePinScreen').classList.remove('active');
       if (pendingUser) {
         currentUser = pendingUser;
@@ -1856,6 +2095,7 @@
     function logout() {
       if (!confirm('Logout?')) return;
       currentUser = null;
+      selectedUserId = null;
       pinBuffer = '';
       pendingUser = null;
       updatePinDots();
@@ -1868,6 +2108,8 @@
       document.getElementById('changePinSuccess').textContent = '';
       changePinBuffer = '';
       updateChangePinDots();
+      updateSelectedUserDisplay();
+      renderUserSelector();
     }
 
     // ============================================
