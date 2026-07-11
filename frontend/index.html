@@ -20,7 +20,7 @@
       padding: 16px;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       padding-bottom: 80px;
     }
 
@@ -38,6 +38,137 @@
       border: 1px solid rgba(255, 255, 255, 0.04);
     }
 
+    /* ===== LOGIN SCREEN ===== */
+    .login-screen {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .login-screen .lock-icon {
+      font-size: 60px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .login-screen h2 {
+      font-size: 24px;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .login-screen p {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .pin-display {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .pin-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #333;
+      border: 2px solid #444;
+      transition: all 0.3s ease;
+    }
+
+    .pin-dot.filled {
+      background: #0068b5;
+      border-color: #0068b5;
+      box-shadow: 0 0 20px rgba(0, 104, 181, 0.3);
+    }
+
+    .pin-pad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .pin-btn {
+      padding: 18px;
+      font-size: 24px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.03);
+      color: #fff;
+      transition: all 0.2s ease;
+    }
+
+    .pin-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: scale(1.05);
+    }
+
+    .pin-btn:active {
+      transform: scale(0.95);
+    }
+
+    .pin-btn.empty {
+      background: transparent;
+      cursor: default;
+      border: none;
+    }
+
+    .pin-btn.empty:hover {
+      transform: none;
+    }
+
+    .pin-btn.delete {
+      color: #ef5350;
+    }
+
+    .pin-error {
+      color: #ef5350;
+      font-size: 13px;
+      margin-top: 12px;
+      min-height: 20px;
+    }
+
+    .pin-success {
+      color: #4CAF50;
+      font-size: 13px;
+      margin-top: 12px;
+      min-height: 20px;
+    }
+
+    .login-role {
+      margin-top: 16px;
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .login-role .label {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .login-role .role-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #0068b5;
+    }
+
+    /* ===== MAIN APP ===== */
+    .app-screen {
+      display: none;
+    }
+
+    .app-screen.active {
+      display: block;
+    }
+
     .header {
       display: flex;
       align-items: center;
@@ -48,8 +179,8 @@
     }
 
     .header-logo {
-      width: 52px;
-      height: 52px;
+      width: 48px;
+      height: 48px;
       flex-shrink: 0;
       display: flex;
       align-items: center;
@@ -57,15 +188,7 @@
       background: linear-gradient(135deg, #0068b5, #004a8a);
       border-radius: 14px;
       box-shadow: 0 4px 20px rgba(0, 104, 181, 0.3);
-      overflow: hidden;
-      padding: 6px;
-    }
-
-    .header-logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 8px;
+      font-size: 24px;
     }
 
     .header-title {
@@ -73,7 +196,7 @@
     }
 
     .header-title h1 {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       color: #ffffff;
       line-height: 1.2;
@@ -88,11 +211,10 @@
     }
 
     .header-title .subtitle {
-      font-size: 13px;
+      font-size: 12px;
       color: #ffffff;
       margin-top: 2px;
-      opacity: 0.8;
-      line-height: 1.3;
+      opacity: 0.7;
     }
 
     .badge {
@@ -105,18 +227,16 @@
       border-radius: 20px;
     }
 
-    /* ===== FAST & EASY BADGE ===== */
     .speed-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       background: linear-gradient(135deg, #ff6b00, #e65100);
       color: #fff;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      padding: 4px 14px;
+      padding: 3px 12px;
       border-radius: 20px;
-      margin-left: 4px;
       animation: pulse-glow 2s ease-in-out infinite;
       box-shadow: 0 0 20px rgba(255, 107, 0, 0.25);
       letter-spacing: 0.5px;
@@ -124,7 +244,7 @@
     }
 
     .speed-badge .lightning {
-      font-size: 14px;
+      font-size: 12px;
       animation: flash 1.5s ease-in-out infinite;
     }
 
@@ -138,41 +258,80 @@
       50% { opacity: 0.4; transform: scale(1.2); }
     }
 
-    /* ===== FEATURE HIGHLIGHTS ===== */
-    .features {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .feature-item {
+    /* ===== USER INFO BAR ===== */
+    .user-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
       background: rgba(255, 255, 255, 0.03);
-      border-radius: 10px;
-      padding: 10px 8px;
-      text-align: center;
+      border-radius: 12px;
+      margin-bottom: 20px;
       border: 1px solid rgba(255, 255, 255, 0.04);
-      transition: all 0.3s ease;
     }
 
-    .feature-item:hover {
-      background: rgba(255, 255, 255, 0.06);
-      transform: translateY(-2px);
+    .user-bar .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .feature-item .icon {
-      font-size: 18px;
-      display: block;
-      margin-bottom: 2px;
+    .user-bar .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0068b5, #004a8a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
     }
 
-    .feature-item .label {
-      font-size: 9px;
+    .user-bar .user-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .user-bar .user-role {
+      font-size: 11px;
       color: #888;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
+      padding: 2px 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
     }
 
+    .user-bar .user-role.super-admin {
+      color: #ff6b00;
+      border: 1px solid rgba(255, 107, 0, 0.2);
+    }
+
+    .user-bar .user-role.admin {
+      color: #0068b5;
+      border: 1px solid rgba(0, 104, 181, 0.2);
+    }
+
+    .user-bar .logout-btn {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.03);
+      color: #888;
+      transition: all 0.2s ease;
+    }
+
+    .user-bar .logout-btn:hover {
+      background: rgba(239, 83, 80, 0.1);
+      color: #ef5350;
+      border-color: rgba(239, 83, 80, 0.2);
+    }
+
+    /* ===== STATS ===== */
     .stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -226,6 +385,7 @@
       opacity: 0.8;
     }
 
+    /* ===== TEXTAREA ===== */
     .textarea-wrapper {
       position: relative;
       margin-bottom: 16px;
@@ -272,6 +432,7 @@
       pointer-events: none;
     }
 
+    /* ===== BUTTONS ===== */
     .btn-group {
       display: flex;
       gap: 10px;
@@ -328,6 +489,26 @@
       color: #fff;
     }
 
+    .btn-danger {
+      background: rgba(239, 83, 80, 0.12);
+      color: #ef5350;
+      border: 1px solid rgba(239, 83, 80, 0.15);
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 83, 80, 0.2);
+    }
+
+    .btn-success {
+      background: rgba(76, 175, 80, 0.12);
+      color: #4CAF50;
+      border: 1px solid rgba(76, 175, 80, 0.15);
+    }
+
+    .btn-success:hover {
+      background: rgba(76, 175, 80, 0.2);
+    }
+
     .spinner {
       display: inline-block;
       width: 18px;
@@ -343,6 +524,150 @@
       to { transform: rotate(360deg); }
     }
 
+    /* ===== USER MANAGEMENT (Super Admin Only) ===== */
+    .admin-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .admin-section .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #ff6b00;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .admin-section .section-title .badge-admin {
+      font-size: 9px;
+      background: rgba(255, 107, 0, 0.15);
+      color: #ff6b00;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .user-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .user-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .user-item .user-details {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-item .user-details .avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0068b5, #004a8a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .user-item .user-details .name {
+      font-size: 13px;
+      color: #fff;
+    }
+
+    .user-item .user-details .role-tag {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #888;
+    }
+
+    .user-item .user-details .role-tag.super-admin {
+      color: #ff6b00;
+      border: 1px solid rgba(255, 107, 0, 0.15);
+    }
+
+    .user-item .user-details .role-tag.admin {
+      color: #0068b5;
+      border: 1px solid rgba(0, 104, 181, 0.15);
+    }
+
+    .user-item .remove-btn {
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: rgba(239, 83, 80, 0.1);
+      color: #ef5350;
+      transition: all 0.2s ease;
+    }
+
+    .user-item .remove-btn:hover {
+      background: rgba(239, 83, 80, 0.2);
+    }
+
+    .add-user-form {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .add-user-form input {
+      flex: 1;
+      padding: 10px 14px;
+      background: #0d0d18;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      min-width: 120px;
+    }
+
+    .add-user-form input:focus {
+      border-color: #0068b5;
+    }
+
+    .add-user-form input::placeholder {
+      color: #444;
+    }
+
+    .add-user-form .btn-small {
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: linear-gradient(135deg, #0068b5, #004a8a);
+      color: #fff;
+    }
+
+    .add-user-form .btn-small:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ===== PROGRESS ===== */
     #progress {
       padding: 14px 18px;
       border-radius: 12px;
@@ -359,6 +684,7 @@
       display: block;
     }
 
+    /* ===== RESULTS ===== */
     #result {
       margin-top: 16px;
     }
@@ -521,6 +847,7 @@
       font-size: 14px;
     }
 
+    /* ===== FOOTER ===== */
     .footer {
       margin-top: 20px;
       padding-top: 16px;
@@ -542,18 +869,15 @@
       font-weight: 400;
     }
 
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 500px) {
       body { padding: 12px; }
       .card { padding: 20px; }
       .header-title h1 { font-size: 17px; }
-      .header-title .subtitle { font-size: 12px; }
-      .header-logo { width: 40px; height: 40px; padding: 4px; }
+      .header-title .subtitle { font-size: 11px; }
+      .header-logo { width: 40px; height: 40px; font-size: 20px; }
       .speed-badge { font-size: 9px; padding: 3px 10px; }
       .speed-badge .lightning { font-size: 11px; }
-      .features { grid-template-columns: repeat(3, 1fr); gap: 6px; }
-      .feature-item { padding: 8px 4px; }
-      .feature-item .icon { font-size: 15px; }
-      .feature-item .label { font-size: 8px; }
       .stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
       .stat-item { padding: 8px 10px; }
       .stat-number { font-size: 18px; }
@@ -568,19 +892,25 @@
       .filter-btn { font-size: 10px; padding: 4px 10px; }
       .result-item .error-msg { max-width: 60px; }
       .badge { font-size: 9px; padding: 1px 8px; }
+      .pin-pad { gap: 8px; max-width: 250px; }
+      .pin-btn { padding: 14px; font-size: 20px; }
+      .user-bar { flex-wrap: wrap; gap: 8px; }
+      .user-bar .user-info { flex: 1; }
+      .add-user-form { flex-direction: column; }
+      .add-user-form input { min-width: unset; }
     }
 
     @media (max-width: 380px) {
-      .header-logo { width: 34px; height: 34px; padding: 3px; }
-      .header-title h1 { font-size: 14px; }
+      .header-logo { width: 34px; height: 34px; font-size: 16px; }
+      .header-title h1 { font-size: 15px; }
       .header-title .subtitle { font-size: 10px; }
       .speed-badge { font-size: 8px; padding: 2px 8px; }
       .speed-badge .lightning { font-size: 10px; }
       .stat-number { font-size: 15px; }
       .stat-label { font-size: 9px; }
       .stat-item { padding: 6px 8px; }
-      .feature-item .icon { font-size: 13px; }
-      .feature-item .label { font-size: 7px; }
+      .pin-pad { gap: 6px; max-width: 200px; }
+      .pin-btn { padding: 12px; font-size: 18px; }
     }
 
     .result-list::-webkit-scrollbar {
@@ -594,95 +924,450 @@
       background: rgba(0, 104, 181, 0.3);
       border-radius: 10px;
     }
+
+    /* ===== HIDDEN ===== */
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="card">
 
-      <!-- HEADER with Logo & Speed Badge -->
-      <div class="header">
-        <div class="header-logo">
-          <img src="https://raw.githubusercontent.com/ekmagazine/unifi-bulk-adopter/main/Logo.png" alt="FOOTPRINTS INTERNATIONAL SCHOOL" onerror="this.style.display='none'">
+      <!-- ============================================ -->
+      <!-- LOGIN SCREEN -->
+      <!-- ============================================ -->
+      <div id="loginScreen" class="login-screen">
+        <span class="lock-icon">🔐</span>
+        <h2>Secure Access</h2>
+        <p>Enter your 4-digit PIN to continue</p>
+
+        <div class="pin-display" id="pinDisplay">
+          <span class="pin-dot" id="dot1"></span>
+          <span class="pin-dot" id="dot2"></span>
+          <span class="pin-dot" id="dot3"></span>
+          <span class="pin-dot" id="dot4"></span>
         </div>
-        <div class="header-title">
-          <h1>
-            <span class="unifi-text">UniFi</span> Bulk AP Adopter
-            <span class="badge">v2.0</span>
-            <span class="speed-badge">
-              <span class="lightning">⚡</span> FAST & EASY
-            </span>
-          </h1>
-          <div class="subtitle">Adopt multiple UniFi Access Points at once via SSH</div>
+
+        <div id="pinError" class="pin-error"></div>
+        <div id="pinSuccess" class="pin-success"></div>
+
+        <div class="pin-pad">
+          <button class="pin-btn" onclick="pinInput('1')">1</button>
+          <button class="pin-btn" onclick="pinInput('2')">2</button>
+          <button class="pin-btn" onclick="pinInput('3')">3</button>
+          <button class="pin-btn" onclick="pinInput('4')">4</button>
+          <button class="pin-btn" onclick="pinInput('5')">5</button>
+          <button class="pin-btn" onclick="pinInput('6')">6</button>
+          <button class="pin-btn" onclick="pinInput('7')">7</button>
+          <button class="pin-btn" onclick="pinInput('8')">8</button>
+          <button class="pin-btn" onclick="pinInput('9')">9</button>
+          <button class="pin-btn empty"></button>
+          <button class="pin-btn" onclick="pinInput('0')">0</button>
+          <button class="pin-btn delete" onclick="pinDelete()">⌫</button>
+        </div>
+
+        <div class="login-role">
+          <div class="label">🔑 Current Access</div>
+          <div class="role-name" id="loginRoleDisplay">—</div>
         </div>
       </div>
 
-      <!-- FEATURE HIGHLIGHTS -->
-      <div class="features">
-        <div class="feature-item">
-          <span class="icon">⚡</span>
-          <span class="label">Instant Adoption</span>
+      <!-- ============================================ -->
+      <!-- MAIN APP SCREEN -->
+      <!-- ============================================ -->
+      <div id="appScreen" class="app-screen">
+
+        <!-- USER BAR -->
+        <div class="user-bar">
+          <div class="user-info">
+            <div class="user-avatar" id="userAvatar">👤</div>
+            <div>
+              <div class="user-name" id="userName">User</div>
+            </div>
+            <span class="user-role" id="userRoleBadge">Admin</span>
+          </div>
+          <button class="logout-btn" onclick="logout()">🚪 Logout</button>
         </div>
-        <div class="feature-item">
-          <span class="icon">📋</span>
-          <span class="label">Bulk APs</span>
+
+        <!-- HEADER -->
+        <div class="header">
+          <div class="header-logo">🚀</div>
+          <div class="header-title">
+            <h1>
+              <span class="unifi-text">UniFi</span> Bulk AP Adopter
+              <span class="badge">v2.0</span>
+              <span class="speed-badge">
+                <span class="lightning">⚡</span> FAST & EASY
+              </span>
+            </h1>
+            <div class="subtitle">Adopt multiple UniFi Access Points at once via SSH</div>
+          </div>
         </div>
-        <div class="feature-item">
-          <span class="icon">🔒</span>
-          <span class="label">Secure SSH</span>
+
+        <!-- STATS -->
+        <div class="stats" id="stats">
+          <div class="stat-item" onclick="filterResults('all')">
+            <div class="stat-number unifi-blue" id="totalCount">0</div>
+            <div class="stat-label">Total APs</div>
+            <div class="hint">▼ show all</div>
+          </div>
+          <div class="stat-item" onclick="filterResults('success')">
+            <div class="stat-number green" id="successCount">0</div>
+            <div class="stat-label">Successful</div>
+            <div class="hint">▼ show success</div>
+          </div>
+          <div class="stat-item" onclick="filterResults('failed')">
+            <div class="stat-number red" id="failCount">0</div>
+            <div class="stat-label">Failed</div>
+            <div class="hint">▼ show failed</div>
+          </div>
         </div>
+
+        <!-- TEXTAREA -->
+        <div class="textarea-wrapper">
+          <label>📋 AP IP Addresses <span style="color:#666;font-weight:400;">(one per line)</span></label>
+          <textarea id="ips" placeholder="192.168.1.10&#10;192.168.1.11&#10;192.168.1.12"></textarea>
+          <span class="char-count" id="ipCount">0 IPs</span>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="btn-group">
+          <button class="btn btn-primary" id="adoptBtn" onclick="startAdoption()">🚀 Adopt All APs</button>
+          <button class="btn btn-secondary" onclick="clearAll()">✕ Clear</button>
+          <button class="btn btn-secondary" onclick="loadSample()">📝 Sample</button>
+        </div>
+
+        <!-- PROGRESS -->
+        <div id="progress"><span id="progressText">⏳ Processing 0 APs...</span></div>
+
+        <!-- RESULTS -->
+        <div id="result"></div>
+
+        <!-- ============================================ -->
+        <!-- SUPER ADMIN SECTION (Hidden for regular admins) -->
+        <!-- ============================================ -->
+        <div id="adminSection" class="admin-section hidden">
+          <div class="section-title">
+            👑 User Management
+            <span class="badge-admin">Super Admin</span>
+          </div>
+
+          <div class="user-list" id="userList">
+            <!-- Users will be rendered here -->
+          </div>
+
+          <div class="add-user-form">
+            <input type="text" id="newUserName" placeholder="Enter username...">
+            <select id="newUserRole" style="padding:10px 14px;background:#0d0d18;border:1px solid rgba(255,255,255,0.06);border-radius:10px;color:#fff;font-size:14px;outline:none;min-width:100px;">
+              <option value="admin">👤 Admin</option>
+              <option value="super-admin">👑 Super Admin</option>
+            </select>
+            <button class="btn-small" onclick="addUser()">➕ Add User</button>
+          </div>
+
+          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-secondary btn-small" onclick="resetAllUsers()" style="padding:8px 16px;font-size:12px;">
+              🔄 Reset All Users
+            </button>
+            <button class="btn btn-danger btn-small" onclick="clearAllData()" style="padding:8px 16px;font-size:12px;">
+              🗑️ Clear All Data
+            </button>
+          </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+          <span class="brand">Access Point <span>— UniFi Tool</span></span>
+          <span>⚡ <span id="timestamp"></span></span>
+        </div>
+
       </div>
-
-      <!-- STATS (Clickable) -->
-      <div class="stats" id="stats">
-        <div class="stat-item" onclick="filterResults('all')">
-          <div class="stat-number unifi-blue" id="totalCount">0</div>
-          <div class="stat-label">Total APs</div>
-          <div class="hint">▼ show all</div>
-        </div>
-        <div class="stat-item" onclick="filterResults('success')">
-          <div class="stat-number green" id="successCount">0</div>
-          <div class="stat-label">Successful</div>
-          <div class="hint">▼ show success</div>
-        </div>
-        <div class="stat-item" onclick="filterResults('failed')">
-          <div class="stat-number red" id="failCount">0</div>
-          <div class="stat-label">Failed</div>
-          <div class="hint">▼ show failed</div>
-        </div>
-      </div>
-
-      <!-- TEXTAREA -->
-      <div class="textarea-wrapper">
-        <label>📋 AP IP Addresses <span style="color:#666;font-weight:400;">(one per line)</span></label>
-        <textarea id="ips" placeholder="192.168.1.10&#10;192.168.1.11&#10;192.168.1.12"></textarea>
-        <span class="char-count" id="ipCount">0 IPs</span>
-      </div>
-
-      <!-- BUTTONS -->
-      <div class="btn-group">
-        <button class="btn btn-primary" id="adoptBtn" onclick="startAdoption()">🚀 Adopt All APs</button>
-        <button class="btn btn-secondary" onclick="clearAll()">✕ Clear</button>
-        <button class="btn btn-secondary" onclick="loadSample()">📝 Sample</button>
-      </div>
-
-      <!-- PROGRESS -->
-      <div id="progress"><span id="progressText">⏳ Processing 0 APs...</span></div>
-
-      <!-- RESULTS -->
-      <div id="result"></div>
-
-      <!-- FOOTER -->
-      <div class="footer">
-        <span class="brand">Access Point <span>— UniFi Tool</span></span>
-        <span>⚡ <span id="timestamp"></span></span>
-      </div>
+      <!-- END APP SCREEN -->
 
     </div>
   </div>
 
   <script>
-    // Simple Telegram WebApp
+    // ============================================
+    // CONFIGURATION
+    // ============================================
+    // Default Super Admin (you can change this)
+    const DEFAULT_SUPER_ADMIN = {
+      id: 'super-admin-1',
+      name: 'Super Admin',
+      role: 'super-admin',
+      pin: '1234'
+    };
+
+    // ============================================
+    // STATE
+    // ============================================
+    let currentUser = null;
+    let pinBuffer = '';
+    let users = [];
+    let allResults = [];
+    let currentFilter = 'all';
+
+    // ============================================
+    // INIT
+    // ============================================
+    function init() {
+      loadUsers();
+      renderUserList();
+      setTimestamp();
+      setInterval(setTimestamp, 30000);
+      updateLoginRoleDisplay();
+      setupIPCount();
+      console.log('✅ UniFi Bulk AP Adopter loaded!');
+    }
+
+    // ============================================
+    // USER MANAGEMENT
+    // ============================================
+    function loadUsers() {
+      try {
+        const saved = localStorage.getItem('unifi_users');
+        if (saved) {
+          users = JSON.parse(saved);
+        } else {
+          // Create default Super Admin
+          users = [DEFAULT_SUPER_ADMIN];
+          saveUsers();
+        }
+      } catch(e) {
+        users = [DEFAULT_SUPER_ADMIN];
+        saveUsers();
+      }
+    }
+
+    function saveUsers() {
+      localStorage.setItem('unifi_users', JSON.stringify(users));
+    }
+
+    function renderUserList() {
+      const list = document.getElementById('userList');
+      if (!list) return;
+
+      if (users.length === 0) {
+        list.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">No users found</div>';
+        return;
+      }
+
+      let html = '';
+      users.forEach(function(user, index) {
+        const isSuperAdmin = user.role === 'super-admin';
+        const initials = user.name.charAt(0).toUpperCase();
+        html += `
+          <div class="user-item">
+            <div class="user-details">
+              <div class="avatar">${initials}</div>
+              <span class="name">${user.name}</span>
+              <span class="role-tag ${user.role}">${isSuperAdmin ? '👑 Super Admin' : '👤 Admin'}</span>
+              ${user.id === DEFAULT_SUPER_ADMIN.id ? '<span style="font-size:10px;color:#666;">(Default)</span>' : ''}
+            </div>
+            ${user.id !== DEFAULT_SUPER_ADMIN.id ? `<button class="remove-btn" onclick="removeUser('${user.id}')">✕ Remove</button>` : ''}
+          </div>
+        `;
+      });
+      list.innerHTML = html;
+    }
+
+    function addUser() {
+      const nameInput = document.getElementById('newUserName');
+      const roleSelect = document.getElementById('newUserRole');
+      const name = nameInput.value.trim();
+
+      if (!name) {
+        alert('Please enter a username.');
+        return;
+      }
+
+      // Check if user already exists
+      if (users.some(u => u.name.toLowerCase() === name.toLowerCase())) {
+        alert('User already exists!');
+        return;
+      }
+
+      const newUser = {
+        id: 'user-' + Date.now(),
+        name: name,
+        role: roleSelect.value,
+        pin: '0000' // Default PIN, user can change later
+      };
+
+      users.push(newUser);
+      saveUsers();
+      renderUserList();
+      nameInput.value = '';
+      alert('✅ User added successfully! Default PIN: 0000');
+    }
+
+    function removeUser(userId) {
+      if (userId === DEFAULT_SUPER_ADMIN.id) {
+        alert('Cannot remove the default Super Admin.');
+        return;
+      }
+
+      if (!confirm('Remove this user?')) return;
+      users = users.filter(u => u.id !== userId);
+      saveUsers();
+      renderUserList();
+    }
+
+    function resetAllUsers() {
+      if (!confirm('Reset all users to default? (Only Super Admin will remain)')) return;
+      users = [DEFAULT_SUPER_ADMIN];
+      saveUsers();
+      renderUserList();
+      alert('✅ All users reset. Only Super Admin remains.');
+    }
+
+    function clearAllData() {
+      if (!confirm('⚠️ This will clear ALL data including adoption history. Are you sure?')) return;
+      localStorage.clear();
+      users = [DEFAULT_SUPER_ADMIN];
+      saveUsers();
+      renderUserList();
+      document.getElementById('result').innerHTML = '';
+      alert('✅ All data cleared.');
+    }
+
+    // ============================================
+    // PIN LOGIN
+    // ============================================
+    function updateLoginRoleDisplay() {
+      const display = document.getElementById('loginRoleDisplay');
+      if (!display) return;
+
+      // Show which users are available
+      const names = users.map(u => u.name + ' (' + u.role + ')').join(', ');
+      display.textContent = users.length + ' user(s) registered';
+      display.style.fontSize = '14px';
+      display.style.color = '#888';
+    }
+
+    function pinInput(num) {
+      const error = document.getElementById('pinError');
+      const success = document.getElementById('pinSuccess');
+      error.textContent = '';
+      success.textContent = '';
+
+      if (pinBuffer.length >= 4) return;
+
+      pinBuffer += num;
+      updatePinDots();
+
+      if (pinBuffer.length === 4) {
+        verifyPin();
+      }
+    }
+
+    function pinDelete() {
+      if (pinBuffer.length > 0) {
+        pinBuffer = pinBuffer.slice(0, -1);
+        updatePinDots();
+        document.getElementById('pinError').textContent = '';
+      }
+    }
+
+    function updatePinDots() {
+      for (let i = 1; i <= 4; i++) {
+        const dot = document.getElementById('dot' + i);
+        if (dot) {
+          dot.className = 'pin-dot' + (i <= pinBuffer.length ? ' filled' : '');
+        }
+      }
+    }
+
+    function verifyPin() {
+      const error = document.getElementById('pinError');
+      const success = document.getElementById('pinSuccess');
+
+      // Find user with matching PIN
+      const user = users.find(u => u.pin === pinBuffer);
+
+      if (user) {
+        success.textContent = '✅ Access granted!';
+        currentUser = user;
+        setTimeout(function() {
+          loginSuccess();
+        }, 300);
+      } else {
+        error.textContent = '❌ Invalid PIN. Please try again.';
+        pinBuffer = '';
+        updatePinDots();
+        // Shake animation
+        const display = document.getElementById('pinDisplay');
+        display.style.animation = 'shake 0.5s ease';
+        setTimeout(function() {
+          display.style.animation = '';
+        }, 500);
+      }
+    }
+
+    function loginSuccess() {
+      document.getElementById('loginScreen').style.display = 'none';
+      const appScreen = document.getElementById('appScreen');
+      appScreen.className = 'app-screen active';
+
+      // Update UI with user info
+      const avatar = document.getElementById('userAvatar');
+      const name = document.getElementById('userName');
+      const roleBadge = document.getElementById('userRoleBadge');
+
+      avatar.textContent = currentUser.name.charAt(0).toUpperCase();
+      name.textContent = currentUser.name;
+
+      if (currentUser.role === 'super-admin') {
+        roleBadge.textContent = '👑 Super Admin';
+        roleBadge.className = 'user-role super-admin';
+        document.getElementById('adminSection').classList.remove('hidden');
+      } else {
+        roleBadge.textContent = '👤 Admin';
+        roleBadge.className = 'user-role admin';
+        document.getElementById('adminSection').classList.add('hidden');
+      }
+
+      // Reset PIN buffer
+      pinBuffer = '';
+      updatePinDots();
+
+      // Trigger Telegram expand
+      try {
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+      } catch(e) {}
+    }
+
+    function logout() {
+      if (!confirm('Logout?')) return;
+      currentUser = null;
+      pinBuffer = '';
+      updatePinDots();
+      document.getElementById('appScreen').className = 'app-screen';
+      document.getElementById('loginScreen').style.display = 'block';
+      document.getElementById('pinError').textContent = '';
+      document.getElementById('pinSuccess').textContent = '';
+    }
+
+    // ============================================
+    // SHAKE ANIMATION
+    // ============================================
+    const styleShake = document.createElement('style');
+    styleShake.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-10px); }
+        75% { transform: translateX(10px); }
+      }
+    `;
+    document.head.appendChild(styleShake);
+
+    // ============================================
+    // TELEGRAM WEBAPP
+    // ============================================
     try {
       const tg = window.Telegram.WebApp;
       tg.ready();
@@ -691,7 +1376,9 @@
       console.log('Telegram WebApp not available');
     }
 
-    // DOM elements
+    // ============================================
+    // DOM ELEMENTS
+    // ============================================
     const ipsTextarea = document.getElementById('ips');
     const adoptBtn = document.getElementById('adoptBtn');
     const progress = document.getElementById('progress');
@@ -703,14 +1390,18 @@
     const ipCount = document.getElementById('ipCount');
     const timestamp = document.getElementById('timestamp');
 
-    // Live IP count
-    ipsTextarea.addEventListener('input', function() {
-      const ips = getIPs();
-      ipCount.textContent = ips.length + ' IPs';
-      totalCount.textContent = ips.length;
-      successCount.textContent = '—';
-      failCount.textContent = '—';
-    });
+    // ============================================
+    // SETUP
+    // ============================================
+    function setupIPCount() {
+      ipsTextarea.addEventListener('input', function() {
+        const ips = getIPs();
+        ipCount.textContent = ips.length + ' IPs';
+        totalCount.textContent = ips.length;
+        successCount.textContent = '—';
+        failCount.textContent = '—';
+      });
+    }
 
     function getIPs() {
       return ipsTextarea.value.split('\n').map(i => i.trim()).filter(Boolean);
@@ -734,8 +1425,6 @@
     function setTimestamp() {
       timestamp.textContent = new Date().toLocaleTimeString();
     }
-    setTimestamp();
-    setInterval(setTimestamp, 30000);
 
     function clearAll() {
       ipsTextarea.value = '';
@@ -758,6 +1447,7 @@
     // FILTER FUNCTION
     // ============================================
     function filterResults(filter) {
+      currentFilter = filter;
       var items = document.querySelectorAll('.result-item');
       var visibleCount = 0;
 
@@ -778,7 +1468,6 @@
         }
       }
 
-      // Update filter buttons
       var btns = document.querySelectorAll('.filter-btn');
       for (var j = 0; j < btns.length; j++) {
         var btn = btns[j];
@@ -788,7 +1477,6 @@
         }
       }
 
-      // Show/hide no results message
       var noResults = document.querySelector('.no-results');
       if (noResults) {
         if (visibleCount === 0 && items.length > 0) {
@@ -883,7 +1571,6 @@
         let success = 0;
         let fail = 0;
 
-        // Build filter buttons
         let html = '';
         html += '<div class="filter-buttons">';
         html += '<button class="filter-btn active-all" data-filter="all" onclick="filterResults(\'all\')">📊 All (' + data.total + ')</button>';
@@ -915,7 +1602,6 @@
         html += '</div>';
         resultDiv.innerHTML = html;
 
-        // Update filter counts
         var btns = document.querySelectorAll('.filter-btn');
         for (var j = 0; j < btns.length; j++) {
           var btn = btns[j];
@@ -931,6 +1617,7 @@
         showProgress('✅ Complete! ' + data.successful + '/' + data.total + ' successful', false);
 
         try {
+          const tg = window.Telegram.WebApp;
           tg.sendData(JSON.stringify({ total: data.total, successful: data.successful, failed: data.total - data.successful }));
         } catch(e) {}
 
@@ -944,10 +1631,9 @@
       adoptBtn.innerHTML = '🚀 Adopt All APs';
     }
 
-    // Init
-    ipsTextarea.dispatchEvent(new Event('input'));
-
-    // Keyboard shortcut
+    // ============================================
+    // KEYBOARD SHORTCUT
+    // ============================================
     ipsTextarea.addEventListener('keydown', function(e) {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
@@ -955,7 +1641,10 @@
       }
     });
 
-    console.log('✅ UniFi Bulk AP Adopter loaded successfully!');
+    // ============================================
+    // INIT
+    // ============================================
+    init();
   </script>
 </body>
 </html>
