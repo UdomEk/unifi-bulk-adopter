@@ -57,12 +57,15 @@
       background: linear-gradient(135deg, #0068b5, #004a8a);
       border-radius: 14px;
       box-shadow: 0 4px 20px rgba(0, 104, 181, 0.3);
+      overflow: hidden;
       padding: 6px;
     }
 
-    .header-logo svg {
+    .header-logo img {
       width: 100%;
       height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
     }
 
     .header h1 {
@@ -499,14 +502,10 @@
   <div class="container">
     <div class="card">
 
-      <!-- HEADER with Logo -->
+      <!-- HEADER with Logo from GitHub -->
       <div class="header">
         <div class="header-logo">
-          <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-            <rect width="400" height="400" rx="40" fill="#0068b5"/>
-            <text x="50" y="200" font-family="Arial, sans-serif" font-size="72" font-weight="700" fill="white" letter-spacing="8">FOOTPRINTS</text>
-            <text x="60" y="290" font-family="Arial, sans-serif" font-size="42" font-weight="300" fill="white" letter-spacing="12">INTERNATIONAL SCHOOL</text>
-          </svg>
+          <img src="https://raw.githubusercontent.com/ekmagazine/unifi-bulk-adopter/main/Logo.png" alt="FOOTPRINTS INTERNATIONAL SCHOOL">
         </div>
         <div>
           <h1><span class="unifi-text">UniFi</span> Bulk AP Adopter <span class="badge">v2.0</span></h1>
