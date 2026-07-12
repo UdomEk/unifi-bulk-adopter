@@ -774,6 +774,44 @@
       transition: all 0.2s ease;
     }
 
+    /* ===== REFRESH BUTTON ===== */
+    .refresh-bar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 10px;
+    }
+
+    .refresh-bar .refresh-btn {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.03);
+      color: #888;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .refresh-bar .refresh-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .refresh-bar .refresh-btn:active {
+      transform: scale(0.95);
+    }
+
+    .refresh-bar .last-sync {
+      font-size: 11px;
+      color: #555;
+    }
+
     /* ===== USER MANAGEMENT ===== */
     .admin-section {
       margin-top: 20px;
@@ -1243,6 +1281,8 @@
       .change-pin-screen .pin-btn { padding: 14px; font-size: 20px; }
       .user-selector .user-option { padding: 10px 14px; }
       .user-selector .user-option .info .name { font-size: 13px; }
+      .refresh-bar .last-sync { font-size: 10px; }
+      .refresh-bar .refresh-btn { font-size: 11px; padding: 4px 12px; }
     }
 
     @media (max-width: 380px) {
@@ -1480,6 +1520,14 @@
             <span class="badge-admin">Super Admin Only</span>
           </div>
 
+          <!-- Refresh Bar -->
+          <div class="refresh-bar">
+            <span class="last-sync" id="lastSync">Last sync: just now</span>
+            <button class="refresh-btn" onclick="syncUsers()">
+              🔄 Sync Now
+            </button>
+          </div>
+
           <div class="user-list" id="userList"></div>
 
           <div class="add-user-form">
@@ -1579,6 +1627,48 @@
     }
 
     // ============================================
+    // SYNC USERS FROM SUPABASE
+    // ============================================
+    async function syncUsers() {
+      if (isLoading) return;
+      isLoading = true;
+      
+      const syncBtn = document.querySelector('.refresh-btn');
+      const originalText = syncBtn.innerHTML;
+      syncBtn.innerHTML = '⏳ Syncing...';
+      syncBtn.disabled = true;
+      
+      try {
+        const data = await supabaseFetch('users?select=*');
+        if (data && data.length > 0) {
+          users = data;
+        } else {
+          // Create Super Admin if no users
+          await supabaseFetch('users', {
+            method: 'POST',
+            body: JSON.stringify(SUPER_ADMIN)
+          });
+          users = [SUPER_ADMIN];
+        }
+        saveUsersToLocalStorage(users);
+        renderUserSelector();
+        renderUserList();
+        renderLoginUserList();
+        
+        document.getElementById('lastSync').textContent = 'Last sync: ' + new Date().toLocaleTimeString();
+        showToast('✅ Users synced from cloud!', 'success');
+        console.log('✅ Synced users:', users.length);
+      } catch (error) {
+        console.error('Sync error:', error);
+        showToast('❌ Sync failed. Check connection.', 'error');
+      } finally {
+        isLoading = false;
+        syncBtn.innerHTML = originalText;
+        syncBtn.disabled = false;
+      }
+    }
+
+    // ============================================
     // LOAD USERS
     // ============================================
     async function loadUsersFromSupabase() {
@@ -1587,7 +1677,6 @@
         if (data && data.length > 0) {
           return data;
         }
-        // If no data or error, create default Super Admin
         await supabaseFetch('users', {
           method: 'POST',
           body: JSON.stringify(SUPER_ADMIN)
@@ -1820,7 +1909,9 @@
       renderUserList();
       renderLoginUserList();
       
+      document.getElementById('lastSync').textContent = 'Last sync: just now';
       showToast('✅ User "' + name + '" added with PIN: ' + pin + (needsPinChange ? ' (must change on first login)' : ''), 'success');
+      console.log('✅ User added to cloud:', newUser);
     }
 
     async function removeUser(userId) {
@@ -1867,7 +1958,7 @@
       renderUserSelector();
       renderUserList();
       renderLoginUserList();
-      showToast('✅ PIN reset to 0000 for ' + user.name + '. They must change it on next login.', 'success');
+      showToast('✅ PIN reset to 0000 for ' + user.name, 'success');
     }
 
     async function resetAllUsers() {
@@ -2458,27 +2549,39 @@
     // ============================================
     async function init() {
       try {
-        await loadUsers();
+        // Load from Supabase first
+        const data = await supabaseFetch('users?select=*');
+        if (data && data.length > 0) {
+          users = data;
+        } else {
+          await supabaseFetch('users', {
+            method: 'POST',
+            body: JSON.stringify(SUPER_ADMIN)
+          });
+          users = [SUPER_ADMIN];
+        }
+        saveUsersToLocalStorage(users);
         renderUserSelector();
         renderUserList();
         renderLoginUserList();
         setTimestamp();
         setInterval(setTimestamp, 30000);
         setupIPCount();
+        document.getElementById('lastSync').textContent = 'Last sync: just now';
         console.log('✅ UniFi Bulk AP Adopter loaded with Supabase!');
         console.log('👑 Super Admin: Udom Ek (@UdomEk)');
         console.log('👥 Total Users: ' + users.length);
       } catch (error) {
         console.error('Init error:', error);
-        document.getElementById('loginScreen').innerHTML = `
-          <div style="padding:40px 20px;text-align:center;">
-            <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
-            <h2 style="color:#fff;margin-bottom:8px;">Connection Error</h2>
-            <p style="color:#888;font-size:14px;">Could not connect to database. Please check your internet connection.</p>
-            <p style="color:#666;font-size:12px;margin-top:8px;">Error: ${error.message}</p>
-            <button onclick="location.reload()" style="margin-top:16px;padding:12px 30px;background:#0068b5;color:#fff;border:none;border-radius:10px;font-size:14px;cursor:pointer;">🔄 Retry</button>
-          </div>
-        `;
+        // Fallback to localStorage
+        users = loadUsersFromLocalStorage();
+        renderUserSelector();
+        renderUserList();
+        renderLoginUserList();
+        setTimestamp();
+        setInterval(setTimestamp, 30000);
+        setupIPCount();
+        console.log('⚠️ Using localStorage fallback');
       }
     }
 
