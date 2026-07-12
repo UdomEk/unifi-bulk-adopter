@@ -1525,7 +1525,7 @@
     // ============================================
 
     // ============================================
-    // SUPER ADMIN (Your username: @UdomEk)
+    // SUPER ADMIN
     // ============================================
     const SUPER_ADMIN = {
       id: 'super-admin-1',
@@ -1561,58 +1561,41 @@
         'Prefer': 'return=representation'
       };
       
-      const response = await fetch(url, {
-        ...options,
-        headers: { ...headers, ...options.headers }
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Supabase error: ${response.status}`);
+      try {
+        const response = await fetch(url, {
+          ...options,
+          headers: { ...headers, ...options.headers }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Supabase error: ${response.status}`);
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error('Supabase fetch error:', error);
+        return null;
       }
-      
-      return response.json();
     }
 
     // ============================================
-    // LOAD USERS FROM SUPABASE
+    // LOAD USERS
     // ============================================
     async function loadUsersFromSupabase() {
       try {
         const data = await supabaseFetch('users?select=*');
-        if (data.length === 0) {
-          // Create default Super Admin with @UdomEk
-          await supabaseFetch('users', {
-            method: 'POST',
-            body: JSON.stringify(SUPER_ADMIN)
-          });
-          return [SUPER_ADMIN];
+        if (data && data.length > 0) {
+          return data;
         }
-        return data;
-      } catch (error) {
-        console.error('Error loading users from Supabase:', error);
-        return loadUsersFromLocalStorage();
-      }
-    }
-
-    async function saveUsersToSupabase(usersToSave) {
-      try {
-        // Delete all existing users (except Super Admin)
-        await supabaseFetch('users?role=neq.super-admin', {
-          method: 'DELETE'
+        // If no data or error, create default Super Admin
+        await supabaseFetch('users', {
+          method: 'POST',
+          body: JSON.stringify(SUPER_ADMIN)
         });
-        
-        // Insert all users (except Super Admin)
-        const usersToInsert = usersToSave.filter(u => u.id !== 'super-admin-1');
-        if (usersToInsert.length > 0) {
-          await supabaseFetch('users', {
-            method: 'POST',
-            body: JSON.stringify(usersToInsert)
-          });
-        }
-        return true;
+        return [SUPER_ADMIN];
       } catch (error) {
-        console.error('Error saving users to Supabase:', error);
-        return false;
+        console.error('Error loading users:', error);
+        return loadUsersFromLocalStorage();
       }
     }
 
@@ -1642,7 +1625,7 @@
       const container = document.getElementById('userSelector');
       if (!container) return;
 
-      if (users.length === 0) {
+      if (!users || users.length === 0) {
         container.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">No users found</div>';
         return;
       }
@@ -1705,7 +1688,7 @@
     function renderLoginUserList() {
       const container = document.getElementById('loginUserList');
       if (!container) return;
-      if (users.length === 0) {
+      if (!users || users.length === 0) {
         container.innerHTML = '<div style="color:#666;font-size:13px;">No users registered</div>';
         return;
       }
@@ -1726,7 +1709,7 @@
     function renderUserList() {
       const list = document.getElementById('userList');
       if (!list) return;
-      if (users.length === 0) {
+      if (!users || users.length === 0) {
         list.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">No users found</div>';
         return;
       }
@@ -1761,15 +1744,14 @@
     }
 
     // ============================================
-    // USER CRUD OPERATIONS
+    // USER OPERATIONS
     // ============================================
     async function loadUsers() {
       if (isLoading) return;
       isLoading = true;
       
       try {
-        const loadedUsers = await loadUsersFromSupabase();
-        users = loadedUsers;
+        users = await loadUsersFromSupabase();
         saveUsersToLocalStorage(users);
         renderUserSelector();
         renderUserList();
@@ -1777,24 +1759,6 @@
         console.log('✅ Users loaded:', users.length);
       } catch (error) {
         console.error('Load users error:', error);
-      } finally {
-        isLoading = false;
-      }
-    }
-
-    async function saveUsers() {
-      if (isLoading) return;
-      isLoading = true;
-      
-      try {
-        await saveUsersToSupabase(users);
-        saveUsersToLocalStorage(users);
-        renderUserSelector();
-        renderUserList();
-        renderLoginUserList();
-        console.log('✅ Users saved:', users.length);
-      } catch (error) {
-        console.error('Save users error:', error);
       } finally {
         isLoading = false;
       }
@@ -1842,7 +1806,11 @@
       };
 
       users.push(newUser);
-      await saveUsers();
+      await supabaseFetch('users', {
+        method: 'POST',
+        body: JSON.stringify(newUser)
+      });
+      saveUsersToLocalStorage(users);
       
       nameInput.value = '';
       telegramInput.value = '';
@@ -1865,7 +1833,10 @@
       if (!confirm('Remove user "' + user.name + '"?')) return;
       
       users = users.filter(u => u.id !== userId);
-      await saveUsers();
+      await supabaseFetch(`users?id=eq.${userId}`, {
+        method: 'DELETE'
+      });
+      saveUsersToLocalStorage(users);
       
       renderUserSelector();
       renderUserList();
@@ -1887,7 +1858,11 @@
       
       user.pin = '0000';
       user.needsPinChange = true;
-      await saveUsers();
+      await supabaseFetch(`users?id=eq.${userId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ pin: '0000', needsPinChange: true })
+      });
+      saveUsersToLocalStorage(users);
       
       renderUserSelector();
       renderUserList();
@@ -1898,7 +1873,10 @@
     async function resetAllUsers() {
       if (!confirm('Reset all users? Only Super Admin will remain.')) return;
       users = [SUPER_ADMIN];
-      await saveUsers();
+      await supabaseFetch('users?role=neq.super-admin', {
+        method: 'DELETE'
+      });
+      saveUsersToLocalStorage(users);
       
       renderUserSelector();
       renderUserList();
@@ -1911,7 +1889,10 @@
     async function clearAllData() {
       if (!confirm('⚠️ Clear ALL data including adoption history?')) return;
       users = [SUPER_ADMIN];
-      await saveUsers();
+      await supabaseFetch('users?role=neq.super-admin', {
+        method: 'DELETE'
+      });
+      saveUsersToLocalStorage(users);
       
       renderUserSelector();
       renderUserList();
@@ -2062,7 +2043,11 @@
         if (user) {
           user.pin = changePinBuffer;
           user.needsPinChange = false;
-          await saveUsers();
+          supabaseFetch(`users?id=eq.${user.id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({ pin: changePinBuffer, needsPinChange: false })
+          });
+          saveUsersToLocalStorage(users);
           success.textContent = '✅ PIN updated successfully!';
           currentUser = user;
           
