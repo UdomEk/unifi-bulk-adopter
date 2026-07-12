@@ -774,13 +774,14 @@
       transition: all 0.2s ease;
     }
 
-    /* ===== REFRESH BUTTON ===== */
+    /* ===== REFRESH BAR ===== */
     .refresh-bar {
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .refresh-bar .refresh-btn {
@@ -801,10 +802,6 @@
     .refresh-bar .refresh-btn:hover {
       background: rgba(255, 255, 255, 0.08);
       color: #fff;
-    }
-
-    .refresh-bar .refresh-btn:active {
-      transform: scale(0.95);
     }
 
     .refresh-bar .last-sync {
@@ -1523,9 +1520,7 @@
           <!-- Refresh Bar -->
           <div class="refresh-bar">
             <span class="last-sync" id="lastSync">Last sync: just now</span>
-            <button class="refresh-btn" onclick="syncUsers()">
-              🔄 Sync Now
-            </button>
+            <button class="refresh-btn" onclick="syncUsers()">🔄 Sync Now</button>
           </div>
 
           <div class="user-list" id="userList"></div>
@@ -1566,10 +1561,11 @@
 
   <script>
     // ============================================
-    // ⚙️ SUPABASE CONFIGURATION
+    // ⚙️ SUPABASE CONFIGURATION (FIXED!)
     // ============================================
     const SUPABASE_URL = 'https://mdkvuigyskzmufuhaeqf.supabase.co';
-    const SUPABASE_KEY = 'sbp_0d3d4765600aad504ede7a8b599e84dc1bb82e92';
+    // 🔑 This is your ANON key - correct one!
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ka3Z1aWd5c2t6bXVmdWhhZXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4MzA4NTgsImV4cCI6MjA5OTQwNjg1OH0.cQKv25Gjdi0Vq2xjLY4Pv3KpVZmDJnZ-4p9EvaniuRE';
     // ============================================
 
     // ============================================
@@ -1609,62 +1605,25 @@
         'Prefer': 'return=representation'
       };
       
+      console.log('📡 Supabase request:', url);
+      
       try {
         const response = await fetch(url, {
           ...options,
           headers: { ...headers, ...options.headers }
         });
         
+        const text = await response.text();
+        console.log('📡 Response status:', response.status);
+        
         if (!response.ok) {
-          throw new Error(`Supabase error: ${response.status}`);
+          throw new Error(`Supabase error: ${response.status} - ${text}`);
         }
         
-        return await response.json();
+        return text ? JSON.parse(text) : null;
       } catch (error) {
-        console.error('Supabase fetch error:', error);
+        console.error('❌ Supabase fetch error:', error);
         return null;
-      }
-    }
-
-    // ============================================
-    // SYNC USERS FROM SUPABASE
-    // ============================================
-    async function syncUsers() {
-      if (isLoading) return;
-      isLoading = true;
-      
-      const syncBtn = document.querySelector('.refresh-btn');
-      const originalText = syncBtn.innerHTML;
-      syncBtn.innerHTML = '⏳ Syncing...';
-      syncBtn.disabled = true;
-      
-      try {
-        const data = await supabaseFetch('users?select=*');
-        if (data && data.length > 0) {
-          users = data;
-        } else {
-          // Create Super Admin if no users
-          await supabaseFetch('users', {
-            method: 'POST',
-            body: JSON.stringify(SUPER_ADMIN)
-          });
-          users = [SUPER_ADMIN];
-        }
-        saveUsersToLocalStorage(users);
-        renderUserSelector();
-        renderUserList();
-        renderLoginUserList();
-        
-        document.getElementById('lastSync').textContent = 'Last sync: ' + new Date().toLocaleTimeString();
-        showToast('✅ Users synced from cloud!', 'success');
-        console.log('✅ Synced users:', users.length);
-      } catch (error) {
-        console.error('Sync error:', error);
-        showToast('❌ Sync failed. Check connection.', 'error');
-      } finally {
-        isLoading = false;
-        syncBtn.innerHTML = originalText;
-        syncBtn.disabled = false;
       }
     }
 
@@ -1672,18 +1631,21 @@
     // LOAD USERS
     // ============================================
     async function loadUsersFromSupabase() {
+      console.log('📥 Loading users from Supabase...');
       try {
         const data = await supabaseFetch('users?select=*');
         if (data && data.length > 0) {
+          console.log('✅ Loaded users:', data.length);
           return data;
         }
+        console.log('📝 No users found, creating Super Admin...');
         await supabaseFetch('users', {
           method: 'POST',
           body: JSON.stringify(SUPER_ADMIN)
         });
         return [SUPER_ADMIN];
       } catch (error) {
-        console.error('Error loading users:', error);
+        console.error('❌ Error loading users:', error);
         return loadUsersFromLocalStorage();
       }
     }
@@ -1705,6 +1667,120 @@
       try {
         localStorage.setItem('unifi_users', JSON.stringify(usersToSave));
       } catch(e) {}
+    }
+
+    // ============================================
+    // ADD USER (WITH DEBUG)
+    // ============================================
+    async function addUser() {
+      const nameInput = document.getElementById('newUserName');
+      const telegramInput = document.getElementById('newUserTelegram');
+      const roleSelect = document.getElementById('newUserRole');
+      const pinInput = document.getElementById('newUserPin');
+      
+      const name = nameInput.value.trim();
+      const telegram = telegramInput.value.trim();
+      const customPin = pinInput.value.trim();
+      
+      console.log('📝 Adding user:', { name, telegram, customPin });
+      
+      if (!name) {
+        showToast('Please enter a username.', 'error');
+        return;
+      }
+      
+      if (users.some(u => u.name.toLowerCase() === name.toLowerCase())) {
+        showToast('User already exists!', 'error');
+        return;
+      }
+      
+      let pin = '0000';
+      let needsPinChange = true;
+      
+      if (customPin) {
+        if (!/^\d{4}$/.test(customPin)) {
+          showToast('PIN must be exactly 4 digits.', 'error');
+          return;
+        }
+        pin = customPin;
+        needsPinChange = false;
+      }
+      
+      const newUser = {
+        id: 'user-' + Date.now(),
+        name: name,
+        telegram: telegram || '',
+        role: roleSelect.value,
+        pin: pin,
+        needsPinChange: needsPinChange
+      };
+
+      console.log('📤 Sending to Supabase:', JSON.stringify(newUser));
+
+      try {
+        const result = await supabaseFetch('users', {
+          method: 'POST',
+          body: JSON.stringify(newUser)
+        });
+        
+        console.log('✅ Supabase response:', result);
+        
+        users.push(newUser);
+        saveUsersToLocalStorage(users);
+        
+        nameInput.value = '';
+        telegramInput.value = '';
+        pinInput.value = '';
+        
+        renderUserSelector();
+        renderUserList();
+        renderLoginUserList();
+        
+        showToast('✅ User "' + name + '" added with PIN: ' + pin, 'success');
+        console.log('✅ User added successfully!');
+      } catch (error) {
+        console.error('❌ Error adding user:', error);
+        showToast('❌ Failed to add user: ' + error.message, 'error');
+      }
+    }
+
+    // ============================================
+    // SYNC USERS
+    // ============================================
+    async function syncUsers() {
+      if (isLoading) return;
+      isLoading = true;
+      
+      const syncBtn = document.querySelector('.refresh-btn');
+      if (syncBtn) {
+        syncBtn.innerHTML = '⏳ Syncing...';
+        syncBtn.disabled = true;
+      }
+      
+      try {
+        const data = await supabaseFetch('users?select=*');
+        if (data && data.length > 0) {
+          users = data;
+          saveUsersToLocalStorage(users);
+          renderUserSelector();
+          renderUserList();
+          renderLoginUserList();
+          document.getElementById('lastSync').textContent = 'Last sync: ' + new Date().toLocaleTimeString();
+          showToast('✅ Synced ' + users.length + ' users from cloud!', 'success');
+          console.log('✅ Synced users:', users.length);
+        } else {
+          showToast('⚠️ No users found in cloud.', 'error');
+        }
+      } catch (error) {
+        console.error('❌ Sync error:', error);
+        showToast('❌ Sync failed: ' + error.message, 'error');
+      } finally {
+        isLoading = false;
+        if (syncBtn) {
+          syncBtn.innerHTML = '🔄 Sync Now';
+          syncBtn.disabled = false;
+        }
+      }
     }
 
     // ============================================
@@ -1833,87 +1909,8 @@
     }
 
     // ============================================
-    // USER OPERATIONS
+    // REMOVE USER
     // ============================================
-    async function loadUsers() {
-      if (isLoading) return;
-      isLoading = true;
-      
-      try {
-        users = await loadUsersFromSupabase();
-        saveUsersToLocalStorage(users);
-        renderUserSelector();
-        renderUserList();
-        renderLoginUserList();
-        console.log('✅ Users loaded:', users.length);
-      } catch (error) {
-        console.error('Load users error:', error);
-      } finally {
-        isLoading = false;
-      }
-    }
-
-    async function addUser() {
-      const nameInput = document.getElementById('newUserName');
-      const telegramInput = document.getElementById('newUserTelegram');
-      const roleSelect = document.getElementById('newUserRole');
-      const pinInput = document.getElementById('newUserPin');
-      
-      const name = nameInput.value.trim();
-      const telegram = telegramInput.value.trim();
-      const customPin = pinInput.value.trim();
-      
-      if (!name) {
-        showToast('Please enter a username.', 'error');
-        return;
-      }
-      
-      if (users.some(u => u.name.toLowerCase() === name.toLowerCase())) {
-        showToast('User already exists!', 'error');
-        return;
-      }
-      
-      let pin = '0000';
-      let needsPinChange = true;
-      
-      if (customPin) {
-        if (!/^\d{4}$/.test(customPin)) {
-          showToast('PIN must be exactly 4 digits.', 'error');
-          return;
-        }
-        pin = customPin;
-        needsPinChange = false;
-      }
-      
-      const newUser = {
-        id: 'user-' + Date.now(),
-        name: name,
-        telegram: telegram || '',
-        role: roleSelect.value,
-        pin: pin,
-        needsPinChange: needsPinChange
-      };
-
-      users.push(newUser);
-      await supabaseFetch('users', {
-        method: 'POST',
-        body: JSON.stringify(newUser)
-      });
-      saveUsersToLocalStorage(users);
-      
-      nameInput.value = '';
-      telegramInput.value = '';
-      pinInput.value = '';
-      
-      renderUserSelector();
-      renderUserList();
-      renderLoginUserList();
-      
-      document.getElementById('lastSync').textContent = 'Last sync: just now';
-      showToast('✅ User "' + name + '" added with PIN: ' + pin + (needsPinChange ? ' (must change on first login)' : ''), 'success');
-      console.log('✅ User added to cloud:', newUser);
-    }
-
     async function removeUser(userId) {
       if (userId === 'super-admin-1') {
         showToast('Cannot remove the Super Admin.', 'error');
@@ -1939,6 +1936,9 @@
       showToast('✅ User removed.', 'success');
     }
 
+    // ============================================
+    // RESET PIN
+    // ============================================
     async function resetUserPin(userId) {
       const user = users.find(u => u.id === userId);
       if (!user) {
@@ -1961,6 +1961,9 @@
       showToast('✅ PIN reset to 0000 for ' + user.name, 'success');
     }
 
+    // ============================================
+    // RESET ALL USERS
+    // ============================================
     async function resetAllUsers() {
       if (!confirm('Reset all users? Only Super Admin will remain.')) return;
       users = [SUPER_ADMIN];
@@ -1977,6 +1980,9 @@
       showToast('✅ All users reset.', 'success');
     }
 
+    // ============================================
+    // CLEAR ALL DATA
+    // ============================================
     async function clearAllData() {
       if (!confirm('⚠️ Clear ALL data including adoption history?')) return;
       users = [SUPER_ADMIN];
