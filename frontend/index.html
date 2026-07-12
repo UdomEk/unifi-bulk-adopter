@@ -1525,6 +1525,18 @@
     // ============================================
 
     // ============================================
+    // STATE
+    // ============================================
+    let currentUser = null;
+    let selectedUserId = null;
+    let pinBuffer = '';
+    let changePinBuffer = '';
+    let users = [];
+    let currentFilter = 'all';
+    let pendingUser = null;
+    let isLoading = false;
+
+    // ============================================
     // SUPABASE API FUNCTIONS
     // ============================================
     async function supabaseFetch(endpoint, options = {}) {
@@ -1555,6 +1567,7 @@
       try {
         const data = await supabaseFetch('users?select=*');
         if (data.length === 0) {
+          // Create default Super Admin
           await supabaseFetch('users', {
             method: 'POST',
             body: JSON.stringify({
@@ -1569,7 +1582,7 @@
           return [{
             id: 'super-admin-1',
             name: 'Udom Ek',
-            telegram: '@udomek',
+            telegram: '@UdomEk',
             role: 'super-admin',
             pin: '1234',
             needsPinChange: false
@@ -1582,21 +1595,25 @@
       }
     }
 
-    async function saveUsersToSupabase(users) {
+    async function saveUsersToSupabase(usersToSave) {
       try {
+        // Delete all existing users (except Super Admin)
         await supabaseFetch('users?role=neq.super-admin', {
           method: 'DELETE'
         });
         
-        const usersToInsert = users.filter(u => u.role !== 'super-admin');
+        // Insert all users (except Super Admin)
+        const usersToInsert = usersToSave.filter(u => u.role !== 'super-admin');
         if (usersToInsert.length > 0) {
           await supabaseFetch('users', {
             method: 'POST',
             body: JSON.stringify(usersToInsert)
           });
         }
+        return true;
       } catch (error) {
         console.error('Error saving users to Supabase:', error);
+        return false;
       }
     }
 
@@ -1604,18 +1621,10 @@
       try {
         const saved = localStorage.getItem('unifi_users');
         if (saved) {
-          const users = JSON.parse(saved);
-          if (!users.find(u => u.id === 'super-admin-1')) {
-            users.push({
-              id: 'super-admin-1',
-              name: 'Udom Ek',
-              telegram: '@udomek',
-              role: 'super-admin',
-              pin: '1234',
-              needsPinChange: false
-            });
+          const parsed = JSON.parse(saved);
+          if (parsed.length > 0) {
+            return parsed;
           }
-          return users;
         }
       } catch(e) {}
       return [{
@@ -1628,20 +1637,11 @@
       }];
     }
 
-    function saveUsersToLocalStorage(users) {
-      localStorage.setItem('unifi_users', JSON.stringify(users));
+    function saveUsersToLocalStorage(usersToSave) {
+      try {
+        localStorage.setItem('unifi_users', JSON.stringify(usersToSave));
+      } catch(e) {}
     }
-
-    // ============================================
-    // STATE
-    // ============================================
-    let currentUser = null;
-    let selectedUserId = null;
-    let pinBuffer = '';
-    let changePinBuffer = '';
-    let users = [];
-    let currentFilter = 'all';
-    let pendingUser = null;
 
     // ============================================
     // RENDER FUNCTIONS
@@ -1678,7 +1678,7 @@
       });
       container.innerHTML = html;
 
-      if (users.length === 1) {
+      if (users.length === 1 && !selectedUserId) {
         selectUser(users[0].id);
       }
 
@@ -1772,16 +1772,40 @@
     // USER CRUD OPERATIONS
     // ============================================
     async function loadUsers() {
-      users = await loadUsersFromSupabase();
-      saveUsersToLocalStorage(users);
-      renderUserSelector();
-      renderUserList();
-      renderLoginUserList();
+      if (isLoading) return;
+      isLoading = true;
+      
+      try {
+        const loadedUsers = await loadUsersFromSupabase();
+        users = loadedUsers;
+        saveUsersToLocalStorage(users);
+        renderUserSelector();
+        renderUserList();
+        renderLoginUserList();
+        console.log('✅ Users loaded:', users.length);
+      } catch (error) {
+        console.error('Load users error:', error);
+      } finally {
+        isLoading = false;
+      }
     }
 
     async function saveUsers() {
-      await saveUsersToSupabase(users);
-      saveUsersToLocalStorage(users);
+      if (isLoading) return;
+      isLoading = true;
+      
+      try {
+        await saveUsersToSupabase(users);
+        saveUsersToLocalStorage(users);
+        renderUserSelector();
+        renderUserList();
+        renderLoginUserList();
+        console.log('✅ Users saved:', users.length);
+      } catch (error) {
+        console.error('Save users error:', error);
+      } finally {
+        isLoading = false;
+      }
     }
 
     async function addUser() {
