@@ -1525,6 +1525,19 @@
     // ============================================
 
     // ============================================
+    // SUPER ADMIN (Your username: @UdomEk)
+    // ============================================
+    const SUPER_ADMIN = {
+      id: 'super-admin-1',
+      name: 'Udom Ek',
+      telegram: '@UdomEk',
+      role: 'super-admin',
+      pin: '1234',
+      needsPinChange: false
+    };
+    // ============================================
+
+    // ============================================
     // STATE
     // ============================================
     let currentUser = null;
@@ -1567,26 +1580,12 @@
       try {
         const data = await supabaseFetch('users?select=*');
         if (data.length === 0) {
-          // Create default Super Admin
+          // Create default Super Admin with @UdomEk
           await supabaseFetch('users', {
             method: 'POST',
-            body: JSON.stringify({
-              id: 'super-admin-1',
-              name: 'Udom Ek',
-              telegram: '@UdomEk',
-              role: 'super-admin',
-              pin: '1234',
-              needsPinChange: false
-            })
+            body: JSON.stringify(SUPER_ADMIN)
           });
-          return [{
-            id: 'super-admin-1',
-            name: 'Udom Ek',
-            telegram: '@UdomEk',
-            role: 'super-admin',
-            pin: '1234',
-            needsPinChange: false
-          }];
+          return [SUPER_ADMIN];
         }
         return data;
       } catch (error) {
@@ -1603,7 +1602,7 @@
         });
         
         // Insert all users (except Super Admin)
-        const usersToInsert = usersToSave.filter(u => u.role !== 'super-admin');
+        const usersToInsert = usersToSave.filter(u => u.id !== 'super-admin-1');
         if (usersToInsert.length > 0) {
           await supabaseFetch('users', {
             method: 'POST',
@@ -1627,14 +1626,7 @@
           }
         }
       } catch(e) {}
-      return [{
-        id: 'super-admin-1',
-        name: 'Udom Ek',
-        telegram: '@udomek',
-        role: 'super-admin',
-        pin: '1234',
-        needsPinChange: false
-      }];
+      return [SUPER_ADMIN];
     }
 
     function saveUsersToLocalStorage(usersToSave) {
@@ -1905,14 +1897,7 @@
 
     async function resetAllUsers() {
       if (!confirm('Reset all users? Only Super Admin will remain.')) return;
-      users = [{
-        id: 'super-admin-1',
-        name: 'Udom Ek',
-        telegram: '@udomek',
-        role: 'super-admin',
-        pin: '1234',
-        needsPinChange: false
-      }];
+      users = [SUPER_ADMIN];
       await saveUsers();
       
       renderUserSelector();
@@ -1925,14 +1910,7 @@
 
     async function clearAllData() {
       if (!confirm('⚠️ Clear ALL data including adoption history?')) return;
-      users = [{
-        id: 'super-admin-1',
-        name: 'Udom Ek',
-        telegram: '@udomek',
-        role: 'super-admin',
-        pin: '1234',
-        needsPinChange: false
-      }];
+      users = [SUPER_ADMIN];
       await saveUsers();
       
       renderUserSelector();
@@ -2084,7 +2062,7 @@
         if (user) {
           user.pin = changePinBuffer;
           user.needsPinChange = false;
-          saveUsers();
+          await saveUsers();
           success.textContent = '✅ PIN updated successfully!';
           currentUser = user;
           
@@ -2503,11 +2481,10 @@
         setInterval(setTimestamp, 30000);
         setupIPCount();
         console.log('✅ UniFi Bulk AP Adopter loaded with Supabase!');
-        console.log('👑 Super Admin: Udom Ek (@udomek)');
+        console.log('👑 Super Admin: Udom Ek (@UdomEk)');
         console.log('👥 Total Users: ' + users.length);
       } catch (error) {
         console.error('Init error:', error);
-        // Show error on page
         document.getElementById('loginScreen').innerHTML = `
           <div style="padding:40px 20px;text-align:center;">
             <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
