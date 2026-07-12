@@ -6,1544 +6,138 @@
   <title>UniFi Bulk AP Adopter</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #0a0a0f;
-      color: #e0e0e0;
-      min-height: 100vh;
-      padding: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding-bottom: 80px;
-    }
-
-    .container {
-      max-width: 640px;
-      width: 100%;
-      margin: 0 auto;
-    }
-
-    .card {
-      background: linear-gradient(145deg, #14141e, #1a1a2e);
-      border-radius: 24px;
-      padding: 28px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.04);
-    }
-
-    /* ===== LOGIN SCREEN ===== */
-    .login-screen {
-      text-align: center;
-      padding: 20px 0;
-    }
-
-    .login-screen .lock-icon {
-      font-size: 60px;
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    .login-screen h2 {
-      font-size: 24px;
-      color: #ffffff;
-      margin-bottom: 8px;
-    }
-
-    .login-screen .subtitle {
-      color: #888;
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
-
-    /* ===== USER SELECTOR ===== */
-    .user-selector {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 24px;
-      max-height: 250px;
-      overflow-y: auto;
-    }
-
-    .user-selector .user-option {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 12px;
-      border: 2px solid rgba(255, 255, 255, 0.04);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .user-selector .user-option:hover {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(255, 255, 255, 0.08);
-    }
-
-    .user-selector .user-option.active {
-      border-color: #0068b5;
-      background: rgba(0, 104, 181, 0.08);
-      box-shadow: 0 0 20px rgba(0, 104, 181, 0.1);
-    }
-
-    .user-selector .user-option .avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #0068b5, #004a8a);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 700;
-      color: #fff;
-      flex-shrink: 0;
-    }
-
-    .user-selector .user-option .info {
-      flex: 1;
-      text-align: left;
-    }
-
-    .user-selector .user-option .info .name {
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .user-selector .user-option .info .telegram {
-      font-size: 12px;
-      color: #666;
-    }
-
-    .user-selector .user-option .info .role-tag {
-      font-size: 10px;
-      padding: 2px 10px;
-      border-radius: 10px;
-      font-weight: 600;
-      margin-left: 8px;
-    }
-
-    .user-selector .user-option .info .role-tag.super-admin {
-      color: #ff6b00;
-      background: rgba(255, 107, 0, 0.12);
-    }
-
-    .user-selector .user-option .info .role-tag.admin {
-      color: #0068b5;
-      background: rgba(0, 104, 181, 0.12);
-    }
-
-    .user-selector .user-option .check {
-      font-size: 18px;
-      color: #0068b5;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .user-selector .user-option.active .check {
-      opacity: 1;
-    }
-
-    /* ===== PIN DISPLAY ===== */
-    .pin-display {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
-    .pin-dot {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #333;
-      border: 2px solid #444;
-      transition: all 0.3s ease;
-    }
-
-    .pin-dot.filled {
-      background: #0068b5;
-      border-color: #0068b5;
-      box-shadow: 0 0 20px rgba(0, 104, 181, 0.3);
-    }
-
-    .pin-pad {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      max-width: 300px;
-      margin: 0 auto;
-    }
-
-    .pin-btn {
-      padding: 18px;
-      font-size: 24px;
-      font-weight: 600;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 14px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.03);
-      color: #fff;
-      transition: all 0.2s ease;
-    }
-
-    .pin-btn:hover {
-      background: rgba(255, 255, 255, 0.08);
-      transform: scale(1.05);
-    }
-
-    .pin-btn:active {
-      transform: scale(0.95);
-    }
-
-    .pin-btn.empty {
-      background: transparent;
-      cursor: default;
-      border: none;
-    }
-
-    .pin-btn.empty:hover {
-      transform: none;
-    }
-
-    .pin-btn.delete {
-      color: #ef5350;
-    }
-
-    .pin-error {
-      color: #ef5350;
-      font-size: 13px;
-      margin-top: 12px;
-      min-height: 20px;
-    }
-
-    .pin-success {
-      color: #4CAF50;
-      font-size: 13px;
-      margin-top: 12px;
-      min-height: 20px;
-    }
-
-    .login-role {
-      margin-top: 16px;
-      padding: 10px 16px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.04);
-    }
-
-    .login-role .label {
-      font-size: 12px;
-      color: #666;
-      margin-bottom: 8px;
-    }
-
-    .login-role .user-list-display {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      text-align: left;
-    }
-
-    .login-role .user-item-display {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 4px 8px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.02);
-      font-size: 13px;
-      color: #aaa;
-    }
-
-    .login-role .user-item-display .role-badge {
-      font-size: 11px;
-      padding: 1px 8px;
-      border-radius: 10px;
-    }
-
-    .login-role .user-item-display .role-badge.super-admin {
-      color: #ff6b00;
-      border: 1px solid rgba(255, 107, 0, 0.15);
-    }
-
-    .login-role .user-item-display .role-badge.admin {
-      color: #0068b5;
-      border: 1px solid rgba(0, 104, 181, 0.15);
-    }
-
-    /* ===== CHANGE PIN SCREEN ===== */
-    .change-pin-screen {
-      display: none;
-      text-align: center;
-      padding: 20px 0;
-    }
-
-    .change-pin-screen.active {
-      display: block;
-    }
-
-    .change-pin-screen .lock-icon {
-      font-size: 48px;
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    .change-pin-screen h2 {
-      font-size: 22px;
-      color: #ffffff;
-      margin-bottom: 6px;
-    }
-
-    .change-pin-screen p {
-      color: #888;
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
-
-    .change-pin-screen .pin-display {
-      margin-bottom: 16px;
-    }
-
-    .change-pin-screen .pin-hint {
-      font-size: 12px;
-      color: #666;
-      margin-bottom: 8px;
-    }
-
-    .change-pin-screen .skip-btn {
-      padding: 10px 30px;
-      font-size: 14px;
-      font-weight: 600;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 10px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.03);
-      color: #888;
-      transition: all 0.2s ease;
-      margin-top: 12px;
-    }
-
-    .change-pin-screen .skip-btn:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
-    }
-
-    /* ===== MAIN APP ===== */
-    .app-screen {
-      display: none;
-    }
-
-    .app-screen.active {
-      display: block;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 24px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .header-logo {
-      width: 48px;
-      height: 48px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #0068b5, #004a8a);
-      border-radius: 14px;
-      box-shadow: 0 4px 20px rgba(0, 104, 181, 0.3);
-      font-size: 24px;
-    }
-
-    .header-title {
-      flex: 1;
-    }
-
-    .header-title h1 {
-      font-size: 20px;
-      font-weight: 700;
-      color: #ffffff;
-      line-height: 1.2;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .header-title h1 .unifi-text {
-      color: #ffffff;
-    }
-
-    .header-title .subtitle {
-      font-size: 12px;
-      color: #ffffff;
-      margin-top: 2px;
-      opacity: 0.7;
-    }
-
-    .badge {
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.15);
-      color: #ffffff;
-      font-size: 10px;
-      font-weight: 600;
-      padding: 2px 10px;
-      border-radius: 20px;
-    }
-
-    .speed-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: linear-gradient(135deg, #ff6b00, #e65100);
-      color: #fff;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 3px 12px;
-      border-radius: 20px;
-      animation: pulse-glow 2s ease-in-out infinite;
-      box-shadow: 0 0 20px rgba(255, 107, 0, 0.25);
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    .speed-badge .lightning {
-      font-size: 12px;
-      animation: flash 1.5s ease-in-out infinite;
-    }
-
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 0, 0.25); }
-      50% { box-shadow: 0 0 40px rgba(255, 107, 0, 0.5); }
-    }
-
-    @keyframes flash {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(1.2); }
-    }
-
-    /* ===== USER INFO BAR ===== */
-    .user-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 16px;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 12px;
-      margin-bottom: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .user-bar .user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .user-bar .user-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #0068b5, #004a8a);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .user-bar .user-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .user-bar .user-role {
-      font-size: 11px;
-      padding: 2px 10px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.06);
-    }
-
-    .user-bar .user-role.super-admin {
-      color: #ff6b00;
-      border: 1px solid rgba(255, 107, 0, 0.2);
-    }
-
-    .user-bar .user-role.admin {
-      color: #0068b5;
-      border: 1px solid rgba(0, 104, 181, 0.2);
-    }
-
-    .user-bar .logout-btn {
-      padding: 6px 14px;
-      font-size: 12px;
-      font-weight: 600;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 10px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.03);
-      color: #888;
-      transition: all 0.2s ease;
-    }
-
-    .user-bar .logout-btn:hover {
-      background: rgba(239, 83, 80, 0.1);
-      color: #ef5350;
-      border-color: rgba(239, 83, 80, 0.2);
-    }
-
-    /* ===== STATS ===== */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
-    .stat-item {
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 12px;
-      padding: 12px 16px;
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .stat-item:hover {
-      background: rgba(255, 255, 255, 0.08);
-      transform: translateY(-2px);
-    }
-
-    .stat-item .hint {
-      font-size: 9px;
-      color: #666;
-      margin-top: 4px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .stat-item:hover .hint {
-      opacity: 1;
-    }
-
-    .stat-number {
-      font-size: 24px;
-      font-weight: 700;
-      color: #ffffff;
-    }
-
-    .stat-number.green { color: #4CAF50; }
-    .stat-number.red { color: #ef5350; }
-    .stat-number.unifi-blue { color: #ffffff; }
-
-    .stat-label {
-      font-size: 11px;
-      color: #ffffff;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 2px;
-      opacity: 0.8;
-    }
-
-    /* ===== TEXTAREA ===== */
-    .textarea-wrapper {
-      position: relative;
-      margin-bottom: 16px;
-    }
-
-    .textarea-wrapper label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: #ffffff;
-      margin-bottom: 8px;
-      opacity: 0.9;
-    }
-
-    .textarea-wrapper textarea {
-      width: 100%;
-      min-height: 200px;
-      background: #0d0d18;
-      color: #b0ffb0;
-      padding: 16px;
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
-      line-height: 1.7;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 14px;
-      resize: vertical;
-      outline: none;
-    }
-
-    .textarea-wrapper textarea:focus {
-      border-color: #0068b5;
-      box-shadow: 0 0 0 3px rgba(0, 104, 181, 0.1);
-    }
-
-    .char-count {
-      position: absolute;
-      bottom: 12px;
-      right: 14px;
-      font-size: 11px;
-      color: #666;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 2px 10px;
-      border-radius: 10px;
-      pointer-events: none;
-    }
-
-    /* ===== BUTTONS ===== */
-    .btn-group {
-      display: flex;
-      gap: 10px;
-      margin: 8px 0 20px 0;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      flex: 1;
-      min-width: 100px;
-      padding: 14px 20px;
-      font-size: 15px;
-      font-weight: 600;
-      border: none;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.04);
-      color: #aaa;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #0068b5, #004a8a);
-      color: #fff;
-      border: none;
-      box-shadow: 0 4px 20px rgba(0, 104, 181, 0.3);
-      flex: 2;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(0, 104, 181, 0.4);
-    }
-
-    .btn-primary:disabled {
-      opacity: 1;
-      cursor: not-allowed;
-      transform: none !important;
-    }
-
-    .btn-primary .btn-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      width: 100%;
-      position: relative;
-      z-index: 2;
-    }
-
-    .btn-primary .btn-progress-fill {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      background: linear-gradient(90deg, #004a8a, #0068b5, #0088dd);
-      border-radius: 14px;
-      transition: width 0.5s ease;
-      z-index: 1;
-      width: 0%;
-    }
-
-    .btn-primary .btn-progress-fill::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.15),
-        transparent
-      );
-      animation: shimmer 1.5s infinite;
-    }
-
-    @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    .btn-primary .btn-percentage {
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 13px;
-      font-weight: 700;
-      color: rgba(255, 255, 255, 0.9);
-      z-index: 3;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .btn-primary .btn-icon {
-      z-index: 2;
-      font-size: 18px;
-    }
-
-    .btn-primary .btn-label {
-      z-index: 2;
-    }
-
-    .btn-primary .btn-progress-text {
-      z-index: 2;
-      font-size: 13px;
-      opacity: 0.9;
-    }
-
-    .btn-primary.progress-active .btn-progress-fill {
-      animation: pulse-progress 1.5s ease-in-out infinite;
-    }
-
-    @keyframes pulse-progress {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.85; }
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.04);
-      color: #aaa;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
-    }
-
-    .btn-danger {
-      background: rgba(239, 83, 80, 0.12);
-      color: #ef5350;
-      border: 1px solid rgba(239, 83, 80, 0.15);
-    }
-
-    .btn-danger:hover {
-      background: rgba(239, 83, 80, 0.2);
-    }
-
-    .btn-success {
-      background: rgba(76, 175, 80, 0.12);
-      color: #4CAF50;
-      border: 1px solid rgba(76, 175, 80, 0.15);
-    }
-
-    .btn-success:hover {
-      background: rgba(76, 175, 80, 0.2);
-    }
-
-    .btn-small {
-      padding: 8px 16px;
-      font-size: 12px;
-      font-weight: 600;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    /* ===== USER MANAGEMENT ===== */
-    .admin-section {
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 2px solid rgba(255, 107, 0, 0.15);
-    }
-
-    .admin-section .section-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: #ff6b00;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .admin-section .section-title .badge-admin {
-      font-size: 10px;
-      background: rgba(255, 107, 0, 0.15);
-      color: #ff6b00;
-      padding: 3px 12px;
-      border-radius: 12px;
-      font-weight: 600;
-    }
-
-    .user-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 16px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .user-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 14px;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.03);
-      transition: all 0.2s ease;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .user-item:hover {
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .user-item .user-details {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex: 1;
-      flex-wrap: wrap;
-    }
-
-    .user-item .user-details .avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #0068b5, #004a8a);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 700;
-      color: #fff;
-      flex-shrink: 0;
-    }
-
-    .user-item .user-details .name {
-      font-size: 14px;
-      color: #fff;
-      font-weight: 500;
-    }
-
-    .user-item .user-details .telegram-id {
-      font-size: 12px;
-      color: #666;
-      font-family: monospace;
-    }
-
-    .user-item .user-details .role-tag {
-      font-size: 10px;
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-weight: 600;
-      background: rgba(255, 255, 255, 0.06);
-      color: #888;
-    }
-
-    .user-item .user-details .role-tag.super-admin {
-      color: #ff6b00;
-      background: rgba(255, 107, 0, 0.12);
-      border: 1px solid rgba(255, 107, 0, 0.15);
-    }
-
-    .user-item .user-details .role-tag.admin {
-      color: #0068b5;
-      background: rgba(0, 104, 181, 0.12);
-      border: 1px solid rgba(0, 104, 181, 0.15);
-    }
-
-    .user-item .user-actions {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .user-item .remove-btn {
-      padding: 4px 12px;
-      font-size: 11px;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: rgba(239, 83, 80, 0.1);
-      color: #ef5350;
-      transition: all 0.2s ease;
-    }
-
-    .user-item .remove-btn:hover {
-      background: rgba(239, 83, 80, 0.2);
-    }
-
-    .user-item .reset-pin-btn {
-      padding: 4px 12px;
-      font-size: 11px;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: rgba(255, 107, 0, 0.1);
-      color: #ff6b00;
-      transition: all 0.2s ease;
-    }
-
-    .user-item .reset-pin-btn:hover {
-      background: rgba(255, 107, 0, 0.2);
-    }
-
-    .user-item.super-admin-item {
-      border-color: rgba(255, 107, 0, 0.1);
-      background: rgba(255, 107, 0, 0.03);
-    }
-
-    .add-user-form {
-      display: flex;
-      gap: 10px;
-      margin-top: 8px;
-      flex-wrap: wrap;
-    }
-
-    .add-user-form input,
-    .add-user-form select {
-      padding: 10px 14px;
-      background: #0d0d18;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 10px;
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .add-user-form input:focus,
-    .add-user-form select:focus {
-      border-color: #0068b5;
-    }
-
-    .add-user-form input::placeholder {
-      color: #444;
-    }
-
-    .add-user-form select option {
-      background: #1a1a2e;
-      color: #fff;
-    }
-
-    .add-user-form .pin-input {
-      width: 130px;
-      text-align: center;
-      letter-spacing: 4px;
-      font-size: 16px;
-      font-family: 'Courier New', monospace;
-    }
-
-    .add-user-form .pin-hint {
-      font-size: 10px;
-      color: #666;
-      margin-top: 4px;
-      width: 100%;
-      text-align: center;
-    }
-
-    /* ===== PROGRESS ===== */
-    #progress {
-      padding: 14px 18px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.03);
-      margin: 12px 0 16px 0;
-      font-size: 14px;
-      font-weight: 500;
-      color: #aaa;
-      display: none;
-      border: 1px solid rgba(255, 255, 255, 0.04);
-    }
-
-    #progress.active {
-      display: block;
-    }
-
-    /* ===== RESULTS ===== */
-    #result {
-      margin-top: 16px;
-    }
-
-    .result-summary {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 18px;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 12px;
-      margin-bottom: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .result-summary .total {
-      font-size: 15px;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .result-summary .stats-mini {
-      display: flex;
-      gap: 16px;
-      font-size: 13px;
-    }
-
-    .result-summary .stats-mini .ok { color: #4CAF50; }
-    .result-summary .stats-mini .fail { color: #ef5350; }
-
-    .filter-buttons {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      padding: 6px 16px;
-      font-size: 12px;
-      font-weight: 600;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 20px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.03);
-      color: #888;
-      transition: all 0.2s;
-    }
-
-    .filter-btn:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
-    }
-
-    .filter-btn.active {
-      background: rgba(255, 255, 255, 0.12);
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .filter-btn.active-success {
-      background: rgba(76, 175, 80, 0.2);
-      color: #4CAF50;
-      border-color: rgba(76, 175, 80, 0.3);
-    }
-
-    .filter-btn.active-failed {
-      background: rgba(239, 83, 80, 0.2);
-      color: #ef5350;
-      border-color: rgba(239, 83, 80, 0.3);
-    }
-
-    .result-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .result-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 14px;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 10px;
-      font-size: 13px;
-      border: 1px solid rgba(255, 255, 255, 0.03);
-      transition: all 0.3s ease;
-    }
-
-    .result-item:hover {
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .result-item .ip {
-      font-family: 'Courier New', monospace;
-      font-weight: 500;
-      color: #ddd;
-      min-width: 110px;
-    }
-
-    .result-item .status {
-      font-weight: 500;
-      font-size: 12px;
-      padding: 2px 10px;
-      border-radius: 20px;
-      margin-left: auto;
-      flex-shrink: 0;
-    }
-
-    .result-item .status.success {
-      background: rgba(76, 175, 80, 0.12);
-      color: #4CAF50;
-    }
-
-    .result-item .status.fail {
-      background: rgba(239, 83, 80, 0.12);
-      color: #ef5350;
-    }
-
-    .result-item .error-msg {
-      color: #888;
-      font-size: 12px;
-      margin-left: 8px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 120px;
-    }
-
-    .result-item .retry-btn {
-      padding: 3px 12px;
-      font-size: 11px;
-      font-weight: 600;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      background: rgba(0, 104, 181, 0.15);
-      color: #0068b5;
-      transition: all 0.25s ease;
-      flex-shrink: 0;
-    }
-
-    .result-item .retry-btn:hover {
-      background: rgba(0, 104, 181, 0.3);
-    }
-
-    .result-item.hidden {
-      display: none;
-    }
-
-    .no-results {
-      text-align: center;
-      color: #666;
-      padding: 30px 0;
-      font-size: 14px;
-    }
-
-    /* ===== FOOTER ===== */
-    .footer {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid rgba(255, 255, 255, 0.04);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      color: #444;
-    }
-
-    .footer .brand {
-      color: #0068b5;
-      font-weight: 500;
-    }
-
-    .footer .brand span {
-      color: #666;
-      font-weight: 400;
-    }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 500px) {
-      body { padding: 12px; }
-      .card { padding: 20px; }
-      .header-title h1 { font-size: 17px; }
-      .header-title .subtitle { font-size: 11px; }
-      .header-logo { width: 40px; height: 40px; font-size: 20px; }
-      .speed-badge { font-size: 9px; padding: 3px 10px; }
-      .speed-badge .lightning { font-size: 11px; }
-      .stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-      .stat-item { padding: 8px 10px; }
-      .stat-number { font-size: 18px; }
-      .stat-item .hint { display: none; }
-      .btn-group { flex-direction: column; }
-      .btn { min-width: unset; }
-      .btn-primary { flex: 1; }
-      .result-summary { flex-direction: column; gap: 8px; align-items: flex-start; }
-      .footer { flex-direction: column; gap: 6px; text-align: center; }
-      .textarea-wrapper textarea { min-height: 150px; }
-      .filter-buttons { gap: 6px; }
-      .filter-btn { font-size: 10px; padding: 4px 10px; }
-      .result-item .error-msg { max-width: 60px; }
-      .badge { font-size: 9px; padding: 1px 8px; }
-      .pin-pad { gap: 8px; max-width: 250px; }
-      .pin-btn { padding: 14px; font-size: 20px; }
-      .user-bar { flex-wrap: wrap; }
-      .user-item { flex-wrap: wrap; gap: 8px; }
-      .user-item .user-actions { margin-left: auto; }
-      .add-user-form { flex-direction: column; }
-      .add-user-form input,
-      .add-user-form select { min-width: unset; width: 100%; }
-      .add-user-form .pin-input { width: 100%; }
-      .admin-section .section-title { font-size: 14px; }
-      .login-role .user-item-display { font-size: 12px; }
-      .btn-primary .btn-percentage { font-size: 11px; right: 10px; }
-      .btn-primary .btn-progress-text { font-size: 11px; }
-      .change-pin-screen h2 { font-size: 18px; }
-      .change-pin-screen .pin-btn { padding: 14px; font-size: 20px; }
-      .user-selector .user-option { padding: 10px 14px; }
-      .user-selector .user-option .info .name { font-size: 13px; }
-    }
-
-    @media (max-width: 380px) {
-      .header-logo { width: 34px; height: 34px; font-size: 16px; }
-      .header-title h1 { font-size: 15px; }
-      .header-title .subtitle { font-size: 10px; }
-      .speed-badge { font-size: 8px; padding: 2px 8px; }
-      .speed-badge .lightning { font-size: 10px; }
-      .stat-number { font-size: 15px; }
-      .stat-label { font-size: 9px; }
-      .stat-item { padding: 6px 8px; }
-      .pin-pad { gap: 6px; max-width: 200px; }
-      .pin-btn { padding: 12px; font-size: 18px; }
-      .user-item .user-details .name { font-size: 12px; }
-      .login-role .user-item-display { font-size: 11px; }
-      .user-selector .user-option { padding: 8px 12px; }
-      .user-selector .user-option .info .name { font-size: 12px; }
-    }
-
-    .result-list::-webkit-scrollbar {
-      width: 4px;
-    }
-    .result-list::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 10px;
-    }
-    .result-list::-webkit-scrollbar-thumb {
-      background: rgba(0, 104, 181, 0.3);
-      border-radius: 10px;
-    }
-
-    .user-list::-webkit-scrollbar {
-      width: 4px;
-    }
-    .user-list::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 10px;
-    }
-    .user-list::-webkit-scrollbar-thumb {
-      background: rgba(255, 107, 0, 0.3);
-      border-radius: 10px;
-    }
-
-    .user-selector::-webkit-scrollbar {
-      width: 4px;
-    }
-    .user-selector::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 10px;
-    }
-    .user-selector::-webkit-scrollbar-thumb {
-      background: rgba(0, 104, 181, 0.3);
-      border-radius: 10px;
-    }
-
-    /* ===== HIDDEN ===== */
-    .hidden {
-      display: none !important;
-    }
-
-    /* ===== TOAST ===== */
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 12px 24px;
-      border-radius: 12px;
-      background: #1a1a2e;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 500;
-      z-index: 1000;
-      animation: slideUp 0.3s ease;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-      max-width: 90%;
-      text-align: center;
-    }
-
-    .toast.success {
-      border-color: rgba(76, 175, 80, 0.3);
-    }
-
-    .toast.error {
-      border-color: rgba(239, 83, 80, 0.3);
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-      to { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
+    /* ===== ALL STYLES (keep your existing CSS) ===== */
+    /* ... (paste all your existing CSS here) ... */
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="card">
-
-      <!-- ============================================ -->
-      <!-- LOGIN SCREEN -->
-      <!-- ============================================ -->
-      <div id="loginScreen" class="login-screen">
-        <span class="lock-icon">🔐</span>
-        <h2>Secure Access</h2>
-        <p class="subtitle">Select your user and enter your PIN</p>
-
-        <div class="user-selector" id="userSelector">
-          <!-- Users will be rendered here -->
-        </div>
-
-        <div id="selectedUserDisplay" style="color:#888;font-size:13px;margin-bottom:16px;min-height:20px;"></div>
-
-        <div class="pin-display" id="pinDisplay">
-          <span class="pin-dot" id="dot1"></span>
-          <span class="pin-dot" id="dot2"></span>
-          <span class="pin-dot" id="dot3"></span>
-          <span class="pin-dot" id="dot4"></span>
-        </div>
-
-        <div id="pinError" class="pin-error"></div>
-        <div id="pinSuccess" class="pin-success"></div>
-
-        <div class="pin-pad">
-          <button class="pin-btn" onclick="pinInput('1')">1</button>
-          <button class="pin-btn" onclick="pinInput('2')">2</button>
-          <button class="pin-btn" onclick="pinInput('3')">3</button>
-          <button class="pin-btn" onclick="pinInput('4')">4</button>
-          <button class="pin-btn" onclick="pinInput('5')">5</button>
-          <button class="pin-btn" onclick="pinInput('6')">6</button>
-          <button class="pin-btn" onclick="pinInput('7')">7</button>
-          <button class="pin-btn" onclick="pinInput('8')">8</button>
-          <button class="pin-btn" onclick="pinInput('9')">9</button>
-          <button class="pin-btn empty"></button>
-          <button class="pin-btn" onclick="pinInput('0')">0</button>
-          <button class="pin-btn delete" onclick="pinDelete()">⌫</button>
-        </div>
-
-        <div class="login-role">
-          <div class="label">👥 Registered Users</div>
-          <div class="user-list-display" id="loginUserList">
-            <!-- Users will be rendered here -->
-          </div>
-        </div>
-      </div>
-
-      <!-- ============================================ -->
-      <!-- CHANGE PIN SCREEN (First Login) -->
-      <!-- ============================================ -->
-      <div id="changePinScreen" class="change-pin-screen">
-        <span class="lock-icon">🔑</span>
-        <h2>Change Your PIN</h2>
-        <p>Please set a new 4-digit PIN for security</p>
-
-        <div class="pin-hint">Enter new PIN</div>
-        <div class="pin-display" id="changePinDisplay">
-          <span class="pin-dot" id="cDot1"></span>
-          <span class="pin-dot" id="cDot2"></span>
-          <span class="pin-dot" id="cDot3"></span>
-          <span class="pin-dot" id="cDot4"></span>
-        </div>
-
-        <div id="changePinError" class="pin-error"></div>
-        <div id="changePinSuccess" class="pin-success"></div>
-
-        <div class="pin-pad">
-          <button class="pin-btn" onclick="changePinInput('1')">1</button>
-          <button class="pin-btn" onclick="changePinInput('2')">2</button>
-          <button class="pin-btn" onclick="changePinInput('3')">3</button>
-          <button class="pin-btn" onclick="changePinInput('4')">4</button>
-          <button class="pin-btn" onclick="changePinInput('5')">5</button>
-          <button class="pin-btn" onclick="changePinInput('6')">6</button>
-          <button class="pin-btn" onclick="changePinInput('7')">7</button>
-          <button class="pin-btn" onclick="changePinInput('8')">8</button>
-          <button class="pin-btn" onclick="changePinInput('9')">9</button>
-          <button class="pin-btn empty"></button>
-          <button class="pin-btn" onclick="changePinInput('0')">0</button>
-          <button class="pin-btn delete" onclick="changePinDelete()">⌫</button>
-        </div>
-
-        <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-          <button class="btn btn-primary" onclick="confirmChangePin()" style="flex:0 0 auto;padding:12px 30px;min-width:120px;">
-            ✅ Set PIN
-          </button>
-          <button class="skip-btn" onclick="skipChangePin()">⏭️ Skip for now</button>
-        </div>
-      </div>
-
-      <!-- ============================================ -->
-      <!-- MAIN APP SCREEN -->
-      <!-- ============================================ -->
-      <div id="appScreen" class="app-screen">
-
-        <!-- USER BAR -->
-        <div class="user-bar">
-          <div class="user-info">
-            <div class="user-avatar" id="userAvatar">👤</div>
-            <div>
-              <div class="user-name" id="userName">User</div>
-            </div>
-            <span class="user-role" id="userRoleBadge">Admin</span>
-          </div>
-          <button class="logout-btn" onclick="logout()">🚪 Logout</button>
-        </div>
-
-        <!-- HEADER -->
-        <div class="header">
-          <div class="header-logo">🚀</div>
-          <div class="header-title">
-            <h1>
-              <span class="unifi-text">UniFi</span> Bulk AP Adopter
-              <span class="badge">v2.0</span>
-              <span class="speed-badge">
-                <span class="lightning">⚡</span> FAST & EASY
-              </span>
-            </h1>
-            <div class="subtitle">Adopt multiple UniFi Access Points at once via SSH</div>
-          </div>
-        </div>
-
-        <!-- STATS -->
-        <div class="stats" id="stats">
-          <div class="stat-item" onclick="filterResults('all')">
-            <div class="stat-number unifi-blue" id="totalCount">0</div>
-            <div class="stat-label">Total APs</div>
-            <div class="hint">▼ show all</div>
-          </div>
-          <div class="stat-item" onclick="filterResults('success')">
-            <div class="stat-number green" id="successCount">0</div>
-            <div class="stat-label">Successful</div>
-            <div class="hint">▼ show success</div>
-          </div>
-          <div class="stat-item" onclick="filterResults('failed')">
-            <div class="stat-number red" id="failCount">0</div>
-            <div class="stat-label">Failed</div>
-            <div class="hint">▼ show failed</div>
-          </div>
-        </div>
-
-        <!-- TEXTAREA -->
-        <div class="textarea-wrapper">
-          <label>📋 AP IP Addresses <span style="color:#666;font-weight:400;">(one per line)</span></label>
-          <textarea id="ips" placeholder="192.168.1.10&#10;192.168.1.11&#10;192.168.1.12"></textarea>
-          <span class="char-count" id="ipCount">0 IPs</span>
-        </div>
-
-        <!-- BUTTONS -->
-        <div class="btn-group">
-          <button class="btn btn-primary" id="adoptBtn" onclick="startAdoption()">
-            <span class="btn-content">
-              <span class="btn-icon">🚀</span>
-              <span class="btn-label">Adopt All APs</span>
-              <span class="btn-progress-text"></span>
-            </span>
-            <span class="btn-progress-fill" id="progressFill"></span>
-            <span class="btn-percentage" id="progressPercent"></span>
-          </button>
-          <button class="btn btn-secondary" onclick="clearAll()">✕ Clear</button>
-          <button class="btn btn-secondary" onclick="loadSample()">📝 Sample</button>
-        </div>
-
-        <!-- PROGRESS -->
-        <div id="progress"><span id="progressText">⏳ Processing 0 APs...</span></div>
-
-        <!-- RESULTS -->
-        <div id="result"></div>
-
-        <!-- ============================================ -->
-        <!-- SUPER ADMIN SECTION -->
-        <!-- ============================================ -->
-        <div id="adminSection" class="admin-section hidden">
-          <div class="section-title">
-            👑 User Management
-            <span class="badge-admin">Super Admin Only</span>
-          </div>
-
-          <div class="user-list" id="userList"></div>
-
-          <div class="add-user-form">
-            <input type="text" id="newUserName" placeholder="Enter username...">
-            <input type="text" id="newUserTelegram" placeholder="@telegram_id (optional)">
-            <select id="newUserRole">
-              <option value="admin">👤 Admin</option>
-              <option value="super-admin">👑 Super Admin</option>
-            </select>
-            <input type="password" id="newUserPin" class="pin-input" placeholder="Set PIN" maxlength="4">
-            <button class="btn btn-success btn-small" onclick="addUser()">➕ Add User</button>
-          </div>
-          <div class="pin-hint">💡 Leave PIN blank = default 0000 (must change on first login)</div>
-
-          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="btn btn-secondary btn-small" onclick="resetAllUsers()" style="padding:8px 16px;font-size:12px;">
-              🔄 Reset All Users
-            </button>
-            <button class="btn btn-danger btn-small" onclick="clearAllData()" style="padding:8px 16px;font-size:12px;">
-              🗑️ Clear All Data
-            </button>
-          </div>
-        </div>
-
-        <!-- FOOTER -->
-        <div class="footer">
-          <span class="brand">Access Point <span>— UniFi Tool</span></span>
-          <span>⚡ <span id="timestamp"></span></span>
-        </div>
-
-      </div>
-      <!-- END APP SCREEN -->
-
-    </div>
-  </div>
+  <!-- ===== ALL HTML (keep your existing HTML) ===== -->
+  <!-- ... (paste all your existing HTML here) ... -->
 
   <script>
     // ============================================
-    // ⚙️ CONFIGURATION - ONLY SUPER ADMIN
+    // ⚙️ SUPABASE CONFIGURATION - COMPLETE!
     // ============================================
-    const SUPER_ADMIN = {
-      id: 'super-admin-1',
-      name: 'Udom Ek',
-      telegram: '@udomek',
-      role: 'super-admin',
-      pin: '1234'
-    };
+    const SUPABASE_URL = 'https://mdkvuigyskzmufuhaeqf.supabase.co';
+    const SUPABASE_KEY = 'sbp_0d3d4765600aad504ede7a8b599e84dc1bb82e92';
     // ============================================
+
+    // ============================================
+    // SUPABASE API FUNCTIONS
+    // ============================================
+    async function supabaseFetch(endpoint, options = {}) {
+      const url = `${SUPABASE_URL}/rest/v1/${endpoint}`;
+      const headers = {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      };
+      
+      const response = await fetch(url, {
+        ...options,
+        headers: { ...headers, ...options.headers }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Supabase error: ${response.status}`);
+      }
+      
+      return response.json();
+    }
+
+    // ============================================
+    // LOAD USERS FROM SUPABASE
+    // ============================================
+    async function loadUsersFromSupabase() {
+      try {
+        const data = await supabaseFetch('users?select=*');
+        if (data.length === 0) {
+          // Create default Super Admin
+          await supabaseFetch('users', {
+            method: 'POST',
+            body: JSON.stringify({
+              id: 'super-admin-1',
+              name: 'Udom Ek',
+              telegram: '@udomek',
+              role: 'super-admin',
+              pin: '1234',
+              needsPinChange: false
+            })
+          });
+          return [{
+            id: 'super-admin-1',
+            name: 'Udom Ek',
+            telegram: '@UdomEk',
+            role: 'super-admin',
+            pin: '1234',
+            needsPinChange: false
+          }];
+        }
+        return data;
+      } catch (error) {
+        console.error('Error loading users from Supabase:', error);
+        return loadUsersFromLocalStorage();
+      }
+    }
+
+    // ============================================
+    // SAVE USERS TO SUPABASE
+    // ============================================
+    async function saveUsersToSupabase(users) {
+      try {
+        // Delete all existing users (except Super Admin)
+        await supabaseFetch('users?role=neq.super-admin', {
+          method: 'DELETE'
+        });
+        
+        // Insert all users (except Super Admin)
+        const usersToInsert = users.filter(u => u.role !== 'super-admin');
+        if (usersToInsert.length > 0) {
+          await supabaseFetch('users', {
+            method: 'POST',
+            body: JSON.stringify(usersToInsert)
+          });
+        }
+      } catch (error) {
+        console.error('Error saving users to Supabase:', error);
+      }
+    }
+
+    // ============================================
+    // LOCAL STORAGE FALLBACK
+    // ============================================
+    function loadUsersFromLocalStorage() {
+      try {
+        const saved = localStorage.getItem('unifi_users');
+        if (saved) {
+          const users = JSON.parse(saved);
+          if (!users.find(u => u.id === 'super-admin-1')) {
+            users.push({
+              id: 'super-admin-1',
+              name: 'Udom Ek',
+              telegram: '@udomek',
+              role: 'super-admin',
+              pin: '1234',
+              needsPinChange: false
+            });
+          }
+          return users;
+        }
+      } catch(e) {}
+      return [{
+        id: 'super-admin-1',
+        name: 'Udom Ek',
+        telegram: '@udomek',
+        role: 'super-admin',
+        pin: '1234',
+        needsPinChange: false
+      }];
+    }
+
+    function saveUsersToLocalStorage(users) {
+      localStorage.setItem('unifi_users', JSON.stringify(users));
+    }
 
     // ============================================
     // STATE
@@ -1557,65 +151,7 @@
     let pendingUser = null;
 
     // ============================================
-    // INIT
-    // ============================================
-    function init() {
-      syncPinsFromConfig();
-      loadUsers();
-      renderUserSelector();
-      renderUserList();
-      renderLoginUserList();
-      setTimestamp();
-      setInterval(setTimestamp, 30000);
-      setupIPCount();
-      console.log('✅ UniFi Bulk AP Adopter loaded!');
-      console.log('👑 Super Admin: Udom Ek (@udomek)');
-      console.log('👥 Total Users: ' + users.length);
-    }
-
-    // ============================================
-    // FORCE SYNC
-    // ============================================
-    function syncPinsFromConfig() {
-      try {
-        const saved = localStorage.getItem('unifi_users');
-        if (saved) {
-          let storedUsers = JSON.parse(saved);
-          const superAdminStored = storedUsers.find(u => u.id === SUPER_ADMIN.id);
-          if (superAdminStored) superAdminStored.pin = SUPER_ADMIN.pin;
-          localStorage.setItem('unifi_users', JSON.stringify(storedUsers));
-        }
-      } catch(e) {}
-    }
-
-    // ============================================
-    // USER MANAGEMENT
-    // ============================================
-    function loadUsers() {
-      try {
-        const saved = localStorage.getItem('unifi_users');
-        if (saved) {
-          users = JSON.parse(saved);
-          const superAdminExists = users.find(u => u.id === SUPER_ADMIN.id);
-          if (!superAdminExists) users.push(SUPER_ADMIN);
-          else superAdminExists.pin = SUPER_ADMIN.pin;
-          saveUsers();
-        } else {
-          users = [SUPER_ADMIN];
-          saveUsers();
-        }
-      } catch(e) {
-        users = [SUPER_ADMIN];
-        saveUsers();
-      }
-    }
-
-    function saveUsers() {
-      localStorage.setItem('unifi_users', JSON.stringify(users));
-    }
-
-    // ============================================
-    // RENDER USER SELECTOR
+    // RENDER FUNCTIONS
     // ============================================
     function renderUserSelector() {
       const container = document.getElementById('userSelector');
@@ -1715,7 +251,7 @@
       users.forEach(function(user) {
         const isSuperAdmin = user.role === 'super-admin';
         const initials = user.name.charAt(0).toUpperCase();
-        const isDefaultSuperAdmin = user.id === SUPER_ADMIN.id;
+        const isDefaultSuperAdmin = user.id === 'super-admin-1';
         const telegramDisplay = user.telegram ? user.telegram : '';
         const pinDisplay = user.pin ? 'PIN: ' + user.pin : '';
         const isDefaultPin = user.pin === '0000' || user.pin === '1166';
@@ -1742,9 +278,22 @@
     }
 
     // ============================================
-    // ADD USER WITH CUSTOM PIN
+    // USER CRUD OPERATIONS (Supabase + Local)
     // ============================================
-    function addUser() {
+    async function loadUsers() {
+      users = await loadUsersFromSupabase();
+      saveUsersToLocalStorage(users);
+      renderUserSelector();
+      renderUserList();
+      renderLoginUserList();
+    }
+
+    async function saveUsers() {
+      await saveUsersToSupabase(users);
+      saveUsersToLocalStorage(users);
+    }
+
+    async function addUser() {
       const nameInput = document.getElementById('newUserName');
       const telegramInput = document.getElementById('newUserTelegram');
       const roleSelect = document.getElementById('newUserRole');
@@ -1786,28 +335,31 @@
       };
 
       users.push(newUser);
-      saveUsers();
-      renderUserSelector();
-      renderUserList();
-      renderLoginUserList();
+      await saveUsers();
       
       nameInput.value = '';
       telegramInput.value = '';
       pinInput.value = '';
       
+      renderUserSelector();
+      renderUserList();
+      renderLoginUserList();
+      
       showToast('✅ User "' + name + '" added with PIN: ' + pin + (needsPinChange ? ' (must change on first login)' : ''), 'success');
     }
 
-    function removeUser(userId) {
-      if (userId === SUPER_ADMIN.id) {
+    async function removeUser(userId) {
+      if (userId === 'super-admin-1') {
         showToast('Cannot remove the Super Admin.', 'error');
         return;
       }
       const user = users.find(u => u.id === userId);
       if (!user) return;
       if (!confirm('Remove user "' + user.name + '"?')) return;
+      
       users = users.filter(u => u.id !== userId);
-      saveUsers();
+      await saveUsers();
+      
       renderUserSelector();
       renderUserList();
       renderLoginUserList();
@@ -1818,27 +370,36 @@
       showToast('✅ User removed.', 'success');
     }
 
-    function resetUserPin(userId) {
+    async function resetUserPin(userId) {
       const user = users.find(u => u.id === userId);
       if (!user) {
         showToast('User not found!', 'error');
         return;
       }
       if (!confirm('Reset PIN for "' + user.name + '" to 0000?')) return;
+      
       user.pin = '0000';
       user.needsPinChange = true;
-      saveUsers();
+      await saveUsers();
+      
       renderUserSelector();
       renderUserList();
       renderLoginUserList();
       showToast('✅ PIN reset to 0000 for ' + user.name + '. They must change it on next login.', 'success');
     }
 
-    function resetAllUsers() {
+    async function resetAllUsers() {
       if (!confirm('Reset all users? Only Super Admin will remain.')) return;
-      users = [SUPER_ADMIN];
-      users.forEach(u => u.needsPinChange = false);
-      saveUsers();
+      users = [{
+        id: 'super-admin-1',
+        name: 'Udom Ek',
+        telegram: '@udomek',
+        role: 'super-admin',
+        pin: '1234',
+        needsPinChange: false
+      }];
+      await saveUsers();
+      
       renderUserSelector();
       renderUserList();
       renderLoginUserList();
@@ -1847,12 +408,18 @@
       showToast('✅ All users reset.', 'success');
     }
 
-    function clearAllData() {
+    async function clearAllData() {
       if (!confirm('⚠️ Clear ALL data including adoption history?')) return;
-      localStorage.clear();
-      users = [SUPER_ADMIN];
-      users.forEach(u => u.needsPinChange = false);
-      saveUsers();
+      users = [{
+        id: 'super-admin-1',
+        name: 'Udom Ek',
+        telegram: '@udomek',
+        role: 'super-admin',
+        pin: '1234',
+        needsPinChange: false
+      }];
+      await saveUsers();
+      
       renderUserSelector();
       renderUserList();
       renderLoginUserList();
@@ -1860,23 +427,6 @@
       updateSelectedUserDisplay();
       document.getElementById('result').innerHTML = '';
       showToast('✅ All data cleared.', 'success');
-    }
-
-    // ============================================
-    // TOAST NOTIFICATIONS
-    // ============================================
-    function showToast(message, type) {
-      const existing = document.querySelector('.toast');
-      if (existing) existing.remove();
-      const toast = document.createElement('div');
-      toast.className = 'toast ' + type;
-      toast.textContent = message;
-      document.body.appendChild(toast);
-      setTimeout(function() {
-        toast.style.opacity = '0';
-        toast.style.transition = 'opacity 0.3s ease';
-        setTimeout(function() { toast.remove(); }, 300);
-      }, 3000);
     }
 
     // ============================================
@@ -2094,6 +644,23 @@
       updateChangePinDots();
       updateSelectedUserDisplay();
       renderUserSelector();
+    }
+
+    // ============================================
+    // TOAST NOTIFICATIONS
+    // ============================================
+    function showToast(message, type) {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+      const toast = document.createElement('div');
+      toast.className = 'toast ' + type;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(function() {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(function() { toast.remove(); }, 300);
+      }, 3000);
     }
 
     // ============================================
@@ -2408,6 +975,9 @@
       }
     });
 
+    // ============================================
+    // INIT
+    // ============================================
     init();
   </script>
 </body>
