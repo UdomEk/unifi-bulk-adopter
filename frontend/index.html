@@ -1338,6 +1338,260 @@
     .hidden {
       display: none !important;
     }
+
+    /* ===== AP MANAGEMENT ===== */
+    .ap-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid rgba(0, 104, 181, 0.15);
+    }
+
+    .ap-section .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .ap-section .section-title h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #0068b5;
+    }
+
+    .ap-section .section-title .beta-badge {
+      font-size: 10px;
+      background: rgba(0, 104, 181, 0.12);
+      color: #0068b5;
+      padding: 2px 10px;
+      border-radius: 10px;
+    }
+
+    .ap-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .ap-item {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      transition: all 0.2s ease;
+    }
+
+    .ap-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .ap-item .ap-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .ap-item .ap-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ap-item .ap-info .icon {
+      font-size: 18px;
+    }
+
+    .ap-item .ap-info .name {
+      font-weight: 600;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .ap-item .ap-info .details {
+      font-size: 11px;
+      color: #888;
+    }
+
+    .ap-item .ap-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ap-item .ap-status .status-badge {
+      font-size: 11px;
+      padding: 2px 10px;
+      border-radius: 10px;
+    }
+
+    .ap-item .ap-status .status-badge.pending {
+      color: #ff6b00;
+      background: rgba(255, 107, 0, 0.12);
+    }
+
+    .ap-item .ap-status .status-badge.adopted {
+      color: #4CAF50;
+      background: rgba(76, 175, 80, 0.12);
+    }
+
+    .ap-item .ap-status .status-badge.disconnected {
+      color: #ef5350;
+      background: rgba(239, 83, 80, 0.12);
+    }
+
+    .ap-item .ap-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ap-item .ap-actions .ap-btn {
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: rgba(0, 104, 181, 0.12);
+      color: #0068b5;
+    }
+
+    .ap-item .ap-actions .ap-btn:hover {
+      background: rgba(0, 104, 181, 0.2);
+    }
+
+    .ap-item .ap-actions .ap-btn.adopt-btn {
+      background: rgba(76, 175, 80, 0.12);
+      color: #4CAF50;
+    }
+
+    .ap-item .ap-actions .ap-btn.adopt-btn:hover {
+      background: rgba(76, 175, 80, 0.2);
+    }
+
+    /* ===== AP MODAL ===== */
+    .ap-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .ap-modal {
+      background: #1a1a2e;
+      border-radius: 20px;
+      padding: 28px;
+      max-width: 440px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .ap-modal .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .ap-modal .modal-header h3 {
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .ap-modal .modal-header .close-btn {
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .ap-modal .modal-header .close-btn:hover {
+      color: #fff;
+    }
+
+    .ap-modal .form-group {
+      margin-bottom: 12px;
+    }
+
+    .ap-modal .form-group label {
+      display: block;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 4px;
+    }
+
+    .ap-modal .form-group input,
+    .ap-modal .form-group select {
+      width: 100%;
+      padding: 10px;
+      background: #0d0d18;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .ap-modal .form-group input:focus,
+    .ap-modal .form-group select:focus {
+      border-color: #0068b5;
+    }
+
+    .ap-modal .form-group select option {
+      background: #1a1a2e;
+      color: #fff;
+    }
+
+    .ap-modal .modal-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .ap-modal .modal-actions .save-btn {
+      flex: 1;
+      padding: 12px;
+      background: linear-gradient(135deg, #0068b5, #004a8a);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .ap-modal .modal-actions .save-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .ap-modal .modal-actions .cancel-btn {
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.03);
+      color: #888;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .ap-modal .modal-actions .cancel-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
   </style>
 </head>
 <body>
@@ -1547,6 +1801,30 @@
           </div>
         </div>
 
+        <!-- ============================================ -->
+        <!-- AP MANAGEMENT SECTION -->
+        <!-- ============================================ -->
+        <div id="apSection" class="ap-section">
+          <div class="section-title">
+            <span style="font-size:18px;">📡</span>
+            <h3>AP Management</h3>
+            <span class="beta-badge">Beta</span>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+            <button class="btn btn-secondary btn-small" onclick="loadUnifiDevices()" style="padding:8px 16px;font-size:12px;">
+              🔄 Load APs from Controller
+            </button>
+            <button class="btn btn-secondary btn-small" onclick="showUnifiLogin()" style="padding:8px 16px;font-size:12px;">
+              🔐 Configure Controller
+            </button>
+          </div>
+
+          <div id="apList" class="ap-list">
+            <div style="text-align:center;color:#666;padding:20px;">Click "Load APs" to see devices</div>
+          </div>
+        </div>
+
         <!-- FOOTER -->
         <div class="footer">
           <span class="brand">Access Point <span>— UniFi Tool</span></span>
@@ -1559,6 +1837,45 @@
     </div>
   </div>
 
+  <!-- ============================================ -->
+  <!-- AP MODAL -->
+  <!-- ============================================ -->
+  <div id="apModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;z-index:1000;padding:16px;">
+    <div style="background:#1a1a2e;border-radius:20px;padding:28px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;border:1px solid rgba(255,255,255,0.06);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h3 style="color:#fff;font-size:18px;">✏️ Edit AP</h3>
+        <button onclick="closeApModal()" style="background:none;border:none;color:#888;font-size:24px;cursor:pointer;">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label>📛 AP Name</label>
+        <input type="text" id="editApName" placeholder="Enter AP name..." style="width:100%;padding:10px;background:#0d0d18;border:1px solid rgba(255,255,255,0.06);border-radius:10px;color:#fff;font-size:14px;outline:none;">
+      </div>
+
+      <div class="form-group">
+        <label>📁 AP Group</label>
+        <select id="editApGroup" style="width:100%;padding:10px;background:#0d0d18;border:1px solid rgba(255,255,255,0.06);border-radius:10px;color:#fff;font-size:14px;outline:none;">
+          <option value="default">Default</option>
+          <option value="floor1">Floor 1</option>
+          <option value="floor2">Floor 2</option>
+          <option value="office">Office</option>
+          <option value="warehouse">Warehouse</option>
+          <option value="outdoor">Outdoor</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>📶 WiFi Name (SSID)</label>
+        <input type="text" id="editApSsid" placeholder="Enter WiFi name..." style="width:100%;padding:10px;background:#0d0d18;border:1px solid rgba(255,255,255,0.06);border-radius:10px;color:#fff;font-size:14px;outline:none;">
+      </div>
+
+      <div class="modal-actions">
+        <button class="save-btn" onclick="saveApChanges()">💾 Save Changes</button>
+        <button class="cancel-btn" onclick="closeApModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ============================================
     // ⚙️ SUPABASE CONFIGURATION
@@ -1568,9 +1885,25 @@
     // ============================================
 
     // ============================================
-    // 👥 USER CONFIGURATION - EDIT YOUR TEAM HERE!
+    // 🌐 UNIFI CONTROLLER CONFIGURATION
+    // 🔴 UPDATE THESE WITH YOUR CONTROLLER CREDENTIALS!
     // ============================================
-    // Super Admin (You)
+    const UNIFI_CONTROLLER = {
+      url: 'https://172.16.200.2/',  // ← Your controller URL
+      username: 'udomek',                 // ← Your controller username
+      password: 'Admin@footprints2024',    // ← Your controller password
+      site: 'default'                    // ← Your site name
+    };
+    // ============================================
+
+    let unifiCookie = null;
+    let unifiCsrf = null;
+    let unifiDevices = [];
+    let editingMac = null;
+
+    // ============================================
+    // 👥 USER CONFIGURATION
+    // ============================================
     const SUPER_ADMIN = {
       id: 'super-admin-1',
       name: 'Udom Ek',
@@ -1580,12 +1913,11 @@
       needsPinChange: false
     };
 
-    // 👇 ADD YOUR IT TEAM MEMBERS HERE
     const TEAM_MEMBERS = [
       {
         id: 'team-1',
-        name: 'Vanak',
-        telegram: '@VANAK168',
+        name: 'SreyOun_HST',
+        telegram: '@SreyOun_HST',
         role: 'admin',
         pin: '2222',
         needsPinChange: false
@@ -1614,15 +1946,6 @@
         pin: '5555',
         needsPinChange: false
       }
-      // === ADD MORE TEAM MEMBERS HERE ===
-      // {
-      //   id: 'team-5',
-      //   name: 'New Member',
-      //   telegram: '@newmember',
-      //   role: 'admin',
-      //   pin: '6666',
-      //   needsPinChange: false
-      // }
     ];
     // ============================================
 
@@ -1639,6 +1962,301 @@
     let isLoading = false;
 
     // ============================================
+    // UNIFI CONTROLLER API FUNCTIONS
+    // ============================================
+    async function loginToUnifi() {
+      try {
+        console.log('🔐 Logging into UniFi Controller...');
+        const response = await fetch(`${UNIFI_CONTROLLER.url}/api/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: UNIFI_CONTROLLER.username,
+            password: UNIFI_CONTROLLER.password
+          })
+        });
+
+        const cookies = response.headers.get('set-cookie');
+        if (cookies) {
+          unifiCookie = cookies;
+        }
+
+        const data = await response.json();
+        unifiCsrf = data.csrf_token || null;
+
+        if (response.ok) {
+          console.log('✅ Logged into UniFi Controller');
+          return true;
+        } else {
+          console.error('❌ Login failed:', data);
+          return false;
+        }
+      } catch (error) {
+        console.error('❌ Login to UniFi failed:', error);
+        return false;
+      }
+    }
+
+    async function getUnifiDevices() {
+      try {
+        if (!unifiCookie) {
+          const loggedIn = await loginToUnifi();
+          if (!loggedIn) return null;
+        }
+
+        console.log('📡 Fetching devices from UniFi...');
+        const response = await fetch(
+          `${UNIFI_CONTROLLER.url}/api/s/${UNIFI_CONTROLLER.site}/stat/device`,
+          {
+            headers: {
+              'Cookie': unifiCookie,
+              'X-CSRF-Token': unifiCsrf || ''
+            }
+          }
+        );
+
+        const data = await response.json();
+        if (data && data.data) {
+          console.log('✅ Loaded devices:', data.data.length);
+          return data.data;
+        }
+        return null;
+      } catch (error) {
+        console.error('❌ Failed to get devices:', error);
+        return null;
+      }
+    }
+
+    async function setDeviceName(mac, name) {
+      try {
+        if (!unifiCookie) {
+          const loggedIn = await loginToUnifi();
+          if (!loggedIn) return null;
+        }
+
+        console.log('📡 Setting device name:', mac, '→', name);
+        const response = await fetch(
+          `${UNIFI_CONTROLLER.url}/api/s/${UNIFI_CONTROLLER.site}/cmd/devmgr`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Cookie': unifiCookie,
+              'X-CSRF-Token': unifiCsrf || ''
+            },
+            body: JSON.stringify({
+              cmd: 'set-name',
+              mac: mac,
+              name: name
+            })
+          }
+        );
+
+        const data = await response.json();
+        console.log('✅ Set device name response:', data);
+        return data;
+      } catch (error) {
+        console.error('❌ Failed to set device name:', error);
+        return null;
+      }
+    }
+
+    async function adoptDevice(mac) {
+      try {
+        if (!unifiCookie) {
+          const loggedIn = await loginToUnifi();
+          if (!loggedIn) return null;
+        }
+
+        console.log('📡 Adopting device:', mac);
+        const response = await fetch(
+          `${UNIFI_CONTROLLER.url}/api/s/${UNIFI_CONTROLLER.site}/cmd/devmgr`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Cookie': unifiCookie,
+              'X-CSRF-Token': unifiCsrf || ''
+            },
+            body: JSON.stringify({
+              cmd: 'adopt',
+              mac: mac
+            })
+          }
+        );
+
+        const data = await response.json();
+        console.log('✅ Adopt device response:', data);
+        return data;
+      } catch (error) {
+        console.error('❌ Failed to adopt device:', error);
+        return null;
+      }
+    }
+
+    // ============================================
+    // UNIFI UI FUNCTIONS
+    // ============================================
+    function showUnifiLogin() {
+      const currentUrl = prompt('Enter UniFi Controller URL (e.g., https://172.16.200.2:8443):', UNIFI_CONTROLLER.url);
+      if (currentUrl && currentUrl.trim()) {
+        UNIFI_CONTROLLER.url = currentUrl.trim();
+      }
+
+      const currentUser = prompt('Enter UniFi Controller username:', UNIFI_CONTROLLER.username);
+      if (currentUser && currentUser.trim()) {
+        UNIFI_CONTROLLER.username = currentUser.trim();
+      }
+
+      const currentPass = prompt('Enter UniFi Controller password:', '');
+      if (currentPass !== null) {
+        UNIFI_CONTROLLER.password = currentPass;
+      }
+
+      showToast('✅ Controller credentials updated! Click "Load APs" to test.', 'success');
+    }
+
+    async function loadUnifiDevices() {
+      const container = document.getElementById('apList');
+      container.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">⏳ Loading devices...</div>';
+
+      try {
+        const devices = await getUnifiDevices();
+
+        if (devices && devices.length > 0) {
+          unifiDevices = devices.filter(d => d.type === 'uap' || d.type === 'ap');
+          renderDeviceList(unifiDevices);
+          showToast(`✅ Loaded ${unifiDevices.length} APs from controller`, 'success');
+        } else {
+          container.innerHTML = `
+            <div style="text-align:center;color:#ef5350;padding:20px;">
+              ❌ Failed to load devices.<br>
+              <span style="font-size:12px;color:#888;">Check controller credentials and ensure it's accessible.</span>
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error('Error loading devices:', error);
+        container.innerHTML = `
+          <div style="text-align:center;color:#ef5350;padding:20px;">
+            ❌ Error: ${error.message}<br>
+            <span style="font-size:12px;color:#888;">Check controller URL and credentials.</span>
+          </div>
+        `;
+      }
+    }
+
+    function renderDeviceList(devices) {
+      const container = document.getElementById('apList');
+
+      if (!devices || devices.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">No APs found</div>';
+        return;
+      }
+
+      let html = '';
+      devices.forEach(function(device) {
+        const isPending = device.state === 0 || device.state === 1;
+        const isAdopted = device.adopted === true;
+        const statusText = isPending ? '⏳ Pending' : (isAdopted ? '✅ Adopted' : '❌ Disconnected');
+        const statusClass = isPending ? 'pending' : (isAdopted ? 'adopted' : 'disconnected');
+        const deviceName = device.name || device.hostname || 'Unnamed AP';
+        const deviceMac = device.mac || 'N/A';
+        const deviceIp = device.ip || 'N/A';
+        const model = device.model || 'Unknown';
+
+        html += `
+          <div class="ap-item">
+            <div class="ap-header">
+              <div class="ap-info">
+                <span class="icon">📶</span>
+                <div>
+                  <div class="name">${deviceName}</div>
+                  <div class="details">MAC: ${deviceMac} | IP: ${deviceIp} | Model: ${model}</div>
+                </div>
+              </div>
+              <div class="ap-status">
+                <span class="status-badge ${statusClass}">${statusText}</span>
+              </div>
+            </div>
+            <div class="ap-actions">
+              <button class="ap-btn" onclick="openApModal('${deviceMac}')">✏️ Edit</button>
+              ${!isAdopted ? `<button class="ap-btn adopt-btn" onclick="adoptDeviceFromUI('${deviceMac}')">🔄 Adopt</button>` : ''}
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function openApModal(mac) {
+      editingMac = mac;
+      const device = unifiDevices.find(d => d.mac === mac);
+
+      if (!device) {
+        showToast('❌ Device not found', 'error');
+        return;
+      }
+
+      document.getElementById('editApName').value = device.name || device.hostname || '';
+      document.getElementById('editApGroup').value = device.apgroup || 'default';
+      document.getElementById('editApSsid').value = '';
+
+      const modal = document.getElementById('apModal');
+      modal.style.display = 'flex';
+    }
+
+    function closeApModal() {
+      const modal = document.getElementById('apModal');
+      modal.style.display = 'none';
+      editingMac = null;
+    }
+
+    async function saveApChanges() {
+      const name = document.getElementById('editApName').value.trim();
+      const group = document.getElementById('editApGroup').value;
+      const ssid = document.getElementById('editApSsid').value.trim();
+
+      if (!editingMac) {
+        showToast('❌ No AP selected', 'error');
+        return;
+      }
+
+      // Apply name change
+      if (name) {
+        const result = await setDeviceName(editingMac, name);
+        if (result && result.meta && result.meta.rc === 'ok') {
+          showToast('✅ AP name updated!', 'success');
+        } else {
+          showToast('❌ Failed to update AP name', 'error');
+        }
+      }
+
+      if (ssid) {
+        showToast('🔄 WiFi name change coming soon!', 'info');
+      }
+
+      if (group) {
+        showToast('🔄 AP Group change coming soon!', 'info');
+      }
+
+      closeApModal();
+      loadUnifiDevices();
+    }
+
+    async function adoptDeviceFromUI(mac) {
+      if (!confirm('Adopt this AP?')) return;
+
+      const result = await adoptDevice(mac);
+      if (result && result.meta && result.meta.rc === 'ok') {
+        showToast('✅ AP adoption initiated!', 'success');
+        loadUnifiDevices();
+      } else {
+        showToast('❌ Failed to adopt AP', 'error');
+      }
+    }
+
+    // ============================================
     // SUPABASE API FUNCTIONS
     // ============================================
     async function supabaseFetch(endpoint, options = {}) {
@@ -1649,22 +2267,22 @@
         'Content-Type': 'application/json',
         'Prefer': 'return=representation'
       };
-      
+
       console.log('📡 Supabase request:', url);
-      
+
       try {
         const response = await fetch(url, {
           ...options,
           headers: { ...headers, ...options.headers }
         });
-        
+
         const text = await response.text();
         console.log('📡 Response status:', response.status);
-        
+
         if (!response.ok) {
           throw new Error(`Supabase error: ${response.status} - ${text}`);
         }
-        
+
         return text ? JSON.parse(text) : null;
       } catch (error) {
         console.error('❌ Supabase fetch error:', error);
@@ -1684,11 +2302,9 @@
           return data;
         }
         console.log('📝 No users found, creating all users from script...');
-        
-        // Create Super Admin + all team members
+
         const allUsers = [SUPER_ADMIN, ...TEAM_MEMBERS];
-        
-        // Insert all users one by one
+
         for (const user of allUsers) {
           await supabaseFetch('users', {
             method: 'POST',
@@ -1696,7 +2312,7 @@
           });
           console.log(`✅ Created user: ${user.name}`);
         }
-        
+
         return allUsers;
       } catch (error) {
         console.error('❌ Error loading users:', error);
@@ -1714,87 +2330,45 @@
             return parsed;
           }
         }
-      } catch(e) {}
+      } catch (e) {}
       return [SUPER_ADMIN];
     }
 
     function saveUsersToLocalStorage(usersToSave) {
       try {
         localStorage.setItem('unifi_users', JSON.stringify(usersToSave));
-      } catch(e) {}
+      } catch (e) {}
     }
 
-    // ============================================
-    // GET ALL USERS FROM SCRIPT
-    // ============================================
     function getAllScriptUsers() {
       return [SUPER_ADMIN, ...TEAM_MEMBERS];
     }
 
     // ============================================
-    // SYNC USERS FROM SCRIPT TO SUPABASE
-    // ============================================
-    async function syncUsersFromScript() {
-      console.log('🔄 Syncing users from script to Supabase...');
-      const scriptUsers = getAllScriptUsers();
-      
-      try {
-        // Delete all existing users (except Super Admin)
-        await supabaseFetch('users?role=neq.super-admin', {
-          method: 'DELETE'
-        });
-        
-        // Insert all team members
-        for (const user of TEAM_MEMBERS) {
-          await supabaseFetch('users', {
-            method: 'POST',
-            body: JSON.stringify(user)
-          });
-          console.log(`✅ Synced user: ${user.name}`);
-        }
-        
-        users = scriptUsers;
-        saveUsersToLocalStorage(users);
-        renderUserSelector();
-        renderUserList();
-        renderLoginUserList();
-        showToast('✅ All users synced from script!', 'success');
-        console.log('✅ Sync complete! Users:', users.length);
-        return true;
-      } catch (error) {
-        console.error('❌ Sync error:', error);
-        showToast('❌ Sync failed: ' + error.message, 'error');
-        return false;
-      }
-    }
-
-    // ============================================
-    // ADD USER (WITH DEBUG)
+    // USER FUNCTIONS
     // ============================================
     async function addUser() {
       const nameInput = document.getElementById('newUserName');
       const telegramInput = document.getElementById('newUserTelegram');
       const roleSelect = document.getElementById('newUserRole');
       const pinInput = document.getElementById('newUserPin');
-      
+
       const name = nameInput.value.trim();
       const telegram = telegramInput.value.trim();
       const customPin = pinInput.value.trim();
-      
-      console.log('📝 Adding user:', { name, telegram, customPin });
-      
+
       if (!name) {
         showToast('Please enter a username.', 'error');
         return;
       }
-      
+
       if (users.some(u => u.name.toLowerCase() === name.toLowerCase())) {
         showToast('User already exists!', 'error');
         return;
       }
-      
+
       let pin = '0000';
-      
+
       if (customPin) {
         if (!/^\d{4}$/.test(customPin)) {
           showToast('PIN must be exactly 4 digits.', 'error');
@@ -1802,7 +2376,7 @@
         }
         pin = customPin;
       }
-      
+
       const newUser = {
         id: 'user-' + Date.now(),
         name: name,
@@ -1811,48 +2385,40 @@
         pin: pin
       };
 
-      console.log('📤 Sending to Supabase:', JSON.stringify(newUser));
-
       try {
-        const result = await supabaseFetch('users', {
+        await supabaseFetch('users', {
           method: 'POST',
           body: JSON.stringify(newUser)
         });
-        
-        console.log('✅ Supabase response:', result);
-        
+
         users.push(newUser);
         saveUsersToLocalStorage(users);
-        
+
         nameInput.value = '';
         telegramInput.value = '';
         pinInput.value = '';
-        
+
         renderUserSelector();
         renderUserList();
         renderLoginUserList();
-        
+
         showToast('✅ User "' + name + '" added with PIN: ' + pin, 'success');
-        console.log('✅ User added successfully!');
       } catch (error) {
         console.error('❌ Error adding user:', error);
         showToast('❌ Failed to add user: ' + error.message, 'error');
       }
     }
 
-    // ============================================
-    // SYNC USERS
-    // ============================================
     async function syncUsers() {
       if (isLoading) return;
       isLoading = true;
-      
+
       const syncBtn = document.querySelector('.refresh-btn');
       if (syncBtn) {
         syncBtn.innerHTML = '⏳ Syncing...';
         syncBtn.disabled = true;
       }
-      
+
       try {
         const data = await supabaseFetch('users?select=*');
         if (data && data.length > 0) {
@@ -1863,7 +2429,6 @@
           renderLoginUserList();
           document.getElementById('lastSync').textContent = 'Last sync: ' + new Date().toLocaleTimeString();
           showToast('✅ Synced ' + users.length + ' users from cloud!', 'success');
-          console.log('✅ Synced users:', users.length);
         } else {
           showToast('⚠️ No users found in cloud.', 'error');
         }
@@ -1877,6 +2442,61 @@
           syncBtn.disabled = false;
         }
       }
+    }
+
+    async function resetAllUsers() {
+      if (!confirm('Reset all users? All users will be recreated from the script configuration.')) return;
+
+      const allUsers = getAllScriptUsers();
+      users = allUsers;
+
+      await supabaseFetch('users', {
+        method: 'DELETE'
+      });
+
+      for (const user of allUsers) {
+        await supabaseFetch('users', {
+          method: 'POST',
+          body: JSON.stringify(user)
+        });
+      }
+
+      saveUsersToLocalStorage(users);
+
+      renderUserSelector();
+      renderUserList();
+      renderLoginUserList();
+      selectedUserId = null;
+      updateSelectedUserDisplay();
+      showToast(`✅ All ${users.length} users reset from script!`, 'success');
+    }
+
+    async function clearAllData() {
+      if (!confirm('⚠️ Clear ALL data including adoption history and users?')) return;
+
+      await supabaseFetch('users', {
+        method: 'DELETE'
+      });
+
+      const allUsers = getAllScriptUsers();
+      users = allUsers;
+
+      for (const user of allUsers) {
+        await supabaseFetch('users', {
+          method: 'POST',
+          body: JSON.stringify(user)
+        });
+      }
+
+      saveUsersToLocalStorage(users);
+
+      renderUserSelector();
+      renderUserList();
+      renderLoginUserList();
+      selectedUserId = null;
+      updateSelectedUserDisplay();
+      document.getElementById('result').innerHTML = '';
+      showToast('✅ All data cleared and recreated from script.', 'success');
     }
 
     // ============================================
@@ -2004,9 +2624,27 @@
       list.innerHTML = html;
     }
 
-    // ============================================
-    // REMOVE USER
-    // ============================================
+    async function resetUserPin(userId) {
+      const user = users.find(u => u.id === userId);
+      if (!user) {
+        showToast('User not found!', 'error');
+        return;
+      }
+      if (!confirm('Reset PIN for "' + user.name + '" to 0000?')) return;
+
+      user.pin = '0000';
+      await supabaseFetch(`users?id=eq.${userId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ pin: '0000' })
+      });
+      saveUsersToLocalStorage(users);
+
+      renderUserSelector();
+      renderUserList();
+      renderLoginUserList();
+      showToast('✅ PIN reset to 0000 for ' + user.name, 'success');
+    }
+
     async function removeUser(userId) {
       if (userId === 'super-admin-1') {
         showToast('Cannot remove the Super Admin.', 'error');
@@ -2015,13 +2653,13 @@
       const user = users.find(u => u.id === userId);
       if (!user) return;
       if (!confirm('Remove user "' + user.name + '"?')) return;
-      
+
       users = users.filter(u => u.id !== userId);
       await supabaseFetch(`users?id=eq.${userId}`, {
         method: 'DELETE'
       });
       saveUsersToLocalStorage(users);
-      
+
       renderUserSelector();
       renderUserList();
       renderLoginUserList();
@@ -2033,96 +2671,6 @@
     }
 
     // ============================================
-    // RESET PIN
-    // ============================================
-    async function resetUserPin(userId) {
-      const user = users.find(u => u.id === userId);
-      if (!user) {
-        showToast('User not found!', 'error');
-        return;
-      }
-      if (!confirm('Reset PIN for "' + user.name + '" to 0000?')) return;
-      
-      user.pin = '0000';
-      await supabaseFetch(`users?id=eq.${userId}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ pin: '0000' })
-      });
-      saveUsersToLocalStorage(users);
-      
-      renderUserSelector();
-      renderUserList();
-      renderLoginUserList();
-      showToast('✅ PIN reset to 0000 for ' + user.name, 'success');
-    }
-
-    // ============================================
-    // RESET ALL USERS (From Script)
-    // ============================================
-    async function resetAllUsers() {
-      if (!confirm('Reset all users? All users will be recreated from the script configuration.')) return;
-      
-      const allUsers = getAllScriptUsers();
-      users = allUsers;
-      
-      // Delete all existing users
-      await supabaseFetch('users', {
-        method: 'DELETE'
-      });
-      
-      // Insert all users
-      for (const user of allUsers) {
-        await supabaseFetch('users', {
-          method: 'POST',
-          body: JSON.stringify(user)
-        });
-        console.log(`✅ Recreated user: ${user.name}`);
-      }
-      
-      saveUsersToLocalStorage(users);
-      
-      renderUserSelector();
-      renderUserList();
-      renderLoginUserList();
-      selectedUserId = null;
-      updateSelectedUserDisplay();
-      showToast(`✅ All ${users.length} users reset from script!`, 'success');
-    }
-
-    // ============================================
-    // CLEAR ALL DATA
-    // ============================================
-    async function clearAllData() {
-      if (!confirm('⚠️ Clear ALL data including adoption history and users?')) return;
-      
-      // Delete all users
-      await supabaseFetch('users', {
-        method: 'DELETE'
-      });
-      
-      // Recreate from script
-      const allUsers = getAllScriptUsers();
-      users = allUsers;
-      
-      for (const user of allUsers) {
-        await supabaseFetch('users', {
-          method: 'POST',
-          body: JSON.stringify(user)
-        });
-      }
-      
-      saveUsersToLocalStorage(users);
-      
-      renderUserSelector();
-      renderUserList();
-      renderLoginUserList();
-      selectedUserId = null;
-      updateSelectedUserDisplay();
-      document.getElementById('result').innerHTML = '';
-      showToast('✅ All data cleared and recreated from script.', 'success');
-    }
-
-    // ============================================
     // PIN LOGIN
     // ============================================
     function pinInput(num) {
@@ -2130,12 +2678,12 @@
       const success = document.getElementById('pinSuccess');
       error.textContent = '';
       success.textContent = '';
-      
+
       if (!selectedUserId) {
         error.textContent = '⚠️ Please select a user first.';
         return;
       }
-      
+
       if (pinBuffer.length >= 4) return;
       pinBuffer += num;
       updatePinDots();
@@ -2166,7 +2714,7 @@
       const success = document.getElementById('pinSuccess');
 
       const selectedUser = users.find(u => u.id === selectedUserId);
-      
+
       if (!selectedUser) {
         error.textContent = '⚠️ User not found. Please select a user.';
         pinBuffer = '';
@@ -2177,7 +2725,7 @@
       if (pinBuffer === selectedUser.pin) {
         success.textContent = '✅ Welcome ' + selectedUser.name + '!';
         currentUser = selectedUser;
-        
+
         const defaultPins = ['0000', '1166'];
         if (defaultPins.includes(selectedUser.pin) || selectedUser.needsPinChange === true) {
           pendingUser = selectedUser;
@@ -2269,7 +2817,7 @@
           saveUsersToLocalStorage(users);
           success.textContent = '✅ PIN updated successfully!';
           currentUser = user;
-          
+
           setTimeout(function() {
             document.getElementById('changePinScreen').classList.remove('active');
             loginSuccess();
@@ -2320,7 +2868,7 @@
       try {
         const tg = window.Telegram.WebApp;
         tg.expand();
-      } catch(e) {}
+      } catch (e) {}
     }
 
     function logout() {
@@ -2380,7 +2928,7 @@
       const tg = window.Telegram.WebApp;
       tg.ready();
       tg.expand();
-    } catch(e) {
+    } catch (e) {
       console.log('Telegram WebApp not available');
     }
 
@@ -2539,38 +3087,38 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ips: [ip] })
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        var result = data.results[0];
-        var item = document.querySelector('.result-item[data-ip="' + ip + '"]');
-        if (item) {
-          if (result.success) {
-            item.setAttribute('data-success', 'true');
-            var statusEl = item.querySelector('.status');
-            statusEl.className = 'status success';
-            statusEl.textContent = '✅ Adopted';
-            var err = item.querySelector('.error-msg');
-            if (err) err.remove();
-            var retry = item.querySelector('.retry-btn');
-            if (retry) retry.remove();
-          } else {
-            var errMsg = item.querySelector('.error-msg');
-            if (!errMsg) {
-              errMsg = document.createElement('span');
-              errMsg.className = 'error-msg';
-              item.appendChild(errMsg);
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          var result = data.results[0];
+          var item = document.querySelector('.result-item[data-ip="' + ip + '"]');
+          if (item) {
+            if (result.success) {
+              item.setAttribute('data-success', 'true');
+              var statusEl = item.querySelector('.status');
+              statusEl.className = 'status success';
+              statusEl.textContent = '✅ Adopted';
+              var err = item.querySelector('.error-msg');
+              if (err) err.remove();
+              var retry = item.querySelector('.retry-btn');
+              if (retry) retry.remove();
+            } else {
+              var errMsg = item.querySelector('.error-msg');
+              if (!errMsg) {
+                errMsg = document.createElement('span');
+                errMsg.className = 'error-msg';
+                item.appendChild(errMsg);
+              }
+              errMsg.textContent = result.error || 'Retry failed';
             }
-            errMsg.textContent = result.error || 'Retry failed';
           }
-        }
-        var success = document.querySelectorAll('.result-item[data-success="true"]').length;
-        var failed = document.querySelectorAll('.result-item[data-success="false"]').length;
-        setStats(success + failed, success, failed);
-        filterResults('all');
-      })
-      .catch(function(err) {
-        alert('Error retrying: ' + err.message);
-      });
+          var success = document.querySelectorAll('.result-item[data-success="true"]').length;
+          var failed = document.querySelectorAll('.result-item[data-success="false"]').length;
+          setStats(success + failed, success, failed);
+          filterResults('all');
+        })
+        .catch(function(err) {
+          alert('Error retrying: ' + err.message);
+        });
     }
 
     async function startAdoption() {
@@ -2655,8 +3203,8 @@
         try {
           const tg = window.Telegram.WebApp;
           tg.sendData(JSON.stringify({ total: data.total, successful: data.successful, failed: data.total - data.successful }));
-        } catch(e) {}
-      } catch(err) {
+        } catch (e) {}
+      } catch (err) {
         resultDiv.innerHTML = '<div class="result-item" style="border-color: rgba(239,83,80,0.2);"><span style="color:#ef5350;">❌ Error: ' + err.message + '</span></div>';
         showProgress('❌ Error: ' + err.message, false);
         setStats(ips.length, 0, ips.length);
@@ -2677,20 +3225,16 @@
     // ============================================
     async function init() {
       try {
-        // Load from Supabase first
         const data = await supabaseFetch('users?select=*');
         if (data && data.length > 0) {
           users = data;
-          console.log('✅ Loaded users from Supabase:', users.length);
         } else {
-          // Create all users from script
           const allUsers = getAllScriptUsers();
           for (const user of allUsers) {
             await supabaseFetch('users', {
               method: 'POST',
               body: JSON.stringify(user)
             });
-            console.log(`✅ Created user: ${user.name}`);
           }
           users = allUsers;
         }
@@ -2708,7 +3252,6 @@
         console.log('👤 Users:', users.map(u => u.name + ' (' + u.role + ')').join(', '));
       } catch (error) {
         console.error('Init error:', error);
-        // Fallback to localStorage
         users = loadUsersFromLocalStorage();
         renderUserSelector();
         renderUserList();
