@@ -4,14 +4,14 @@
       "maxDuration": 30
     }
   },
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
-      "source": "/(.*)",
-      "destination": "/miniapp/index.html"
+      "src": "/(.*)",
+      "dest": "/frontend/index.html"
     }
   ]
 }
