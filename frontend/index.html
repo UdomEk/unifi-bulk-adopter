@@ -1888,7 +1888,7 @@
     // 🌐 UNIFI CONTROLLER CONFIGURATION
     // 🔴 UPDATE THESE WITH YOUR CONTROLLER CREDENTIALS!
     // ============================================
-    const UNIFI_API_URL = '/api/unifi';  // ← Calls Vercel Function
+    const UNIFI_API_URL = '/api/unifi';
     // ============================================
 
     let unifiCookie = null;
@@ -1957,137 +1957,57 @@
     let isLoading = false;
 
     // ============================================
-    // UNIFI CONTROLLER API FUNCTIONS
-    // ============================================
-    async function loginToUnifi() {
-      try {
-        console.log('🔐 Logging into UniFi Controller...');
-        const response = await fetch(`${UNIFI_CONTROLLER.url}/api/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username: UNIFI_CONTROLLER.username,
-            password: UNIFI_CONTROLLER.password
-          })
-        });
-
-        const cookies = response.headers.get('set-cookie');
-        if (cookies) {
-          unifiCookie = cookies;
-        }
-
-        const data = await response.json();
-        unifiCsrf = data.csrf_token || null;
-
-        if (response.ok) {
-          console.log('✅ Logged into UniFi Controller');
-          return true;
-        } else {
-          console.error('❌ Login failed:', data);
-          return false;
-        }
-      } catch (error) {
-        console.error('❌ Login to UniFi failed:', error);
-        return false;
-      }
+// 🌐 UNIFI CONTROLLER API FUNCTIONS (Updated for Vercel Proxy)
+// ============================================
+async function getUnifiDevices() {
+  try {
+    console.log('📡 Fetching devices via Vercel proxy...');
+    const response = await fetch('/api/unifi?action=devices');
+    const data = await response.json();
+    if (data && data.data) {
+      console.log('✅ Loaded devices:', data.data.length);
+      return data.data;
     }
+    return null;
+  } catch (error) {
+    console.error('❌ Failed to get devices:', error);
+    return null;
+  }
+}
 
-    async function getUnifiDevices() {
-      try {
-        if (!unifiCookie) {
-          const loggedIn = await loginToUnifi();
-          if (!loggedIn) return null;
-        }
+async function setDeviceName(mac, name) {
+  try {
+    console.log('📡 Setting device name:', mac, '→', name);
+    const response = await fetch('/api/unifi?action=set-name', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mac, name })
+    });
+    const data = await response.json();
+    console.log('✅ Set device name response:', data);
+    return data;
+  } catch (error) {
+    console.error('❌ Failed to set device name:', error);
+    return null;
+  }
+}
 
-        console.log('📡 Fetching devices from UniFi...');
-        const response = await fetch(
-          `${UNIFI_CONTROLLER.url}/api/s/${UNIFI_CONTROLLER.site}/stat/device`,
-          {
-            headers: {
-              'Cookie': unifiCookie,
-              'X-CSRF-Token': unifiCsrf || ''
-            }
-          }
-        );
-
-        const data = await response.json();
-        if (data && data.data) {
-          console.log('✅ Loaded devices:', data.data.length);
-          return data.data;
-        }
-        return null;
-      } catch (error) {
-        console.error('❌ Failed to get devices:', error);
-        return null;
-      }
-    }
-
-    async function setDeviceName(mac, name) {
-      try {
-        if (!unifiCookie) {
-          const loggedIn = await loginToUnifi();
-          if (!loggedIn) return null;
-        }
-
-        console.log('📡 Setting device name:', mac, '→', name);
-        const response = await fetch(
-          `${UNIFI_CONTROLLER.url}/api/s/${UNIFI_CONTROLLER.site}/cmd/devmgr`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Cookie': unifiCookie,
-              'X-CSRF-Token': unifiCsrf || ''
-            },
-            body: JSON.stringify({
-              cmd: 'set-name',
-              mac: mac,
-              name: name
-            })
-          }
-        );
-
-        const data = await response.json();
-        console.log('✅ Set device name response:', data);
-        return data;
-      } catch (error) {
-        console.error('❌ Failed to set device name:', error);
-        return null;
-      }
-    }
-
-    async function adoptDevice(mac) {
-      try {
-        if (!unifiCookie) {
-          const loggedIn = await loginToUnifi();
-          if (!loggedIn) return null;
-        }
-
-        console.log('📡 Adopting device:', mac);
-        const response = await fetch(
-          `${UNIFI_CONTROLLER.url}/api/s/${UNIFI_CONTROLLER.site}/cmd/devmgr`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Cookie': unifiCookie,
-              'X-CSRF-Token': unifiCsrf || ''
-            },
-            body: JSON.stringify({
-              cmd: 'adopt',
-              mac: mac
-            })
-          }
-        );
-
-        const data = await response.json();
-        console.log('✅ Adopt device response:', data);
-        return data;
-      } catch (error) {
-        console.error('❌ Failed to adopt device:', error);
-        return null;
-      }
-    }
+async function adoptDevice(mac) {
+  try {
+    console.log('📡 Adopting device:', mac);
+    const response = await fetch('/api/unifi?action=adopt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mac })
+    });
+    const data = await response.json();
+    console.log('✅ Adopt device response:', data);
+    return data;
+  } catch (error) {
+    console.error('❌ Failed to adopt device:', error);
+    return null;
+  }
+}
 
     // ============================================
     // UNIFI UI FUNCTIONS
