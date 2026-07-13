@@ -1561,16 +1561,16 @@
 
   <script>
     // ============================================
-    // ⚙️ SUPABASE CONFIGURATION (FIXED!)
+    // ⚙️ SUPABASE CONFIGURATION
     // ============================================
     const SUPABASE_URL = 'https://mdkvuigyskzmufuhaeqf.supabase.co';
-    // 🔑 This is your ANON key - correct one!
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ka3Z1aWd5c2t6bXVmdWhhZXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4MzA4NTgsImV4cCI6MjA5OTQwNjg1OH0.cQKv25Gjdi0Vq2xjLY4Pv3KpVZmDJnZ-4p9EvaniuRE';
     // ============================================
 
     // ============================================
-    // SUPER ADMIN
+    // 👥 USER CONFIGURATION - EDIT YOUR TEAM HERE!
     // ============================================
+    // Super Admin (You)
     const SUPER_ADMIN = {
       id: 'super-admin-1',
       name: 'Udom Ek',
@@ -1579,6 +1579,51 @@
       pin: '1166',
       needsPinChange: false
     };
+
+    // 👇 ADD YOUR IT TEAM MEMBERS HERE
+    const TEAM_MEMBERS = [
+      {
+        id: 'team-1',
+        name: 'Vanak',
+        telegram: '@VANAK168',
+        role: 'admin',
+        pin: '2222',
+        needsPinChange: false
+      },
+      {
+        id: 'team-2',
+        name: 'John Doe',
+        telegram: '@johndoe',
+        role: 'admin',
+        pin: '3333',
+        needsPinChange: false
+      },
+      {
+        id: 'team-3',
+        name: 'Jane Smith',
+        telegram: '@janesmith',
+        role: 'admin',
+        pin: '4444',
+        needsPinChange: false
+      },
+      {
+        id: 'team-4',
+        name: 'Mike Johnson',
+        telegram: '@mikej',
+        role: 'admin',
+        pin: '5555',
+        needsPinChange: false
+      }
+      // === ADD MORE TEAM MEMBERS HERE ===
+      // {
+      //   id: 'team-5',
+      //   name: 'New Member',
+      //   telegram: '@newmember',
+      //   role: 'admin',
+      //   pin: '6666',
+      //   needsPinChange: false
+      // }
+    ];
     // ============================================
 
     // ============================================
@@ -1635,15 +1680,24 @@
       try {
         const data = await supabaseFetch('users?select=*');
         if (data && data.length > 0) {
-          console.log('✅ Loaded users:', data.length);
+          console.log('✅ Loaded users from Supabase:', data.length);
           return data;
         }
-        console.log('📝 No users found, creating Super Admin...');
-        await supabaseFetch('users', {
-          method: 'POST',
-          body: JSON.stringify(SUPER_ADMIN)
-        });
-        return [SUPER_ADMIN];
+        console.log('📝 No users found, creating all users from script...');
+        
+        // Create Super Admin + all team members
+        const allUsers = [SUPER_ADMIN, ...TEAM_MEMBERS];
+        
+        // Insert all users one by one
+        for (const user of allUsers) {
+          await supabaseFetch('users', {
+            method: 'POST',
+            body: JSON.stringify(user)
+          });
+          console.log(`✅ Created user: ${user.name}`);
+        }
+        
+        return allUsers;
       } catch (error) {
         console.error('❌ Error loading users:', error);
         return loadUsersFromLocalStorage();
@@ -1656,6 +1710,7 @@
         if (saved) {
           const parsed = JSON.parse(saved);
           if (parsed.length > 0) {
+            console.log('📥 Loaded from localStorage:', parsed.length);
             return parsed;
           }
         }
@@ -1667,6 +1722,50 @@
       try {
         localStorage.setItem('unifi_users', JSON.stringify(usersToSave));
       } catch(e) {}
+    }
+
+    // ============================================
+    // GET ALL USERS FROM SCRIPT
+    // ============================================
+    function getAllScriptUsers() {
+      return [SUPER_ADMIN, ...TEAM_MEMBERS];
+    }
+
+    // ============================================
+    // SYNC USERS FROM SCRIPT TO SUPABASE
+    // ============================================
+    async function syncUsersFromScript() {
+      console.log('🔄 Syncing users from script to Supabase...');
+      const scriptUsers = getAllScriptUsers();
+      
+      try {
+        // Delete all existing users (except Super Admin)
+        await supabaseFetch('users?role=neq.super-admin', {
+          method: 'DELETE'
+        });
+        
+        // Insert all team members
+        for (const user of TEAM_MEMBERS) {
+          await supabaseFetch('users', {
+            method: 'POST',
+            body: JSON.stringify(user)
+          });
+          console.log(`✅ Synced user: ${user.name}`);
+        }
+        
+        users = scriptUsers;
+        saveUsersToLocalStorage(users);
+        renderUserSelector();
+        renderUserList();
+        renderLoginUserList();
+        showToast('✅ All users synced from script!', 'success');
+        console.log('✅ Sync complete! Users:', users.length);
+        return true;
+      } catch (error) {
+        console.error('❌ Sync error:', error);
+        showToast('❌ Sync failed: ' + error.message, 'error');
+        return false;
+      }
     }
 
     // ============================================
@@ -1695,7 +1794,6 @@
       }
       
       let pin = '0000';
-      let needsPinChange = true;
       
       if (customPin) {
         if (!/^\d{4}$/.test(customPin)) {
@@ -1703,7 +1801,6 @@
           return;
         }
         pin = customPin;
-        needsPinChange = false;
       }
       
       const newUser = {
@@ -1711,8 +1808,7 @@
         name: name,
         telegram: telegram || '',
         role: roleSelect.value,
-        pin: pin,
-        needsPinChange: needsPinChange
+        pin: pin
       };
 
       console.log('📤 Sending to Supabase:', JSON.stringify(newUser));
@@ -1948,10 +2044,9 @@
       if (!confirm('Reset PIN for "' + user.name + '" to 0000?')) return;
       
       user.pin = '0000';
-      user.needsPinChange = true;
       await supabaseFetch(`users?id=eq.${userId}`, {
         method: 'PATCH',
-        body: JSON.stringify({ pin: '0000', needsPinChange: true })
+        body: JSON.stringify({ pin: '0000' })
       });
       saveUsersToLocalStorage(users);
       
@@ -1962,14 +2057,28 @@
     }
 
     // ============================================
-    // RESET ALL USERS
+    // RESET ALL USERS (From Script)
     // ============================================
     async function resetAllUsers() {
-      if (!confirm('Reset all users? Only Super Admin will remain.')) return;
-      users = [SUPER_ADMIN];
-      await supabaseFetch('users?role=neq.super-admin', {
+      if (!confirm('Reset all users? All users will be recreated from the script configuration.')) return;
+      
+      const allUsers = getAllScriptUsers();
+      users = allUsers;
+      
+      // Delete all existing users
+      await supabaseFetch('users', {
         method: 'DELETE'
       });
+      
+      // Insert all users
+      for (const user of allUsers) {
+        await supabaseFetch('users', {
+          method: 'POST',
+          body: JSON.stringify(user)
+        });
+        console.log(`✅ Recreated user: ${user.name}`);
+      }
+      
       saveUsersToLocalStorage(users);
       
       renderUserSelector();
@@ -1977,18 +2086,31 @@
       renderLoginUserList();
       selectedUserId = null;
       updateSelectedUserDisplay();
-      showToast('✅ All users reset.', 'success');
+      showToast(`✅ All ${users.length} users reset from script!`, 'success');
     }
 
     // ============================================
     // CLEAR ALL DATA
     // ============================================
     async function clearAllData() {
-      if (!confirm('⚠️ Clear ALL data including adoption history?')) return;
-      users = [SUPER_ADMIN];
-      await supabaseFetch('users?role=neq.super-admin', {
+      if (!confirm('⚠️ Clear ALL data including adoption history and users?')) return;
+      
+      // Delete all users
+      await supabaseFetch('users', {
         method: 'DELETE'
       });
+      
+      // Recreate from script
+      const allUsers = getAllScriptUsers();
+      users = allUsers;
+      
+      for (const user of allUsers) {
+        await supabaseFetch('users', {
+          method: 'POST',
+          body: JSON.stringify(user)
+        });
+      }
+      
       saveUsersToLocalStorage(users);
       
       renderUserSelector();
@@ -1997,7 +2119,7 @@
       selectedUserId = null;
       updateSelectedUserDisplay();
       document.getElementById('result').innerHTML = '';
-      showToast('✅ All data cleared.', 'success');
+      showToast('✅ All data cleared and recreated from script.', 'success');
     }
 
     // ============================================
@@ -2142,7 +2264,7 @@
           user.needsPinChange = false;
           supabaseFetch(`users?id=eq.${user.id}`, {
             method: 'PATCH',
-            body: JSON.stringify({ pin: changePinBuffer, needsPinChange: false })
+            body: JSON.stringify({ pin: changePinBuffer })
           });
           saveUsersToLocalStorage(users);
           success.textContent = '✅ PIN updated successfully!';
@@ -2559,12 +2681,18 @@
         const data = await supabaseFetch('users?select=*');
         if (data && data.length > 0) {
           users = data;
+          console.log('✅ Loaded users from Supabase:', users.length);
         } else {
-          await supabaseFetch('users', {
-            method: 'POST',
-            body: JSON.stringify(SUPER_ADMIN)
-          });
-          users = [SUPER_ADMIN];
+          // Create all users from script
+          const allUsers = getAllScriptUsers();
+          for (const user of allUsers) {
+            await supabaseFetch('users', {
+              method: 'POST',
+              body: JSON.stringify(user)
+            });
+            console.log(`✅ Created user: ${user.name}`);
+          }
+          users = allUsers;
         }
         saveUsersToLocalStorage(users);
         renderUserSelector();
@@ -2577,6 +2705,7 @@
         console.log('✅ UniFi Bulk AP Adopter loaded with Supabase!');
         console.log('👑 Super Admin: Udom Ek (@UdomEk)');
         console.log('👥 Total Users: ' + users.length);
+        console.log('👤 Users:', users.map(u => u.name + ' (' + u.role + ')').join(', '));
       } catch (error) {
         console.error('Init error:', error);
         // Fallback to localStorage
