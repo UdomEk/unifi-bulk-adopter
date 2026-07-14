@@ -1,10 +1,8 @@
 {
-  "functions": {
-    "api/index.js": {
-      "maxDuration": 15
-    }
-  },
   "rewrites": [
-    { "source": "/", "destination": "/frontend/index.html" }
+    {
+      "source": "/(.*)",
+      "destination": "/frontend/index.html"
+    }
   ]
 }
