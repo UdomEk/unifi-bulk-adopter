@@ -1568,9 +1568,8 @@
     // ============================================
 
     // ============================================
-    // 👥 USER CONFIGURATION - EDIT YOUR TEAM HERE!
+    // 👥 USER CONFIGURATION
     // ============================================
-    // Super Admin (You)
     const SUPER_ADMIN = {
       id: 'super-admin-1',
       name: 'Udom Ek',
@@ -1580,7 +1579,6 @@
       needsPinChange: false
     };
 
-    // 👇 ADD YOUR IT TEAM MEMBERS HERE
     const TEAM_MEMBERS = [
       {
         id: 'team-1',
@@ -1614,15 +1612,6 @@
         pin: '5555',
         needsPinChange: false
       }
-      // === ADD MORE TEAM MEMBERS HERE ===
-      // {
-      //   id: 'team-5',
-      //   name: 'New Member',
-      //   telegram: '@newmember',
-      //   role: 'admin',
-      //   pin: '6666',
-      //   needsPinChange: false
-      // }
     ];
     // ============================================
 
@@ -1685,10 +1674,8 @@
         }
         console.log('📝 No users found, creating all users from script...');
         
-        // Create Super Admin + all team members
         const allUsers = [SUPER_ADMIN, ...TEAM_MEMBERS];
         
-        // Insert all users one by one
         for (const user of allUsers) {
           await supabaseFetch('users', {
             method: 'POST',
@@ -1724,52 +1711,12 @@
       } catch(e) {}
     }
 
-    // ============================================
-    // GET ALL USERS FROM SCRIPT
-    // ============================================
     function getAllScriptUsers() {
       return [SUPER_ADMIN, ...TEAM_MEMBERS];
     }
 
     // ============================================
-    // SYNC USERS FROM SCRIPT TO SUPABASE
-    // ============================================
-    async function syncUsersFromScript() {
-      console.log('🔄 Syncing users from script to Supabase...');
-      const scriptUsers = getAllScriptUsers();
-      
-      try {
-        // Delete all existing users (except Super Admin)
-        await supabaseFetch('users?role=neq.super-admin', {
-          method: 'DELETE'
-        });
-        
-        // Insert all team members
-        for (const user of TEAM_MEMBERS) {
-          await supabaseFetch('users', {
-            method: 'POST',
-            body: JSON.stringify(user)
-          });
-          console.log(`✅ Synced user: ${user.name}`);
-        }
-        
-        users = scriptUsers;
-        saveUsersToLocalStorage(users);
-        renderUserSelector();
-        renderUserList();
-        renderLoginUserList();
-        showToast('✅ All users synced from script!', 'success');
-        console.log('✅ Sync complete! Users:', users.length);
-        return true;
-      } catch (error) {
-        console.error('❌ Sync error:', error);
-        showToast('❌ Sync failed: ' + error.message, 'error');
-        return false;
-      }
-    }
-
-    // ============================================
-    // ADD USER (WITH DEBUG)
+    // ADD USER
     // ============================================
     async function addUser() {
       const nameInput = document.getElementById('newUserName');
@@ -1780,8 +1727,6 @@
       const name = nameInput.value.trim();
       const telegram = telegramInput.value.trim();
       const customPin = pinInput.value.trim();
-      
-      console.log('📝 Adding user:', { name, telegram, customPin });
       
       if (!name) {
         showToast('Please enter a username.', 'error');
@@ -1811,15 +1756,11 @@
         pin: pin
       };
 
-      console.log('📤 Sending to Supabase:', JSON.stringify(newUser));
-
       try {
-        const result = await supabaseFetch('users', {
+        await supabaseFetch('users', {
           method: 'POST',
           body: JSON.stringify(newUser)
         });
-        
-        console.log('✅ Supabase response:', result);
         
         users.push(newUser);
         saveUsersToLocalStorage(users);
@@ -1833,7 +1774,6 @@
         renderLoginUserList();
         
         showToast('✅ User "' + name + '" added with PIN: ' + pin, 'success');
-        console.log('✅ User added successfully!');
       } catch (error) {
         console.error('❌ Error adding user:', error);
         showToast('❌ Failed to add user: ' + error.message, 'error');
@@ -1863,7 +1803,6 @@
           renderLoginUserList();
           document.getElementById('lastSync').textContent = 'Last sync: ' + new Date().toLocaleTimeString();
           showToast('✅ Synced ' + users.length + ' users from cloud!', 'success');
-          console.log('✅ Synced users:', users.length);
         } else {
           showToast('⚠️ No users found in cloud.', 'error');
         }
@@ -2005,7 +1944,7 @@
     }
 
     // ============================================
-    // REMOVE USER
+    // USER MANAGEMENT FUNCTIONS
     // ============================================
     async function removeUser(userId) {
       if (userId === 'super-admin-1') {
@@ -2032,9 +1971,6 @@
       showToast('✅ User removed.', 'success');
     }
 
-    // ============================================
-    // RESET PIN
-    // ============================================
     async function resetUserPin(userId) {
       const user = users.find(u => u.id === userId);
       if (!user) {
@@ -2056,27 +1992,21 @@
       showToast('✅ PIN reset to 0000 for ' + user.name, 'success');
     }
 
-    // ============================================
-    // RESET ALL USERS (From Script)
-    // ============================================
     async function resetAllUsers() {
-      if (!confirm('Reset all users? All users will be recreated from the script configuration.')) return;
+      if (!confirm('Reset all users? Only Super Admin will remain.')) return;
       
       const allUsers = getAllScriptUsers();
       users = allUsers;
       
-      // Delete all existing users
       await supabaseFetch('users', {
         method: 'DELETE'
       });
       
-      // Insert all users
       for (const user of allUsers) {
         await supabaseFetch('users', {
           method: 'POST',
           body: JSON.stringify(user)
         });
-        console.log(`✅ Recreated user: ${user.name}`);
       }
       
       saveUsersToLocalStorage(users);
@@ -2086,31 +2016,17 @@
       renderLoginUserList();
       selectedUserId = null;
       updateSelectedUserDisplay();
-      showToast(`✅ All ${users.length} users reset from script!`, 'success');
+      showToast(`✅ All ${users.length} users reset!`, 'success');
     }
 
-    // ============================================
-    // CLEAR ALL DATA
-    // ============================================
     async function clearAllData() {
-      if (!confirm('⚠️ Clear ALL data including adoption history and users?')) return;
+      if (!confirm('⚠️ Clear ALL data?')) return;
       
-      // Delete all users
       await supabaseFetch('users', {
         method: 'DELETE'
       });
       
-      // Recreate from script
-      const allUsers = getAllScriptUsers();
-      users = allUsers;
-      
-      for (const user of allUsers) {
-        await supabaseFetch('users', {
-          method: 'POST',
-          body: JSON.stringify(user)
-        });
-      }
-      
+      users = [SUPER_ADMIN];
       saveUsersToLocalStorage(users);
       
       renderUserSelector();
@@ -2119,7 +2035,7 @@
       selectedUserId = null;
       updateSelectedUserDisplay();
       document.getElementById('result').innerHTML = '';
-      showToast('✅ All data cleared and recreated from script.', 'success');
+      showToast('✅ All data cleared.', 'success');
     }
 
     // ============================================
@@ -2677,20 +2593,16 @@
     // ============================================
     async function init() {
       try {
-        // Load from Supabase first
         const data = await supabaseFetch('users?select=*');
         if (data && data.length > 0) {
           users = data;
-          console.log('✅ Loaded users from Supabase:', users.length);
         } else {
-          // Create all users from script
           const allUsers = getAllScriptUsers();
           for (const user of allUsers) {
             await supabaseFetch('users', {
               method: 'POST',
               body: JSON.stringify(user)
             });
-            console.log(`✅ Created user: ${user.name}`);
           }
           users = allUsers;
         }
@@ -2702,13 +2614,11 @@
         setInterval(setTimestamp, 30000);
         setupIPCount();
         document.getElementById('lastSync').textContent = 'Last sync: just now';
-        console.log('✅ UniFi Bulk AP Adopter loaded with Supabase!');
+        console.log('✅ UniFi Bulk AP Adopter loaded!');
         console.log('👑 Super Admin: Udom Ek (@UdomEk)');
         console.log('👥 Total Users: ' + users.length);
-        console.log('👤 Users:', users.map(u => u.name + ' (' + u.role + ')').join(', '));
       } catch (error) {
         console.error('Init error:', error);
-        // Fallback to localStorage
         users = loadUsersFromLocalStorage();
         renderUserSelector();
         renderUserList();
