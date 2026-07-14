@@ -1,15 +1,8 @@
 {
-  "name": "unifi-bulk-adopter",
+  "name": "unifi-bulk-adopter-api",
   "version": "1.0.0",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "helmet": "^7.1.0",
-    "node-ssh": "^13.2.0"
+  "private": true,
+  "engines": {
+    "node": ">=18.14.0"
   }
 }
