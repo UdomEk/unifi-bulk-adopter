@@ -1888,7 +1888,8 @@
     // 🌐 UNIFI CONTROLLER CONFIGURATION
     // ============================================
     // The actual credentials are stored in Vercel Environment Variables
-    const UNIFI_API_URL = '/api/unifi';  // ← Calls Vercel Function
+    // UPDATED: Using /api (index.js) instead of /api/unifi
+    const UNIFI_API_URL = '/api';
     // ============================================
 
     let unifiDevices = [];
@@ -1960,7 +1961,7 @@
     async function getUnifiDevices() {
       try {
         console.log('📡 Fetching devices via Vercel proxy...');
-        const response = await fetch('/api/unifi?action=devices');
+        const response = await fetch(`${UNIFI_API_URL}?action=devices`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -1981,7 +1982,7 @@
     async function setDeviceName(mac, name) {
       try {
         console.log('📡 Setting device name:', mac, '→', name);
-        const response = await fetch('/api/unifi?action=set-name', {
+        const response = await fetch(`${UNIFI_API_URL}?action=set-name`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ mac, name })
@@ -1998,7 +1999,7 @@
     async function adoptDevice(mac) {
       try {
         console.log('📡 Adopting device:', mac);
-        const response = await fetch('/api/unifi?action=adopt', {
+        const response = await fetch(`${UNIFI_API_URL}?action=adopt`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ mac })
@@ -2036,17 +2037,17 @@
           showToast(`✅ Loaded ${unifiDevices.length} APs from controller`, 'success');
         } else {
           container.innerHTML = `
-  <div style="text-align:center;color:#ef5350;padding:20px;">
-    ❌ Failed to load devices.<br>
-    <span style="font-size:12px;color:#888;">Check controller credentials in Vercel Environment Variables.</span>
-    <br><br>
-    <span style="font-size:12px;color:#888;">Go to Vercel Dashboard → Settings → Environment Variables</span>
-    <br>
-    <span style="font-size:12px;color:#888;">Add: UNIFI_USERNAME, UNIFI_PASSWORD, UNIFI_CONTROLLER_URL</span>
-    <br><br>
-    <span style="font-size:12px;color:#888;">Also make sure api/unifi.js is deployed.</span>
-  </div>
-`;
+            <div style="text-align:center;color:#ef5350;padding:20px;">
+              ❌ Failed to load devices.<br>
+              <span style="font-size:12px;color:#888;">Check controller credentials in Vercel Environment Variables.</span>
+              <br><br>
+              <span style="font-size:12px;color:#888;">Go to Vercel Dashboard → Settings → Environment Variables</span>
+              <br>
+              <span style="font-size:12px;color:#888;">Add: UNIFI_USERNAME, UNIFI_PASSWORD, UNIFI_CONTROLLER_URL</span>
+              <br><br>
+              <span style="font-size:12px;color:#888;">Also make sure api/index.js is deployed.</span>
+            </div>
+          `;
         }
       } catch (error) {
         console.error('Error loading devices:', error);
@@ -2055,7 +2056,7 @@
             ❌ Error: ${error.message}<br>
             <span style="font-size:12px;color:#888;">Make sure the Vercel function is deployed.</span>
             <br><br>
-            <span style="font-size:12px;color:#888;">Check that api/unifi.js exists in your repository.</span>
+            <span style="font-size:12px;color:#888;">Check that api/index.js exists in your repository.</span>
           </div>
         `;
       }
